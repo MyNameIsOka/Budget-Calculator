@@ -1,30 +1,17 @@
-import {
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "@remix-run/react";
-import "./tailwind.css";
+import { Outlet } from "@remix-run/react";
+import { styled } from "@stitches/react";
 
-export function Layout({ children }: { children: React.ReactNode }) {
+const AppWrapper = styled("div", {
+  minHeight: "100vh",
+  backgroundColor: "#f0f8ff",
+  padding: "2rem",
+  fontFamily: "Arial, sans-serif",
+});
+
+export default function Root() {
   return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
-      </body>
-    </html>
+    <AppWrapper>
+      <Outlet />
+    </AppWrapper>
   );
-}
-
-export default function App() {
-  return <Outlet />;
 }
