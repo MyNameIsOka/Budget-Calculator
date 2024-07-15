@@ -29,9 +29,10 @@ const BudgetCalculator: React.FC = () => {
 	const [taxAmount, setTaxAmount] = useState<number>(0);
 	const [taxBreakdown, setTaxBreakdown] = useState<TaxBreakdownItem[]>([]);
 	const [startingBracket, setStartingBracket] = useState<string>("");
-	const [totalAmount, setTotalAmount] = useState<number>(0);
 	const [exchangeRate, setExchangeRate] = useState<number>(160);
 	const [foreignCurrency, setForeignCurrency] = useState<string>("USD");
+	const [loanAmountJPY, setLoanAmountJPY] = useState<number>(0);
+	const [loanAmountForeign, setLoanAmountForeign] = useState<number>(0);
 
 	useEffect(() => {
 		const monthlyTotal = Object.values(expenses).reduce(
@@ -43,22 +44,29 @@ const BudgetCalculator: React.FC = () => {
 
 		setTotalExpenses(fiveYearTotal);
 
-		const btcNeeded = fiveYearTotal / (btcSalePrice * exchangeRate);
-		const realizedGain =
-			(btcSalePrice - btcPurchasePrice) * btcNeeded * exchangeRate;
+		const amountToSell = fiveYearTotal - loanAmountJPY;
+		const btcToSell = amountToSell / (btcSalePrice * exchangeRate);
+		const gain = (btcSalePrice - btcPurchasePrice) * btcToSell * exchangeRate;
+
 		const {
 			totalTax,
 			breakdown,
 			startingBracket: bracket,
-		} = calculateTax(realizedGain, yearlyIncome);
-		const municipalTax = realizedGain * 0.1;
+		} = calculateTax(gain, yearlyIncome);
+		const municipalTax = gain * 0.1;
 		const totalTaxAmount = totalTax + municipalTax;
 
 		setTaxAmount(totalTaxAmount);
 		setTaxBreakdown(breakdown);
 		setStartingBracket(bracket);
-		setTotalAmount(fiveYearTotal + totalTaxAmount);
-	}, [expenses, btcPurchasePrice, btcSalePrice, yearlyIncome, exchangeRate]);
+	}, [
+		expenses,
+		btcPurchasePrice,
+		btcSalePrice,
+		yearlyIncome,
+		exchangeRate,
+		loanAmountJPY,
+	]);
 
 	const handleExpenseChange = (key: string, value: number) => {
 		setExpenses((prev) => ({ ...prev, [key]: value }));
@@ -100,7 +108,12 @@ const BudgetCalculator: React.FC = () => {
 							setBtcPurchasePrice={setBtcPurchasePrice}
 							btcSalePrice={btcSalePrice}
 							setBtcSalePrice={setBtcSalePrice}
+							loanAmountJPY={loanAmountJPY}
+							setLoanAmountJPY={setLoanAmountJPY}
+							loanAmountForeign={loanAmountForeign}
+							setLoanAmountForeign={setLoanAmountForeign}
 							foreignCurrency={foreignCurrency}
+							exchangeRate={exchangeRate}
 						/>
 
 						<ExpenseInput
@@ -119,10 +132,11 @@ const BudgetCalculator: React.FC = () => {
 
 						<Summary
 							totalExpenses={totalExpenses}
-							taxAmount={taxAmount}
-							totalAmount={totalAmount}
+							loanAmountJPY={loanAmountJPY}
+							btcSalePrice={btcSalePrice}
 							exchangeRate={exchangeRate}
 							foreignCurrency={foreignCurrency}
+							taxAmount={taxAmount}
 						/>
 
 						<BitcoinInfoBox
@@ -132,6 +146,7 @@ const BudgetCalculator: React.FC = () => {
 							btcPurchasePrice={btcPurchasePrice}
 							exchangeRate={exchangeRate}
 							foreignCurrency={foreignCurrency}
+							loanAmountJPY={loanAmountJPY}
 						/>
 
 						<Separator size="4" />

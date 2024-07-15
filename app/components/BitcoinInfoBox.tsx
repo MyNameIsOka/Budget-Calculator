@@ -9,6 +9,7 @@ type BitcoinInfoBoxProps = {
 	btcPurchasePrice: number;
 	exchangeRate: number;
 	foreignCurrency: string;
+	loanAmountJPY: number;
 };
 
 const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
@@ -18,10 +19,13 @@ const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
 	btcPurchasePrice,
 	exchangeRate,
 	foreignCurrency,
+	loanAmountJPY,
 }) => {
-	const btcForExpenses = totalExpenses / (btcSalePrice * exchangeRate);
+	const totalNeeded = totalExpenses + taxAmount - loanAmountJPY;
+	const btcNeeded = totalNeeded / (btcSalePrice * exchangeRate);
+	const btcForExpenses =
+		(totalExpenses - loanAmountJPY) / (btcSalePrice * exchangeRate);
 	const btcForTaxes = taxAmount / (btcSalePrice * exchangeRate);
-	const totalBtcNeeded = btcForExpenses + btcForTaxes;
 
 	return (
 		<Box>
@@ -38,7 +42,7 @@ const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
 								width: "50%",
 							}}
 						>
-							BTC needed for 5 years of expenses:
+							BTC needed for 5 years of expenses (after loan):
 						</Table.Cell>
 						<Table.Cell
 							style={{
@@ -80,7 +84,7 @@ const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
 								textAlign: "right",
 							}}
 						>
-							{totalBtcNeeded.toFixed(4)} BTC
+							{btcNeeded.toFixed(4)} BTC
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
@@ -96,26 +100,7 @@ const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
 								textAlign: "right",
 							}}
 						>
-							{formatCurrency(totalBtcNeeded * btcSalePrice, foreignCurrency)}
-						</Table.Cell>
-					</Table.Row>
-					<Table.Row>
-						<Table.Cell
-							style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
-						>
-							Potential profit:
-						</Table.Cell>
-						<Table.Cell
-							style={{
-								border: "1px solid var(--gray-6)",
-								padding: "8px",
-								textAlign: "right",
-							}}
-						>
-							{formatCurrency(
-								(btcSalePrice - btcPurchasePrice) * totalBtcNeeded,
-								foreignCurrency,
-							)}
+							{formatCurrency(btcNeeded * btcSalePrice, foreignCurrency)}
 						</Table.Cell>
 					</Table.Row>
 				</Table.Body>

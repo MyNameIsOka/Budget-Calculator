@@ -8,7 +8,12 @@ type FinancialInputsProps = {
 	setBtcPurchasePrice: (price: number) => void;
 	btcSalePrice: number;
 	setBtcSalePrice: (price: number) => void;
+	loanAmountJPY: number;
+	setLoanAmountJPY: (amount: number) => void;
+	loanAmountForeign: number;
+	setLoanAmountForeign: (amount: number) => void;
 	foreignCurrency: string;
+	exchangeRate: number;
 };
 
 const formatNumberWithCommas = (value: string) => {
@@ -23,8 +28,25 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 	setBtcPurchasePrice,
 	btcSalePrice,
 	setBtcSalePrice,
+	loanAmountJPY,
+	setLoanAmountJPY,
+	loanAmountForeign,
+	setLoanAmountForeign,
 	foreignCurrency,
+	exchangeRate,
 }) => {
+	const handleLoanJPYChange = (value: string) => {
+		const amount = Number(value.replace(/,/g, ""));
+		setLoanAmountJPY(amount);
+		setLoanAmountForeign(Number((amount / exchangeRate).toFixed(2)));
+	};
+
+	const handleLoanForeignChange = (value: string) => {
+		const amount = Number(value.replace(/,/g, ""));
+		setLoanAmountForeign(amount);
+		setLoanAmountJPY(Number((amount * exchangeRate).toFixed(0)));
+	};
+
 	return (
 		<Box mb="6">
 			<Text as="h2" size="5" weight="bold" mb="4">
@@ -64,6 +86,26 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 						}
 					/>
 				</Box>
+				<Flex gap="4">
+					<Box flex="1">
+						<Text as="label" size="2" weight="bold" mb="2">
+							Loan Amount (JPY):
+						</Text>
+						<TextField.Root
+							value={formatNumberWithCommas(loanAmountJPY.toString())}
+							onChange={(e) => handleLoanJPYChange(e.target.value)}
+						/>
+					</Box>
+					<Box flex="1">
+						<Text as="label" size="2" weight="bold" mb="2">
+							Loan Amount ({foreignCurrency}):
+						</Text>
+						<TextField.Root
+							value={formatNumberWithCommas(loanAmountForeign.toString())}
+							onChange={(e) => handleLoanForeignChange(e.target.value)}
+						/>
+					</Box>
+				</Flex>
 			</Flex>
 		</Box>
 	);
