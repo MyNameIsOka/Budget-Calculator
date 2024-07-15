@@ -23,29 +23,66 @@ const TaxBreakdown: React.FC<TaxBreakdownProps> = ({
 				Starting tax bracket: {startingBracket}
 			</Text>
 			<Box style={{ overflowX: "auto" }}>
-				<Table.Root>
+				<Table.Root style={{ borderCollapse: "collapse", width: "100%" }}>
 					<Table.Header>
 						<Table.Row>
-							<Table.ColumnHeaderCell>Bracket</Table.ColumnHeaderCell>
-							<Table.ColumnHeaderCell>Rate</Table.ColumnHeaderCell>
-							<Table.ColumnHeaderCell>Taxable Amount</Table.ColumnHeaderCell>
-							<Table.ColumnHeaderCell>Tax Amount</Table.ColumnHeaderCell>
+							<Table.ColumnHeaderCell
+								style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
+							>
+								Bracket
+							</Table.ColumnHeaderCell>
+							<Table.ColumnHeaderCell
+								style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
+							>
+								Rate
+							</Table.ColumnHeaderCell>
+							<Table.ColumnHeaderCell
+								style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
+							>
+								Taxable Amount
+							</Table.ColumnHeaderCell>
+							<Table.ColumnHeaderCell
+								style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
+							>
+								Tax Amount
+							</Table.ColumnHeaderCell>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
 						{taxBreakdown.map((item, index) => (
 							<Table.Row key={index}>
-								<Table.Cell>{item.bracket}</Table.Cell>
-								<Table.Cell>{item.rate}</Table.Cell>
-								<Table.Cell>{item.taxableAmount}</Table.Cell>
-								<Table.Cell>{item.taxAmount}</Table.Cell>
+								<Table.Cell
+									style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
+								>
+									{item.bracket}
+								</Table.Cell>
+								<Table.Cell
+									style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
+								>
+									{item.rate}
+								</Table.Cell>
+								<Table.Cell
+									style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
+								>
+									{item.taxableAmount}
+								</Table.Cell>
+								<Table.Cell
+									style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
+								>
+									{item.taxAmount}
+								</Table.Cell>
 							</Table.Row>
 						))}
 						<Table.Row>
-							<Table.Cell colSpan={3}>
+							<Table.Cell
+								colSpan={3}
+								style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
+							>
 								<Text weight="bold">Municipal Tax (10% flat rate)</Text>
 							</Table.Cell>
-							<Table.Cell>
+							<Table.Cell
+								style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
+							>
 								<Text weight="bold">
 									{formatCurrency(
 										taxAmount -

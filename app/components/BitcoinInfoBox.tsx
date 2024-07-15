@@ -28,41 +28,95 @@ const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
 			<Heading size="4" mb="3">
 				Bitcoin Calculations
 			</Heading>
-			<Table.Root>
+			<Table.Root style={{ borderCollapse: "collapse", width: "100%" }}>
 				<Table.Body>
 					<Table.Row>
-						<Table.Cell>BTC needed for 5 years of expenses:</Table.Cell>
-						<Table.Cell>{btcForExpenses.toFixed(4)} BTC</Table.Cell>
-						<Table.Cell></Table.Cell>
+						<Table.Cell
+							style={{
+								border: "1px solid var(--gray-6)",
+								padding: "8px",
+								width: "50%",
+							}}
+						>
+							BTC needed for 5 years of expenses:
+						</Table.Cell>
+						<Table.Cell
+							style={{
+								border: "1px solid var(--gray-6)",
+								padding: "8px",
+								width: "50%",
+								textAlign: "right",
+							}}
+						>
+							{btcForExpenses.toFixed(4)} BTC
+						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>BTC needed to pay for taxes:</Table.Cell>
-						<Table.Cell>{btcForTaxes.toFixed(4)} BTC</Table.Cell>
-						<Table.Cell></Table.Cell>
+						<Table.Cell
+							style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
+						>
+							BTC needed to pay for taxes:
+						</Table.Cell>
+						<Table.Cell
+							style={{
+								border: "1px solid var(--gray-6)",
+								padding: "8px",
+								textAlign: "right",
+							}}
+						>
+							{btcForTaxes.toFixed(4)} BTC
+						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>Total BTC needed to sell:</Table.Cell>
-						<Table.Cell>{totalBtcNeeded.toFixed(4)} BTC</Table.Cell>
-						<Table.Cell></Table.Cell>
+						<Table.Cell
+							style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
+						>
+							Total BTC needed to sell:
+						</Table.Cell>
+						<Table.Cell
+							style={{
+								border: "1px solid var(--gray-6)",
+								padding: "8px",
+								textAlign: "right",
+							}}
+						>
+							{totalBtcNeeded.toFixed(4)} BTC
+						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>
+						<Table.Cell
+							style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
+						>
 							Equivalent in {foreignCurrency} (at sale price):
 						</Table.Cell>
-						<Table.Cell>
+						<Table.Cell
+							style={{
+								border: "1px solid var(--gray-6)",
+								padding: "8px",
+								textAlign: "right",
+							}}
+						>
 							{formatCurrency(totalBtcNeeded * btcSalePrice, foreignCurrency)}
 						</Table.Cell>
-						<Table.Cell></Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>Potential profit:</Table.Cell>
-						<Table.Cell>
+						<Table.Cell
+							style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
+						>
+							Potential profit:
+						</Table.Cell>
+						<Table.Cell
+							style={{
+								border: "1px solid var(--gray-6)",
+								padding: "8px",
+								textAlign: "right",
+							}}
+						>
 							{formatCurrency(
 								(btcSalePrice - btcPurchasePrice) * totalBtcNeeded,
 								foreignCurrency,
 							)}
 						</Table.Cell>
-						<Table.Cell></Table.Cell>
 					</Table.Row>
 				</Table.Body>
 			</Table.Root>

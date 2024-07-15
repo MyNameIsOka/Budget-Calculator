@@ -11,8 +11,7 @@ import {
 } from "@radix-ui/themes";
 import ExpenseInput from "./ExpenseInput";
 import ExpenseDistribution from "./ExpenseDistribution";
-import BitcoinPrices from "./BitcoinPrices";
-import YearlyIncomeInput from "./YearlyIncomeInput";
+import FinancialInputs from "./FinancialInputs";
 import Summary from "./Summary";
 import BitcoinInfoBox from "./BitcoinInfoBox";
 import TaxBreakdown from "./TaxBreakdown";
@@ -94,6 +93,16 @@ const BudgetCalculator: React.FC = () => {
 							</Text>
 						</Box>
 
+						<FinancialInputs
+							yearlyIncome={yearlyIncome}
+							setYearlyIncome={setYearlyIncome}
+							btcPurchasePrice={btcPurchasePrice}
+							setBtcPurchasePrice={setBtcPurchasePrice}
+							btcSalePrice={btcSalePrice}
+							setBtcSalePrice={setBtcSalePrice}
+							foreignCurrency={foreignCurrency}
+						/>
+
 						<ExpenseInput
 							expenses={expenses}
 							expenseItems={expenseItems}
@@ -107,19 +116,6 @@ const BudgetCalculator: React.FC = () => {
 						<ExpenseDistribution expenses={expenses} />
 
 						<Separator size="4" />
-
-						<BitcoinPrices
-							btcPurchasePrice={btcPurchasePrice}
-							btcSalePrice={btcSalePrice}
-							setBtcPurchasePrice={setBtcPurchasePrice}
-							setBtcSalePrice={setBtcSalePrice}
-							foreignCurrency={foreignCurrency}
-						/>
-
-						<YearlyIncomeInput
-							yearlyIncome={yearlyIncome}
-							setYearlyIncome={setYearlyIncome}
-						/>
 
 						<Summary
 							totalExpenses={totalExpenses}
