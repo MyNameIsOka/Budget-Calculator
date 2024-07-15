@@ -1,29 +1,14 @@
 import type React from "react";
-import { styled } from "@stitches/react";
-import { formatCurrency } from "../utils/calculations";
+import { Box, Heading, Table } from "@radix-ui/themes";
+import { formatCurrency } from "~/utils/calculations";
 
-const SummaryTable = styled("table", {
-	width: "100%",
-	borderCollapse: "collapse",
-	marginBottom: "1rem",
-	"& th, & td": {
-		border: "1px solid #3498db",
-		padding: "0.5rem",
-		textAlign: "left",
-	},
-	"& th": {
-		backgroundColor: "#f0f8ff",
-		fontWeight: "bold",
-	},
-});
-
-interface SummaryProps {
+type SummaryProps = {
 	totalExpenses: number;
 	taxAmount: number;
 	totalAmount: number;
 	exchangeRate: number;
 	foreignCurrency: string;
-}
+};
 
 const Summary: React.FC<SummaryProps> = ({
 	totalExpenses,
@@ -33,39 +18,43 @@ const Summary: React.FC<SummaryProps> = ({
 	foreignCurrency,
 }) => {
 	return (
-		<>
-			<h2>Summary</h2>
-			<SummaryTable>
-				<thead>
-					<tr>
-						<th>Item</th>
-						<th>JPY</th>
-						<th>{foreignCurrency}</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>Total Expenses (5 years)</td>
-						<td>{formatCurrency(totalExpenses)}</td>
-						<td>
+		<Box>
+			<Heading size="5" mb="3">
+				Summary
+			</Heading>
+			<Table.Root>
+				<Table.Header>
+					<Table.Row>
+						<Table.ColumnHeaderCell>Item</Table.ColumnHeaderCell>
+						<Table.ColumnHeaderCell>JPY</Table.ColumnHeaderCell>
+						<Table.ColumnHeaderCell>{foreignCurrency}</Table.ColumnHeaderCell>
+					</Table.Row>
+				</Table.Header>
+				<Table.Body>
+					<Table.Row>
+						<Table.Cell>Total Expenses (5 years)</Table.Cell>
+						<Table.Cell>{formatCurrency(totalExpenses)}</Table.Cell>
+						<Table.Cell>
 							{formatCurrency(totalExpenses / exchangeRate, foreignCurrency)}
-						</td>
-					</tr>
-					<tr>
-						<td>Estimated Tax</td>
-						<td>{formatCurrency(taxAmount)}</td>
-						<td>{formatCurrency(taxAmount / exchangeRate, foreignCurrency)}</td>
-					</tr>
-					<tr>
-						<td>Total Amount Needed</td>
-						<td>{formatCurrency(totalAmount)}</td>
-						<td>
+						</Table.Cell>
+					</Table.Row>
+					<Table.Row>
+						<Table.Cell>Estimated Tax</Table.Cell>
+						<Table.Cell>{formatCurrency(taxAmount)}</Table.Cell>
+						<Table.Cell>
+							{formatCurrency(taxAmount / exchangeRate, foreignCurrency)}
+						</Table.Cell>
+					</Table.Row>
+					<Table.Row>
+						<Table.Cell>Total Amount Needed</Table.Cell>
+						<Table.Cell>{formatCurrency(totalAmount)}</Table.Cell>
+						<Table.Cell>
 							{formatCurrency(totalAmount / exchangeRate, foreignCurrency)}
-						</td>
-					</tr>
-				</tbody>
-			</SummaryTable>
-		</>
+						</Table.Cell>
+					</Table.Row>
+				</Table.Body>
+			</Table.Root>
+		</Box>
 	);
 };
 

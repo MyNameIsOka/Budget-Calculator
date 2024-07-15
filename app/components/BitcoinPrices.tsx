@@ -1,36 +1,13 @@
 import type React from "react";
-import { styled } from "@stitches/react";
+import { Box, Flex, Text, TextField } from "@radix-ui/themes";
 
-const Grid = styled("div", {
-	display: "grid",
-	gridTemplateColumns: "1fr 1fr",
-	gap: "1rem",
-	marginBottom: "1rem",
-});
-
-const InputWrapper = styled("div", {
-	display: "flex",
-	alignItems: "center",
-	"& label": {
-		marginRight: "0.5rem",
-		fontWeight: "bold",
-	},
-	"& input": {
-		flex: 1,
-		padding: "0.5rem",
-		border: "1px solid #3498db",
-		borderRadius: "4px",
-		fontSize: "1rem",
-	},
-});
-
-interface BitcoinPricesProps {
+type BitcoinPricesProps = {
 	btcPurchasePrice: number;
 	btcSalePrice: number;
 	setBtcPurchasePrice: (price: number) => void;
 	setBtcSalePrice: (price: number) => void;
 	foreignCurrency: string;
-}
+};
 
 const BitcoinPrices: React.FC<BitcoinPricesProps> = ({
 	btcPurchasePrice,
@@ -40,37 +17,33 @@ const BitcoinPrices: React.FC<BitcoinPricesProps> = ({
 	foreignCurrency,
 }) => {
 	return (
-		<>
-			<h2>Bitcoin Prices</h2>
-			<Grid>
-				<InputWrapper>
-					<label htmlFor="btcPurchasePrice">
+		<Box mb="6">
+			<Text as="h2" size="5" weight="bold" mb="4">
+				Bitcoin Prices
+			</Text>
+			<Flex direction="column" gap="4">
+				<Box>
+					<Text as="label" size="2" weight="bold" mb="2">
 						BTC Purchase Price ({foreignCurrency}):
-					</label>
-					<input
-						id="btcPurchasePrice"
+					</Text>
+					<TextField.Root
 						type="number"
 						value={btcPurchasePrice}
-						onChange={(e) =>
-							setBtcPurchasePrice(Number.parseFloat(e.target.value) || 0)
-						}
+						onChange={(e) => setBtcPurchasePrice(Number(e.target.value) || 0)}
 					/>
-				</InputWrapper>
-				<InputWrapper>
-					<label htmlFor="btcSalePrice">
+				</Box>
+				<Box>
+					<Text as="label" size="2" weight="bold" mb="2">
 						BTC Sale Price ({foreignCurrency}):
-					</label>
-					<input
-						id="btcSalePrice"
+					</Text>
+					<TextField.Root
 						type="number"
 						value={btcSalePrice}
-						onChange={(e) =>
-							setBtcSalePrice(Number.parseFloat(e.target.value) || 0)
-						}
+						onChange={(e) => setBtcSalePrice(Number(e.target.value) || 0)}
 					/>
-				</InputWrapper>
-			</Grid>
-		</>
+				</Box>
+			</Flex>
+		</Box>
 	);
 };
 

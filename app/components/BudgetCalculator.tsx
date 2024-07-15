@@ -1,6 +1,14 @@
 import type React from "react";
 import { useState, useEffect } from "react";
-import { styled } from "@stitches/react";
+import {
+	Box,
+	Container,
+	Flex,
+	Heading,
+	Section,
+	Separator,
+	Text,
+} from "@radix-ui/themes";
 import ExpenseInput from "./ExpenseInput";
 import ExpenseDistribution from "./ExpenseDistribution";
 import BitcoinPrices from "./BitcoinPrices";
@@ -11,36 +19,6 @@ import FloatingCurrencySettings from "./FloatingCurrencySettings";
 import { calculateTax } from "~/utils/calculations";
 import type { Expense, TaxBreakdownItem } from "~/types";
 import { initialExpenses, expenseItems } from "~/data/expenseData";
-
-const Card = styled("div", {
-	width: "100%",
-	maxWidth: "64rem",
-	margin: "0 auto",
-	backgroundColor: "#f0f8ff",
-	color: "#333",
-	borderRadius: "0.5rem",
-	boxShadow:
-		"0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-	overflow: "hidden",
-});
-
-const CardHeader = styled("div", {
-	background: "linear-gradient(45deg, #3498db 30%, #2980b9 90%)",
-	padding: "20px",
-	color: "white",
-	marginBottom: "20px",
-});
-
-const CardContent = styled("div", {
-	padding: "1.5rem",
-});
-
-const StyledSeparator = styled("hr", {
-	height: "2px",
-	backgroundColor: "#3498db",
-	margin: "2rem 0",
-	border: "none",
-});
 
 const BudgetCalculator: React.FC = () => {
 	const [expenses, setExpenses] = useState<Expense>(initialExpenses);
@@ -89,64 +67,72 @@ const BudgetCalculator: React.FC = () => {
 	};
 
 	return (
-		<Card>
-			<CardHeader>
-				<h1>5-Year Budget Calculator for Japan</h1>
-				<p>with Bitcoin Tax and {foreignCurrency} Conversion</p>
-			</CardHeader>
-			<CardContent>
-				<h2>Monthly Expenses</h2>
-				<ExpenseInput
-					expenses={expenses}
-					expenseItems={expenseItems}
-					handleExpenseChange={handleExpenseChange}
-					exchangeRate={exchangeRate}
-					foreignCurrency={foreignCurrency}
-				/>
+		<Box>
+			<Section size="3">
+				<Container size="4">
+					<Flex direction="column" gap="6">
+						<Box>
+							<Heading size="8" mb="2">
+								5-Year Budget Calculator for Japan
+							</Heading>
+							<Text size="5">
+								with Bitcoin Tax and {foreignCurrency} Conversion
+							</Text>
+						</Box>
 
-				<StyledSeparator />
+						<ExpenseInput
+							expenses={expenses}
+							expenseItems={expenseItems}
+							handleExpenseChange={handleExpenseChange}
+							exchangeRate={exchangeRate}
+							foreignCurrency={foreignCurrency}
+						/>
 
-				<ExpenseDistribution expenses={expenses} />
+						<Separator size="4" />
 
-				<StyledSeparator />
+						<ExpenseDistribution expenses={expenses} />
 
-				<BitcoinPrices
-					btcPurchasePrice={btcPurchasePrice}
-					btcSalePrice={btcSalePrice}
-					setBtcPurchasePrice={setBtcPurchasePrice}
-					setBtcSalePrice={setBtcSalePrice}
-					foreignCurrency={foreignCurrency}
-				/>
+						<Separator size="4" />
 
-				<Summary
-					totalExpenses={totalExpenses}
-					taxAmount={taxAmount}
-					totalAmount={totalAmount}
-					exchangeRate={exchangeRate}
-					foreignCurrency={foreignCurrency}
-				/>
+						<BitcoinPrices
+							btcPurchasePrice={btcPurchasePrice}
+							btcSalePrice={btcSalePrice}
+							setBtcPurchasePrice={setBtcPurchasePrice}
+							setBtcSalePrice={setBtcSalePrice}
+							foreignCurrency={foreignCurrency}
+						/>
 
-				<BitcoinInfoBox
-					totalExpenses={totalExpenses}
-					taxAmount={taxAmount}
-					btcSalePrice={btcSalePrice}
-					btcPurchasePrice={btcPurchasePrice}
-					exchangeRate={exchangeRate}
-					foreignCurrency={foreignCurrency}
-				/>
+						<Summary
+							totalExpenses={totalExpenses}
+							taxAmount={taxAmount}
+							totalAmount={totalAmount}
+							exchangeRate={exchangeRate}
+							foreignCurrency={foreignCurrency}
+						/>
 
-				<StyledSeparator />
+						<BitcoinInfoBox
+							totalExpenses={totalExpenses}
+							taxAmount={taxAmount}
+							btcSalePrice={btcSalePrice}
+							btcPurchasePrice={btcPurchasePrice}
+							exchangeRate={exchangeRate}
+							foreignCurrency={foreignCurrency}
+						/>
 
-				<TaxBreakdown taxBreakdown={taxBreakdown} taxAmount={taxAmount} />
+						<Separator size="4" />
 
-				<FloatingCurrencySettings
-					foreignCurrency={foreignCurrency}
-					exchangeRate={exchangeRate}
-					onCurrencyChange={handleCurrencyChange}
-					onExchangeRateChange={handleExchangeRateChange}
-				/>
-			</CardContent>
-		</Card>
+						<TaxBreakdown taxBreakdown={taxBreakdown} taxAmount={taxAmount} />
+
+						<FloatingCurrencySettings
+							foreignCurrency={foreignCurrency}
+							exchangeRate={exchangeRate}
+							onCurrencyChange={handleCurrencyChange}
+							onExchangeRateChange={handleExchangeRateChange}
+						/>
+					</Flex>
+				</Container>
+			</Section>
+		</Box>
 	);
 };
 

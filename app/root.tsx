@@ -1,17 +1,32 @@
-import { Outlet } from "@remix-run/react";
-import { styled } from "@stitches/react";
+import type { LinksFunction } from "@remix-run/node";
+import {
+	Links,
+	LiveReload,
+	Meta,
+	Outlet,
+	Scripts,
+	ScrollRestoration,
+} from "@remix-run/react";
+import { Theme } from "@radix-ui/themes";
+import styles from "@radix-ui/themes/styles.css";
 
-const AppWrapper = styled("div", {
-  minHeight: "100vh",
-  backgroundColor: "#f0f8ff",
-  padding: "2rem",
-  fontFamily: "Arial, sans-serif",
-});
+export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
-export default function Root() {
-  return (
-    <AppWrapper>
-      <Outlet />
-    </AppWrapper>
-  );
+export default function App() {
+	return (
+		<html lang="en">
+			<head>
+				<Meta />
+				<Links />
+			</head>
+			<body>
+				<Theme>
+					<Outlet />
+				</Theme>
+				<ScrollRestoration />
+				<Scripts />
+				<LiveReload />
+			</body>
+		</html>
+	);
 }

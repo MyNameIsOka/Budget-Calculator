@@ -1,4 +1,5 @@
 import type React from "react";
+import { Box, Heading } from "@radix-ui/themes";
 import {
 	PieChart,
 	Pie,
@@ -7,8 +8,8 @@ import {
 	Legend,
 	Tooltip,
 } from "recharts";
-import type { Expense } from "../types";
-import { formatCurrency } from "../utils/calculations";
+import type { Expense } from "~/types";
+import { formatCurrency } from "~/utils/calculations";
 
 const COLORS = [
 	"#0088FE",
@@ -28,9 +29,9 @@ const COLORS = [
 	"#DAA520",
 ];
 
-interface ExpenseDistributionProps {
+type ExpenseDistributionProps = {
 	expenses: Expense;
-}
+};
 
 const ExpenseDistribution: React.FC<ExpenseDistributionProps> = ({
 	expenses,
@@ -41,17 +42,11 @@ const ExpenseDistribution: React.FC<ExpenseDistributionProps> = ({
 	}));
 
 	return (
-		<>
-			<h2>Expense Distribution</h2>
-			<div
-				style={{
-					height: 400,
-					width: "100%",
-					backgroundColor: "white",
-					borderRadius: "0.5rem",
-					padding: "1rem",
-				}}
-			>
+		<Box>
+			<Heading size="6" mb="4">
+				Expense Distribution
+			</Heading>
+			<Box style={{ height: 400, width: "100%" }}>
 				<ResponsiveContainer>
 					<PieChart>
 						<Pie
@@ -68,7 +63,7 @@ const ExpenseDistribution: React.FC<ExpenseDistributionProps> = ({
 						>
 							{pieChartData.map((entry, index) => (
 								<Cell
-									key={`cell-${index}`}
+									key={`cell-${entry}`}
 									fill={COLORS[index % COLORS.length]}
 								/>
 							))}
@@ -77,8 +72,8 @@ const ExpenseDistribution: React.FC<ExpenseDistributionProps> = ({
 						<Legend />
 					</PieChart>
 				</ResponsiveContainer>
-			</div>
-		</>
+			</Box>
+		</Box>
 	);
 };
 
