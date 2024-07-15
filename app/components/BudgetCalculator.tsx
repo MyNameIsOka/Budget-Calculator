@@ -12,6 +12,7 @@ import {
 import ExpenseInput from "./ExpenseInput";
 import ExpenseDistribution from "./ExpenseDistribution";
 import BitcoinPrices from "./BitcoinPrices";
+import YearlyIncomeInput from "./YearlyIncomeInput";
 import Summary from "./Summary";
 import BitcoinInfoBox from "./BitcoinInfoBox";
 import TaxBreakdown from "./TaxBreakdown";
@@ -24,9 +25,11 @@ const BudgetCalculator: React.FC = () => {
 	const [expenses, setExpenses] = useState<Expense>(initialExpenses);
 	const [btcPurchasePrice, setBtcPurchasePrice] = useState<number>(10000);
 	const [btcSalePrice, setBtcSalePrice] = useState<number>(50000);
+	const [yearlyIncome, setYearlyIncome] = useState<number>(0);
 	const [totalExpenses, setTotalExpenses] = useState<number>(0);
 	const [taxAmount, setTaxAmount] = useState<number>(0);
 	const [taxBreakdown, setTaxBreakdown] = useState<TaxBreakdownItem[]>([]);
+	const [startingBracket, setStartingBracket] = useState<string>("");
 	const [totalAmount, setTotalAmount] = useState<number>(0);
 	const [exchangeRate, setExchangeRate] = useState<number>(160);
 	const [foreignCurrency, setForeignCurrency] = useState<string>("USD");
@@ -44,14 +47,19 @@ const BudgetCalculator: React.FC = () => {
 		const btcNeeded = fiveYearTotal / (btcSalePrice * exchangeRate);
 		const realizedGain =
 			(btcSalePrice - btcPurchasePrice) * btcNeeded * exchangeRate;
-		const { totalTax, breakdown } = calculateTax(realizedGain);
+		const {
+			totalTax,
+			breakdown,
+			startingBracket: bracket,
+		} = calculateTax(realizedGain, yearlyIncome);
 		const municipalTax = realizedGain * 0.1;
 		const totalTaxAmount = totalTax + municipalTax;
 
 		setTaxAmount(totalTaxAmount);
 		setTaxBreakdown(breakdown);
+		setStartingBracket(bracket);
 		setTotalAmount(fiveYearTotal + totalTaxAmount);
-	}, [expenses, btcPurchasePrice, btcSalePrice, exchangeRate]);
+	}, [expenses, btcPurchasePrice, btcSalePrice, yearlyIncome, exchangeRate]);
 
 	const handleExpenseChange = (key: string, value: number) => {
 		setExpenses((prev) => ({ ...prev, [key]: value }));
@@ -108,6 +116,11 @@ const BudgetCalculator: React.FC = () => {
 							foreignCurrency={foreignCurrency}
 						/>
 
+						<YearlyIncomeInput
+							yearlyIncome={yearlyIncome}
+							setYearlyIncome={setYearlyIncome}
+						/>
+
 						<Summary
 							totalExpenses={totalExpenses}
 							taxAmount={taxAmount}
@@ -127,7 +140,11 @@ const BudgetCalculator: React.FC = () => {
 
 						<Separator size="4" />
 
-						<TaxBreakdown taxBreakdown={taxBreakdown} taxAmount={taxAmount} />
+						<TaxBreakdown
+							taxBreakdown={taxBreakdown}
+							taxAmount={taxAmount}
+							startingBracket={startingBracket}
+						/>
 
 						<FloatingCurrencySettings
 							foreignCurrency={foreignCurrency}

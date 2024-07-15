@@ -10,7 +10,12 @@ export const formatCurrency = (amount: number, currency = "JPY"): string => {
 
 export const calculateTax = (
 	income: number,
-): { totalTax: number; breakdown: TaxBreakdownItem[] } => {
+	yearlyIncome: number,
+): {
+	totalTax: number;
+	breakdown: TaxBreakdownItem[];
+	startingBracket: string;
+} => {
 	const brackets: TaxBracket[] = [
 		{ limit: 1950000, rate: 0.05 },
 		{ limit: 3300000, rate: 0.1 },
@@ -24,8 +29,19 @@ export const calculateTax = (
 	let tax = 0;
 	let remainingIncome = income;
 	const taxBreakdown: TaxBreakdownItem[] = [];
+	let startingBracket = "";
 
+	// Find the starting bracket based on yearly income
+	let startingBracketIndex = 0;
 	for (let i = 0; i < brackets.length; i++) {
+		if (yearlyIncome <= brackets[i].limit) {
+			startingBracketIndex = i;
+			startingBracket = `${formatCurrency(brackets[i].limit)} (${brackets[i].rate * 100}%)`;
+			break;
+		}
+	}
+
+	for (let i = startingBracketIndex; i < brackets.length; i++) {
 		const bracket = brackets[i];
 		const prevLimit = i > 0 ? brackets[i - 1].limit : 0;
 		const taxableInThisBracket = Math.min(
@@ -44,5 +60,5 @@ export const calculateTax = (
 		if (remainingIncome <= 0) break;
 	}
 
-	return { totalTax: tax, breakdown: taxBreakdown };
+	return { totalTax: tax, breakdown: taxBreakdown, startingBracket };
 };

@@ -6,17 +6,22 @@ import { formatCurrency } from "~/utils/calculations";
 type TaxBreakdownProps = {
 	taxBreakdown: TaxBreakdownItem[];
 	taxAmount: number;
+	startingBracket: string;
 };
 
 const TaxBreakdown: React.FC<TaxBreakdownProps> = ({
 	taxBreakdown,
 	taxAmount,
+	startingBracket,
 }) => {
 	return (
 		<Box>
 			<Heading size="5" mb="3">
 				Tax Breakdown
 			</Heading>
+			<Text size="2" mb="3">
+				Starting tax bracket: {startingBracket}
+			</Text>
 			<Box style={{ overflowX: "auto" }}>
 				<Table.Root>
 					<Table.Header>

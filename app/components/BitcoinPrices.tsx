@@ -21,8 +21,8 @@ const BitcoinPrices: React.FC<BitcoinPricesProps> = ({
 			<Text as="h2" size="5" weight="bold" mb="4">
 				Bitcoin Prices
 			</Text>
-			<Flex direction="column" gap="4">
-				<Box>
+			<Flex direction="row" gap="4">
+				<Box flex="1">
 					<Text as="label" size="2" weight="bold" mb="2">
 						BTC Purchase Price ({foreignCurrency}):
 					</Text>
@@ -32,7 +32,7 @@ const BitcoinPrices: React.FC<BitcoinPricesProps> = ({
 						onChange={(e) => setBtcPurchasePrice(Number(e.target.value) || 0)}
 					/>
 				</Box>
-				<Box>
+				<Box flex="1">
 					<Text as="label" size="2" weight="bold" mb="2">
 						BTC Sale Price ({foreignCurrency}):
 					</Text>
