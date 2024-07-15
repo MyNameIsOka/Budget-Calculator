@@ -71,11 +71,17 @@ const BudgetCalculator: React.FC = () => {
 			<Section size="3">
 				<Container size="4">
 					<Flex direction="column" gap="6">
-						<Box>
-							<Heading size="8" mb="2">
+						<Box
+							style={{
+								backgroundColor: "var(--blue-9)",
+								padding: "1rem",
+								borderRadius: "var(--radius-3)",
+							}}
+						>
+							<Heading size="8" mb="2" style={{ color: "white" }}>
 								5-Year Budget Calculator for Japan
 							</Heading>
-							<Text size="5">
+							<Text size="5" style={{ color: "var(--blue-1)" }}>
 								with Bitcoin Tax and {foreignCurrency} Conversion
 							</Text>
 						</Box>

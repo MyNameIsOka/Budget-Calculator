@@ -1,5 +1,4 @@
 import type { MetaFunction } from "@remix-run/node";
-import { Theme } from "@radix-ui/themes";
 import BudgetCalculator from "~/components/BudgetCalculator";
 
 export const meta: MetaFunction = () => {
@@ -13,15 +12,5 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-	return (
-		<Theme
-			appearance="light"
-			accentColor="blue"
-			grayColor="slate"
-			radius="medium"
-			scaling="100%"
-		>
-			<BudgetCalculator />
-		</Theme>
-	);
+	return <BudgetCalculator />;
 }

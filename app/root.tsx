@@ -10,7 +10,10 @@ import {
 import { Theme } from "@radix-ui/themes";
 import styles from "@radix-ui/themes/styles.css";
 
-export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
+export const links: LinksFunction = () => [
+	{ rel: "stylesheet", href: styles },
+	// Add any other stylesheets here
+];
 
 export default function App() {
 	return (

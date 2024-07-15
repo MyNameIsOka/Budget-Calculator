@@ -27,11 +27,11 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 	foreignCurrency,
 }) => {
 	return (
-		<Grid columns={{ initial: "1", sm: "2", md: "3" }} gap="4">
+		<Grid columns={{ initial: "1", sm: "2" }} gap="4">
 			{Object.entries(expenses).map(([key, value]) => (
-				<Card key={key}>
+				<Card key={key} style={{ backgroundColor: "var(--blue-1)" }}>
 					<Flex direction="column" gap="3">
-						<Heading size="3">
+						<Heading size="3" style={{ color: "var(--blue-11)" }}>
 							{key.charAt(0).toUpperCase() + key.slice(1)}
 						</Heading>
 						<Flex align="center" gap="2">
@@ -53,8 +53,8 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 								as="ul"
 								style={{ listStyleType: "disc", paddingLeft: "1rem" }}
 							>
-								{expenseItems[key].map((item) => (
-									<li key={item}>{item}</li>
+								{expenseItems[key].map((item, index) => (
+									<li key={index}>{item}</li>
 								))}
 							</Text>
 						</Box>
