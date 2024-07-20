@@ -1,4 +1,9 @@
-import type { CombinedData, Expense, TaxBreakdownItem } from "~/types";
+import type {
+	CombinedData,
+	Expense,
+	ExpenseItems,
+	TaxBreakdownItem,
+} from "~/types";
 import {
 	Box,
 	Container,
@@ -14,14 +19,13 @@ import FinancialInputs from "./FinancialInputs";
 import Summary from "./Summary";
 import BitcoinInfoBox from "./BitcoinInfoBox";
 import TaxBreakdown from "./TaxBreakdown";
-import FloatingCurrencySettings from "./FloatingCurrencySettings";
 import { calculateTax } from "~/utils/calculations";
 import { useEffect, useState } from "react";
 import { Form } from "@remix-run/react";
 
 type BudgetCalculatorProps = {
 	data: CombinedData;
-	expenseItems: Expense[];
+	expenseItems: ExpenseItems;
 };
 
 export default function BudgetCalculator({
@@ -227,26 +231,26 @@ export default function BudgetCalculator({
 								name="expenses"
 								value={JSON.stringify(expenses)}
 							/>
-							<Flex>
+							<Flex gap="6">
 								<Box style={{ width: "300px", flexShrink: 0 }}>
-									<Box style={{ position: "sticky", top: "20px" }}>
-										<FinancialInputs
-											yearlyIncome={yearlyIncome}
-											setYearlyIncome={setYearlyIncome}
-											btcPurchasePrice={btcPurchasePrice}
-											setBtcPurchasePrice={setBtcPurchasePrice}
-											btcSalePrice={btcSalePrice}
-											setBtcSalePrice={setBtcSalePrice}
-											loanAmountJPY={loanAmountJPY}
-											setLoanAmountJPY={setLoanAmountJPY}
-											loanAmountForeign={loanAmountForeign}
-											setLoanAmountForeign={setLoanAmountForeign}
-											foreignCurrency={foreignCurrency}
-											exchangeRate={exchangeRate}
-										/>
-									</Box>
+									<FinancialInputs
+										yearlyIncome={yearlyIncome}
+										setYearlyIncome={setYearlyIncome}
+										btcPurchasePrice={btcPurchasePrice}
+										setBtcPurchasePrice={setBtcPurchasePrice}
+										btcSalePrice={btcSalePrice}
+										setBtcSalePrice={setBtcSalePrice}
+										loanAmountJPY={loanAmountJPY}
+										setLoanAmountJPY={setLoanAmountJPY}
+										loanAmountForeign={loanAmountForeign}
+										setLoanAmountForeign={setLoanAmountForeign}
+										foreignCurrency={foreignCurrency}
+										setForeignCurrency={setForeignCurrency}
+										exchangeRate={exchangeRate}
+										setExchangeRate={setExchangeRate}
+									/>
 								</Box>
-								<Box style={{ flexGrow: 1, marginLeft: "20px" }}>
+								<Box style={{ flexGrow: 1 }}>
 									<ExpenseInput
 										expenses={expenses}
 										expenseItems={expenseItems}
@@ -289,13 +293,6 @@ export default function BudgetCalculator({
 									/>
 								</Box>
 							</Flex>
-
-							<FloatingCurrencySettings
-								foreignCurrency={foreignCurrency}
-								exchangeRate={exchangeRate}
-								onCurrencyChange={handleCurrencyChange}
-								onExchangeRateChange={handleExchangeRateChange}
-							/>
 						</Form>
 					</Flex>
 				</Container>

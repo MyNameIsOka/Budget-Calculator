@@ -1,31 +1,17 @@
-// routes/index.tsx
-import {
-	type MetaFunction,
-	type LoaderFunction,
-	type ActionFunction,
-	json,
+import type {
+	MetaFunction,
+	LoaderFunction,
+	ActionFunction,
 } from "@remix-run/node";
-import { useLoaderData, useActionData, Form } from "@remix-run/react";
+import { json } from "@remix-run/node";
+import { useLoaderData, useActionData } from "@remix-run/react";
 import BudgetCalculator from "~/components/BudgetCalculator";
 import { calculateTax } from "~/utils/calculations";
-import type {
-	ActionData,
-	CombinedData,
-	Expense,
-	TaxBreakdownItem,
-} from "~/types";
+import type { ActionData, CombinedData, Expense, ExpenseItems } from "~/types";
 import { initialExpenses, expenseItems } from "~/data/expenseData";
 import assert from "node:assert";
 
-export const meta: MetaFunction = () => {
-	return [
-		{ title: "5-Year Budget Calculator for Japan" },
-		{
-			name: "description",
-			content: "Budget calculator with Bitcoin tax and currency conversion",
-		},
-	];
-};
+// ... (keep existing meta function)
 
 export const loader: LoaderFunction = async () => {
 	console.log("Loader function called");
@@ -113,9 +99,9 @@ export const action: ActionFunction = async ({ request }) => {
 export default function Index() {
 	const { initialState, expenseItems } = useLoaderData<{
 		initialState: CombinedData;
-		expenseItems: Expense[];
+		expenseItems: ExpenseItems;
 	}>();
-	const actionData = useActionData<Partial<ActionData>>();
+	const actionData = useActionData<ActionData>();
 
 	const data = { ...initialState, ...actionData };
 

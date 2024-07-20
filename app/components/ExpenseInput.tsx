@@ -27,7 +27,10 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 	exchangeRate,
 	foreignCurrency,
 }) => {
-	const formatAmount = (amount: number) => {
+	const formatAmount = (amount: number, isForeign = false) => {
+		if (isForeign) {
+			return (amount / exchangeRate).toFixed(2);
+		}
 		return amount.toLocaleString();
 	};
 
@@ -92,7 +95,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 								<Table.Cell>
 									<TextField.Root
 										size="1"
-										value={formatAmount(value / exchangeRate)}
+										value={formatAmount(value, true)}
 										onChange={(e) =>
 											handleInputChange(
 												key,
@@ -118,7 +121,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 								<Table.Cell>
 									<TextField.Root
 										size="1"
-										value={formatAmount((value * 12) / exchangeRate)}
+										value={formatAmount(value * 12, true)}
 										onChange={(e) =>
 											handleInputChange(
 												key,
@@ -144,7 +147,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 								<Table.Cell>
 									<TextField.Root
 										size="1"
-										value={formatAmount((value * 12 * 5) / exchangeRate)}
+										value={formatAmount(value * 12 * 5, true)}
 										onChange={(e) =>
 											handleInputChange(
 												key,

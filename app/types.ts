@@ -7,11 +7,15 @@ export type TaxBracket = {
 	rate: number;
 };
 
-export type Expense = Record<string, number>;
+export type Expense = {
+	[key: string]: number;
+};
 
 export type TaxBreakdownItem = {
-	category: string;
-	amount: number;
+	bracket: string;
+	rate: string;
+	taxableAmount: string;
+	taxAmount: string;
 };
 
 export type LoaderData = {
