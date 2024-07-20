@@ -36,7 +36,7 @@ export const calculateTax = (
 	for (let i = 0; i < brackets.length; i++) {
 		if (yearlyIncome <= brackets[i].limit) {
 			startingBracketIndex = i;
-			startingBracket = `${formatCurrency(brackets[i].limit)} (${brackets[i].rate * 100}%)`;
+			startingBracket = `¥${brackets[i].limit.toLocaleString()} (${brackets[i].rate * 100}%)`;
 			break;
 		}
 	}
@@ -48,16 +48,18 @@ export const calculateTax = (
 			remainingIncome,
 			bracket.limit - prevLimit,
 		);
+
+		if (taxableInThisBracket <= 0) break;
+
 		const taxInThisBracket = taxableInThisBracket * bracket.rate;
 		tax += taxInThisBracket;
 		taxBreakdown.push({
-			bracket: `${formatCurrency(prevLimit)} - ${formatCurrency(bracket.limit)}`,
-			rate: `${bracket.rate * 100}%`,
-			taxableAmount: formatCurrency(taxableInThisBracket),
-			taxAmount: formatCurrency(taxInThisBracket),
+			bracket: `¥${prevLimit.toLocaleString()} - ¥${bracket.limit.toLocaleString()}`,
+			rate: `${(bracket.rate * 100).toFixed(0)}%`,
+			taxableAmount: `¥${taxableInThisBracket.toLocaleString()}`,
+			taxAmount: `¥${taxInThisBracket.toLocaleString()}`,
 		});
 		remainingIncome -= taxableInThisBracket;
-		if (remainingIncome <= 0) break;
 	}
 
 	return { totalTax: tax, breakdown: taxBreakdown, startingBracket };

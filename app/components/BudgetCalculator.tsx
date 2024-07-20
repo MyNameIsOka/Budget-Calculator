@@ -172,17 +172,16 @@ export default function BudgetCalculator({
 		const btcToSell = amountToSell / (btcSalePrice * exchangeRate);
 		const gain = (btcSalePrice - btcPurchasePrice) * btcToSell * exchangeRate;
 
-		const {
-			totalTax,
-			breakdown,
-			startingBracket: bracket,
-		} = calculateTax(gain, yearlyIncome);
+		const { totalTax, breakdown, startingBracket } = calculateTax(
+			gain,
+			yearlyIncome,
+		);
 		const municipalTax = gain * 0.1;
 		const totalTaxAmount = totalTax + municipalTax;
 
 		setTaxAmount(totalTaxAmount);
 		setTaxBreakdown(breakdown);
-		setStartingBracket(bracket);
+		setStartingBracket(startingBracket);
 	}, [
 		expenses,
 		btcPurchasePrice,
@@ -290,6 +289,8 @@ export default function BudgetCalculator({
 										taxBreakdown={taxBreakdown}
 										taxAmount={taxAmount}
 										startingBracket={startingBracket}
+										exchangeRate={exchangeRate}
+										foreignCurrency={foreignCurrency}
 									/>
 								</Box>
 							</Flex>
