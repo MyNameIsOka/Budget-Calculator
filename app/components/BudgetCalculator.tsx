@@ -21,7 +21,7 @@ import { Form } from "@remix-run/react";
 
 type BudgetCalculatorProps = {
 	data: CombinedData;
-	expenseItems: Expense[]; // Update this to the appropriate type if available
+	expenseItems: Expense[];
 };
 
 export default function BudgetCalculator({
@@ -227,61 +227,68 @@ export default function BudgetCalculator({
 								name="expenses"
 								value={JSON.stringify(expenses)}
 							/>
-							<FinancialInputs
-								yearlyIncome={yearlyIncome}
-								setYearlyIncome={setYearlyIncome}
-								btcPurchasePrice={btcPurchasePrice}
-								setBtcPurchasePrice={setBtcPurchasePrice}
-								btcSalePrice={btcSalePrice}
-								setBtcSalePrice={setBtcSalePrice}
-								loanAmountJPY={loanAmountJPY}
-								setLoanAmountJPY={setLoanAmountJPY}
-								loanAmountForeign={loanAmountForeign}
-								setLoanAmountForeign={setLoanAmountForeign}
-								foreignCurrency={foreignCurrency}
-								exchangeRate={exchangeRate}
-							/>
+							<Flex>
+								<Box style={{ width: "300px", flexShrink: 0 }}>
+									<Box style={{ position: "sticky", top: "20px" }}>
+										<FinancialInputs
+											yearlyIncome={yearlyIncome}
+											setYearlyIncome={setYearlyIncome}
+											btcPurchasePrice={btcPurchasePrice}
+											setBtcPurchasePrice={setBtcPurchasePrice}
+											btcSalePrice={btcSalePrice}
+											setBtcSalePrice={setBtcSalePrice}
+											loanAmountJPY={loanAmountJPY}
+											setLoanAmountJPY={setLoanAmountJPY}
+											loanAmountForeign={loanAmountForeign}
+											setLoanAmountForeign={setLoanAmountForeign}
+											foreignCurrency={foreignCurrency}
+											exchangeRate={exchangeRate}
+										/>
+									</Box>
+								</Box>
+								<Box style={{ flexGrow: 1, marginLeft: "20px" }}>
+									<ExpenseInput
+										expenses={expenses}
+										expenseItems={expenseItems}
+										handleExpenseChange={handleExpenseChange}
+										exchangeRate={exchangeRate}
+										foreignCurrency={foreignCurrency}
+									/>
 
-							<ExpenseInput
-								expenses={expenses}
-								expenseItems={expenseItems}
-								handleExpenseChange={handleExpenseChange}
-								exchangeRate={exchangeRate}
-								foreignCurrency={foreignCurrency}
-							/>
+									<Separator size="4" my="6" />
 
-							<Separator size="4" />
+									<ExpenseDistribution expenses={expenses} />
 
-							<ExpenseDistribution expenses={expenses} />
+									<Separator size="4" my="6" />
 
-							<Separator size="4" />
+									<Summary
+										totalExpenses={totalExpenses}
+										loanAmountJPY={loanAmountJPY}
+										btcSalePrice={btcSalePrice}
+										exchangeRate={exchangeRate}
+										foreignCurrency={foreignCurrency}
+										taxAmount={taxAmount}
+									/>
 
-							<Summary
-								totalExpenses={totalExpenses}
-								loanAmountJPY={loanAmountJPY}
-								btcSalePrice={btcSalePrice}
-								exchangeRate={exchangeRate}
-								foreignCurrency={foreignCurrency}
-								taxAmount={taxAmount}
-							/>
+									<BitcoinInfoBox
+										totalExpenses={totalExpenses}
+										taxAmount={taxAmount}
+										btcSalePrice={btcSalePrice}
+										btcPurchasePrice={btcPurchasePrice}
+										exchangeRate={exchangeRate}
+										foreignCurrency={foreignCurrency}
+										loanAmountJPY={loanAmountJPY}
+									/>
 
-							<BitcoinInfoBox
-								totalExpenses={totalExpenses}
-								taxAmount={taxAmount}
-								btcSalePrice={btcSalePrice}
-								btcPurchasePrice={btcPurchasePrice}
-								exchangeRate={exchangeRate}
-								foreignCurrency={foreignCurrency}
-								loanAmountJPY={loanAmountJPY}
-							/>
+									<Separator size="4" my="6" />
 
-							<Separator size="4" />
-
-							<TaxBreakdown
-								taxBreakdown={taxBreakdown}
-								taxAmount={taxAmount}
-								startingBracket={startingBracket}
-							/>
+									<TaxBreakdown
+										taxBreakdown={taxBreakdown}
+										taxAmount={taxAmount}
+										startingBracket={startingBracket}
+									/>
+								</Box>
+							</Flex>
 
 							<FloatingCurrencySettings
 								foreignCurrency={foreignCurrency}

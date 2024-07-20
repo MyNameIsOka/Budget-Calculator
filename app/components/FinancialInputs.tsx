@@ -1,5 +1,5 @@
 import type React from "react";
-import { Box, Flex, Text, TextField } from "@radix-ui/themes";
+import { Box, Flex, Text, TextField, Heading, Card } from "@radix-ui/themes";
 
 type FinancialInputsProps = {
 	yearlyIncome: number;
@@ -48,16 +48,17 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 	};
 
 	return (
-		<Box mb="6">
-			<Text as="h2" size="5" weight="bold" mb="4">
+		<Card style={{ width: "100%" }}>
+			<Heading size="3" mb="3">
 				Financial Inputs
-			</Text>
-			<Flex direction="column" gap="4">
+			</Heading>
+			<Flex direction="column" gap="2">
 				<Box>
-					<Text as="label" size="2" weight="bold" mb="2">
-						Yearly Income (JPY):
+					<Text as="label" size="1" weight="bold">
+						Yearly Income (JPY)
 					</Text>
 					<TextField.Root
+						size="1"
 						value={formatNumberWithCommas(yearlyIncome.toString())}
 						onChange={(e) =>
 							setYearlyIncome(Number(e.target.value.replace(/,/g, "")))
@@ -65,10 +66,11 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 					/>
 				</Box>
 				<Box>
-					<Text as="label" size="2" weight="bold" mb="2">
-						BTC Purchase Price ({foreignCurrency}):
+					<Text as="label" size="1" weight="bold">
+						BTC Purchase Price ({foreignCurrency})
 					</Text>
 					<TextField.Root
+						size="1"
 						value={formatNumberWithCommas(btcPurchasePrice.toString())}
 						onChange={(e) =>
 							setBtcPurchasePrice(Number(e.target.value.replace(/,/g, "")))
@@ -76,38 +78,39 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 					/>
 				</Box>
 				<Box>
-					<Text as="label" size="2" weight="bold" mb="2">
-						BTC Sale Price ({foreignCurrency}):
+					<Text as="label" size="1" weight="bold">
+						BTC Sale Price ({foreignCurrency})
 					</Text>
 					<TextField.Root
+						size="1"
 						value={formatNumberWithCommas(btcSalePrice.toString())}
 						onChange={(e) =>
 							setBtcSalePrice(Number(e.target.value.replace(/,/g, "")))
 						}
 					/>
 				</Box>
-				<Flex gap="4">
-					<Box flex="1">
-						<Text as="label" size="2" weight="bold" mb="2">
-							Loan Amount (JPY):
-						</Text>
-						<TextField.Root
-							value={formatNumberWithCommas(loanAmountJPY.toString())}
-							onChange={(e) => handleLoanJPYChange(e.target.value)}
-						/>
-					</Box>
-					<Box flex="1">
-						<Text as="label" size="2" weight="bold" mb="2">
-							Loan Amount ({foreignCurrency}):
-						</Text>
-						<TextField.Root
-							value={formatNumberWithCommas(loanAmountForeign.toString())}
-							onChange={(e) => handleLoanForeignChange(e.target.value)}
-						/>
-					</Box>
-				</Flex>
+				<Box>
+					<Text as="label" size="1" weight="bold">
+						Loan Amount (JPY)
+					</Text>
+					<TextField.Root
+						size="1"
+						value={formatNumberWithCommas(loanAmountJPY.toString())}
+						onChange={(e) => handleLoanJPYChange(e.target.value)}
+					/>
+				</Box>
+				<Box>
+					<Text as="label" size="1" weight="bold">
+						Loan Amount ({foreignCurrency})
+					</Text>
+					<TextField.Root
+						size="1"
+						value={formatNumberWithCommas(loanAmountForeign.toString())}
+						onChange={(e) => handleLoanForeignChange(e.target.value)}
+					/>
+				</Box>
 			</Flex>
-		</Box>
+		</Card>
 	);
 };
 
