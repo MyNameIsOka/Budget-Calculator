@@ -7,6 +7,7 @@ import {
 	Heading,
 	Text,
 	TextField,
+	Table,
 } from "@radix-ui/themes";
 import type { Expense, ExpenseItems } from "~/types";
 import { formatCurrency } from "~/utils/calculations";
@@ -26,56 +27,148 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 	exchangeRate,
 	foreignCurrency,
 }) => {
+	const formatAmount = (amount: number) => {
+		return amount.toLocaleString();
+	};
+
+	const handleInputChange = (
+		key: string,
+		value: string,
+		period: string,
+		currency: "JPY" | "foreign",
+	) => {
+		const numericValue = Number(value.replace(/,/g, ""));
+		let monthlyValue: number;
+
+		if (currency === "foreign") {
+			monthlyValue = numericValue * exchangeRate;
+		} else {
+			monthlyValue = numericValue;
+		}
+
+		switch (period) {
+			case "monthly":
+				break;
+			case "yearly":
+				monthlyValue /= 12;
+				break;
+			case "5years":
+				monthlyValue /= 12 * 5;
+				break;
+		}
+
+		handleExpenseChange(key, monthlyValue);
+	};
+
 	return (
 		<Grid columns={{ initial: "1", sm: "2" }} gap="4">
 			{Object.entries(expenses).map(([key, value]) => (
-				<Card key={key} style={{ backgroundColor: "var(--blue-1)" }}>
-					<Flex direction="column" gap="3">
-						<Heading size="3" style={{ color: "var(--blue-11)" }}>
-							{key.charAt(0).toUpperCase() + key.slice(1)}
-						</Heading>
-						<Flex align="center" gap="2">
-							<TextField.Root
-								type="text"
-								value={value.toLocaleString()}
-								onChange={(e) =>
-									handleExpenseChange(
-										key,
-										Number.parseFloat(e.target.value.replace(/,/g, "")) || 0,
-									)
-								}
-							/>
-							<Text size="2">JPY/month</Text>
-						</Flex>
-						<Box>
-							<Text
-								size="2"
-								as="ul"
-								style={{ listStyleType: "disc", paddingLeft: "1rem" }}
-							>
-								{expenseItems[key].map((item, index) => (
-									<li key={index}>{item}</li>
-								))}
-							</Text>
-						</Box>
-						<Box
-							mt="auto"
-							pt="3"
-							style={{ borderTop: "1px solid var(--gray-5)" }}
+				<Card key={key}>
+					<Heading size="3" mb="2">
+						{key.charAt(0).toUpperCase() + key.slice(1)}
+					</Heading>
+					<Table.Root>
+						<Table.Header>
+							<Table.Row>
+								<Table.ColumnHeaderCell />
+								<Table.ColumnHeaderCell>JPY</Table.ColumnHeaderCell>
+								<Table.ColumnHeaderCell>
+									{foreignCurrency}
+								</Table.ColumnHeaderCell>
+							</Table.Row>
+						</Table.Header>
+						<Table.Body>
+							<Table.Row>
+								<Table.Cell>Monthly</Table.Cell>
+								<Table.Cell>
+									<TextField.Root
+										size="1"
+										value={formatAmount(value)}
+										onChange={(e) =>
+											handleInputChange(key, e.target.value, "monthly", "JPY")
+										}
+									/>
+								</Table.Cell>
+								<Table.Cell>
+									<TextField.Root
+										size="1"
+										value={formatAmount(value / exchangeRate)}
+										onChange={(e) =>
+											handleInputChange(
+												key,
+												e.target.value,
+												"monthly",
+												"foreign",
+											)
+										}
+									/>
+								</Table.Cell>
+							</Table.Row>
+							<Table.Row>
+								<Table.Cell>Yearly</Table.Cell>
+								<Table.Cell>
+									<TextField.Root
+										size="1"
+										value={formatAmount(value * 12)}
+										onChange={(e) =>
+											handleInputChange(key, e.target.value, "yearly", "JPY")
+										}
+									/>
+								</Table.Cell>
+								<Table.Cell>
+									<TextField.Root
+										size="1"
+										value={formatAmount((value * 12) / exchangeRate)}
+										onChange={(e) =>
+											handleInputChange(
+												key,
+												e.target.value,
+												"yearly",
+												"foreign",
+											)
+										}
+									/>
+								</Table.Cell>
+							</Table.Row>
+							<Table.Row>
+								<Table.Cell>5 Years</Table.Cell>
+								<Table.Cell>
+									<TextField.Root
+										size="1"
+										value={formatAmount(value * 12 * 5)}
+										onChange={(e) =>
+											handleInputChange(key, e.target.value, "5years", "JPY")
+										}
+									/>
+								</Table.Cell>
+								<Table.Cell>
+									<TextField.Root
+										size="1"
+										value={formatAmount((value * 12 * 5) / exchangeRate)}
+										onChange={(e) =>
+											handleInputChange(
+												key,
+												e.target.value,
+												"5years",
+												"foreign",
+											)
+										}
+									/>
+								</Table.Cell>
+							</Table.Row>
+						</Table.Body>
+					</Table.Root>
+					<Box mt="3">
+						<Text
+							size="2"
+							as="ul"
+							style={{ listStyleType: "disc", paddingLeft: "1rem" }}
 						>
-							<Text size="2" as="div">
-								Yearly: {formatCurrency(value * 12)} |{" "}
-								{formatCurrency((value * 12) / exchangeRate, foreignCurrency)}
-							</Text>
-							<Text size="2" as="div">
-								5 Years: {formatCurrency(value * 12 * 5)} |{" "}
-								{formatCurrency(
-									(value * 12 * 5) / exchangeRate,
-									foreignCurrency,
-								)}
-							</Text>
-						</Box>
-					</Flex>
+							{expenseItems[key].map((item, index) => (
+								<li key={index}>{item}</li>
+							))}
+						</Text>
+					</Box>
 				</Card>
 			))}
 		</Grid>
