@@ -28,9 +28,8 @@ type FinancialInputsProps = {
 	setExchangeRate: (rate: number) => void;
 };
 
-const formatNumberWithCommas = (value: string) => {
-	const numericValue = value.replace(/[^0-9]/g, "");
-	return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+const formatAmount = (amount: number): string => {
+	return Math.round(amount).toLocaleString();
 };
 
 const FinancialInputs: React.FC<FinancialInputsProps> = ({
@@ -68,16 +67,30 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 		fetchExchangeRates();
 	}, [foreignCurrency, setExchangeRate]);
 
+	const handleInputChange = (
+		value: string,
+		setter: (value: number) => void,
+	) => {
+		const numericValue = Number.parseInt(value.replace(/[^\d]/g, ""), 10);
+		if (!Number.isNaN(numericValue)) {
+			setter(numericValue);
+		}
+	};
+
 	const handleLoanJPYChange = (value: string) => {
-		const amount = Number(value.replace(/,/g, ""));
-		setLoanAmountJPY(amount);
-		setLoanAmountForeign(Number((amount / exchangeRate).toFixed(2)));
+		const amount = Number.parseInt(value.replace(/[^\d]/g, ""), 10);
+		if (!Number.isNaN(amount)) {
+			setLoanAmountJPY(amount);
+			setLoanAmountForeign(Math.round(amount / exchangeRate));
+		}
 	};
 
 	const handleLoanForeignChange = (value: string) => {
-		const amount = Number(value.replace(/,/g, ""));
-		setLoanAmountForeign(amount);
-		setLoanAmountJPY(Number((amount * exchangeRate).toFixed(0)));
+		const amount = Number.parseInt(value.replace(/[^\d]/g, ""), 10);
+		if (!Number.isNaN(amount)) {
+			setLoanAmountForeign(amount);
+			setLoanAmountJPY(Math.round(amount * exchangeRate));
+		}
 	};
 
 	return (
@@ -94,9 +107,9 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 							</Text>
 							<TextField.Root
 								size="2"
-								value={formatNumberWithCommas(yearlyIncome.toString())}
+								value={formatAmount(yearlyIncome)}
 								onChange={(e) =>
-									setYearlyIncome(Number(e.target.value.replace(/,/g, "")))
+									handleInputChange(e.target.value, setYearlyIncome)
 								}
 							/>
 						</Box>
@@ -108,9 +121,9 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 							</Text>
 							<TextField.Root
 								size="2"
-								value={formatNumberWithCommas(btcPurchasePrice.toString())}
+								value={formatAmount(btcPurchasePrice)}
 								onChange={(e) =>
-									setBtcPurchasePrice(Number(e.target.value.replace(/,/g, "")))
+									handleInputChange(e.target.value, setBtcPurchasePrice)
 								}
 							/>
 						</Box>
@@ -122,9 +135,9 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 							</Text>
 							<TextField.Root
 								size="2"
-								value={formatNumberWithCommas(btcSalePrice.toString())}
+								value={formatAmount(btcSalePrice)}
 								onChange={(e) =>
-									setBtcSalePrice(Number(e.target.value.replace(/,/g, "")))
+									handleInputChange(e.target.value, setBtcSalePrice)
 								}
 							/>
 						</Box>
@@ -134,7 +147,7 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 							</Text>
 							<TextField.Root
 								size="2"
-								value={formatNumberWithCommas(loanAmountJPY.toString())}
+								value={formatAmount(loanAmountJPY)}
 								onChange={(e) => handleLoanJPYChange(e.target.value)}
 							/>
 						</Box>
@@ -146,7 +159,7 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 							</Text>
 							<TextField.Root
 								size="2"
-								value={formatNumberWithCommas(loanAmountForeign.toString())}
+								value={formatAmount(loanAmountForeign)}
 								onChange={(e) => handleLoanForeignChange(e.target.value)}
 							/>
 						</Box>
