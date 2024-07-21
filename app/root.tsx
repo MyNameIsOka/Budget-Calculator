@@ -11,6 +11,8 @@ import { Theme } from "@radix-ui/themes";
 import styles from "@radix-ui/themes/styles.css";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
+import { useEffect } from "react";
+import { getExchangeRates } from "~/utils/exchangeRate";
 
 export const links: LinksFunction = () => [
 	{ rel: "stylesheet", href: styles },
@@ -18,6 +20,11 @@ export const links: LinksFunction = () => [
 ];
 
 export default function App() {
+	useEffect(() => {
+		// Initialize exchange rates
+		getExchangeRates().catch(console.error);
+	}, []);
+
 	return (
 		<html lang="en">
 			<head>

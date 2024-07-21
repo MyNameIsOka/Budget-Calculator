@@ -1,4 +1,5 @@
 import type React from "react";
+import { useEffect, useState } from "react";
 import {
 	Box,
 	Flex,
@@ -9,6 +10,7 @@ import {
 	RadioGroup,
 } from "@radix-ui/themes";
 import { useTranslation } from "react-i18next";
+import { getExchangeRates } from "~/utils/exchangeRate";
 
 type FinancialInputsProps = {
 	yearlyIncome: number;
@@ -49,6 +51,23 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 	setExchangeRate,
 }) => {
 	const { t } = useTranslation();
+	const [loading, setLoading] = useState(false);
+
+	useEffect(() => {
+		const fetchExchangeRates = async () => {
+			setLoading(true);
+			try {
+				const rates = await getExchangeRates();
+				setExchangeRate(rates[foreignCurrency as keyof typeof rates]);
+			} catch (error) {
+				console.error("Failed to fetch exchange rates:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchExchangeRates();
+	}, [foreignCurrency, setExchangeRate]);
 
 	const handleLoanJPYChange = (value: string) => {
 		const amount = Number(value.replace(/,/g, ""));
@@ -62,9 +81,17 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 		setLoanAmountJPY(Number((amount * exchangeRate).toFixed(0)));
 	};
 
-	const handleCurrencyChange = (value: string) => {
+	const handleCurrencyChange = async (value: string) => {
 		setForeignCurrency(value);
-		setExchangeRate(value === "USD" ? 160 : 173);
+		setLoading(true);
+		try {
+			const rates = await getExchangeRates();
+			setExchangeRate(rates[value as keyof typeof rates]);
+		} catch (error) {
+			console.error("Failed to fetch exchange rates:", error);
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	return (
@@ -164,17 +191,10 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 						</RadioGroup.Root>
 						<Flex align="center" gap="2">
 							<Text size="2">
-								{t("currencySettings.exchangeRate", {
-									currency: foreignCurrency,
-								})}
+								{loading
+									? "Loading..."
+									: `1 ${foreignCurrency} = ${exchangeRate.toFixed(2)} JPY`}
 							</Text>
-							<TextField.Root
-								type="number"
-								value={exchangeRate}
-								onChange={(e) => setExchangeRate(Number(e.target.value))}
-								style={{ width: "80px" }}
-							/>
-							<Text size="2">JPY</Text>
 						</Flex>
 					</Flex>
 				</Box>

@@ -3,7 +3,6 @@ import type {
 	Expense,
 	ExpenseItems,
 	TaxBreakdownItem,
-	Language,
 } from "~/types";
 import {
 	Box,
@@ -14,6 +13,7 @@ import {
 	Separator,
 	Text,
 } from "@radix-ui/themes";
+import { useEffect, useState } from "react";
 import ExpenseInput from "./ExpenseInput";
 import ExpenseDistribution from "./ExpenseDistribution";
 import FinancialInputs from "./FinancialInputs";
@@ -22,9 +22,9 @@ import BitcoinInfoBox from "./BitcoinInfoBox";
 import TaxBreakdown from "./TaxBreakdown";
 import LanguageSettings from "./LanguageSettings";
 import { calculateTax } from "~/utils/calculations";
-import { useEffect, useState } from "react";
 import { Form } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
+import { getExchangeRates } from "~/utils/exchangeRate";
 
 type BudgetCalculatorProps = {
 	data: CombinedData;
@@ -82,11 +82,20 @@ export default function BudgetCalculator({
 	const [loanAmountForeign, setLoanAmountForeign] = useState<number>(
 		getInitialState("loanAmountForeign", data.loanAmountForeign),
 	);
-	const [language, setLanguage] = useState<Language>(
-		getInitialState("language", "en"),
-	);
 
-	// Save state to localStorage whenever it changes (only in the browser)
+	useEffect(() => {
+		const fetchInitialExchangeRate = async () => {
+			try {
+				const rates = await getExchangeRates();
+				setExchangeRate(rates[foreignCurrency as keyof typeof rates]);
+			} catch (error) {
+				console.error("Failed to fetch initial exchange rate:", error);
+			}
+		};
+
+		fetchInitialExchangeRate();
+	}, [foreignCurrency]);
+
 	useEffect(() => {
 		if (isBrowser) {
 			localStorage.setItem("expenses", JSON.stringify(expenses));
@@ -107,7 +116,6 @@ export default function BudgetCalculator({
 				"loanAmountForeign",
 				JSON.stringify(loanAmountForeign),
 			);
-			localStorage.setItem("language", JSON.stringify(language));
 		}
 	}, [
 		expenses,
@@ -122,7 +130,6 @@ export default function BudgetCalculator({
 		foreignCurrency,
 		loanAmountJPY,
 		loanAmountForeign,
-		language,
 		isBrowser,
 	]);
 
@@ -161,19 +168,6 @@ export default function BudgetCalculator({
 
 	const handleExpenseChange = (key: string, value: number) => {
 		setExpenses((prev) => ({ ...prev, [key]: value }));
-	};
-
-	const handleCurrencyChange = (value: string) => {
-		setForeignCurrency(value);
-		setExchangeRate(value === "USD" ? 160 : 173);
-	};
-
-	const handleExchangeRateChange = (value: number) => {
-		setExchangeRate(value);
-	};
-
-	const handleLanguageChange = (value: Language) => {
-		setLanguage(value);
 	};
 
 	return (
