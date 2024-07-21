@@ -1,8 +1,13 @@
 {
-	"title": "日本の5年間予算計算機",
+	"title": "日本の予算計算機",
 	"subtitle": "ビットコイン税金と{{currency}}換算付き",
+	"timeFrame": {
+		"title": "期間設定",
+		"label": "年数"
+	},
 	"financialInputs": {
 		"title": "財務入力",
+		"timeFrame": "期間（年）",
 		"yearlyIncome": "年収（円）",
 		"btcPurchasePrice": "ビットコイン購入価格（{{currency}}）",
 		"btcSalePrice": "ビットコイン売却価格（{{currency}}）",
@@ -24,7 +29,7 @@
 	"summary": {
 		"title": "概要",
 		"description": "項目",
-		"totalExpenses": "総経費（5年間）",
+		"totalExpenses": "総経費（{{timeFrame}}年間）",
 		"loanAmount": "ローン金額",
 		"amountToSell": "売却金額（ローン後）",
 		"taxesFromSelling": "ビットコイン売却による税金",
@@ -33,10 +38,13 @@
 	},
 	"bitcoinInfo": {
 		"title": "ビットコイン計算",
-		"btcForExpenses": "5年間の経費に必要なBTC（ローン後）：",
+		"btcForExpenses": "{{timeFrame}}年間の経費に必要なBTC（ローン後）：",
 		"btcForTaxes": "税金支払いに必要なBTC：",
 		"totalBTCToSell": "売却が必要な総BTC：",
 		"equivalentInForeignCurrency": "{{currency}}相当額（売却価格で）："
+	},
+	"settings": {
+		"title": "設定"
 	},
 	"taxBreakdown": {
 		"title": "税金内訳",
@@ -52,7 +60,7 @@
 	"expenseCards": {
 		"monthly": "月次",
 		"yearly": "年次",
-		"fiveYears": "5年間",
+		"timeFrame": "{{timeFrame}}年間",
 		"rent": "家賃",
 		"utilities": "光熱費",
 		"food": "食費",

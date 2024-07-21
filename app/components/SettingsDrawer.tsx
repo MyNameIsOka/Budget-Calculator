@@ -1,8 +1,9 @@
 import type React from "react";
 import { useCallback } from "react";
-import { Flex, Button, Box, Heading } from "@radix-ui/themes";
+import { Flex, Button, Box, Heading, Text, TextField } from "@radix-ui/themes";
 import { Cross2Icon, GearIcon } from "@radix-ui/react-icons";
 import FinancialInputs from "./FinancialInputs";
+import { useTranslation } from "react-i18next";
 
 type SettingsDrawerProps = {
 	isOpen: boolean;
@@ -21,6 +22,8 @@ type SettingsDrawerProps = {
 	setForeignCurrency: (currency: string) => void;
 	exchangeRate: number;
 	setExchangeRate: (rate: number) => void;
+	timeFrame: number;
+	setTimeFrame: (years: number) => void;
 	onReset: () => void;
 	children: React.ReactNode;
 };
@@ -29,8 +32,12 @@ const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
 	isOpen,
 	onClose,
 	children,
+	timeFrame,
+	setTimeFrame,
 	...props
 }) => {
+	const { t } = useTranslation();
+
 	const handleKeyDown = useCallback(
 		(event: React.KeyboardEvent) => {
 			if (event.key === "Escape") {
@@ -74,13 +81,27 @@ const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
 					<Flex justify="between" align="center" mb="4">
 						<Flex align="center" gap="2">
 							<GearIcon />
-							<Heading size="3">Settings</Heading>
+							<Heading size="3">{t("settings.title")}</Heading>
 						</Flex>
 						<Button variant="ghost" onClick={onClose}>
 							<Cross2Icon />
 						</Button>
 					</Flex>
-					<FinancialInputs {...props} />
+					<Box>
+						<Text as="label" size="2" weight="bold">
+							{t("financialInputs.timeFrame")}
+						</Text>
+						<TextField.Root
+							size="2"
+							value={timeFrame.toString()}
+							onChange={(e) => setTimeFrame(Number(e.target.value))}
+						/>
+					</Box>
+					<FinancialInputs
+						{...props}
+						timeFrame={timeFrame}
+						setTimeFrame={setTimeFrame}
+					/>
 					{children}
 				</Flex>
 			</Box>

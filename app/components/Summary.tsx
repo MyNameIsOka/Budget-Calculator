@@ -10,6 +10,7 @@ type SummaryProps = {
 	exchangeRate: number;
 	foreignCurrency: string;
 	taxAmount: number;
+	timeFrame: number;
 };
 
 const Summary: React.FC<SummaryProps> = ({
@@ -19,6 +20,7 @@ const Summary: React.FC<SummaryProps> = ({
 	exchangeRate,
 	foreignCurrency,
 	taxAmount,
+	timeFrame,
 }) => {
 	const { t } = useTranslation();
 
@@ -53,7 +55,7 @@ const Summary: React.FC<SummaryProps> = ({
 				<Table.Body>
 					<Table.Row>
 						<Table.Cell className="whitespace-nowrap">
-							{t("summary.totalExpenses")}
+							{t("summary.totalExpenses", { timeFrame })}
 						</Table.Cell>
 						<Table.Cell>{formatCurrency(totalExpenses)}</Table.Cell>
 						<Table.Cell>

@@ -11,6 +11,7 @@ type BitcoinInfoBoxProps = {
 	exchangeRate: number;
 	foreignCurrency: string;
 	loanAmountJPY: number;
+	timeFrame: number;
 };
 
 const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
@@ -21,6 +22,7 @@ const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
 	exchangeRate,
 	foreignCurrency,
 	loanAmountJPY,
+	timeFrame,
 }) => {
 	const { t } = useTranslation();
 
@@ -39,7 +41,7 @@ const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
 				<Table.Body>
 					<Table.Row>
 						<Table.Cell className="whitespace-nowrap font-medium">
-							{t("bitcoinInfo.btcForExpenses")}
+							{t("bitcoinInfo.btcForExpenses", { timeFrame })}
 						</Table.Cell>
 						<Table.Cell className="text-right">
 							{btcForExpenses.toFixed(4)} BTC

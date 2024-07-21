@@ -15,7 +15,6 @@ import {
 } from "@radix-ui/themes";
 import { Cross2Icon, PlusIcon, MinusIcon } from "@radix-ui/react-icons";
 import type { Expense, ExpenseItems, CustomExpenseTitles } from "~/types";
-import { formatCurrency } from "~/utils/calculations";
 import { useTranslation } from "react-i18next";
 import AddExpenseModal from "./AddExpenseModal";
 
@@ -34,6 +33,7 @@ type ExpenseInputProps = {
 	removedExpenses: string[];
 	deactivatedExpenses: string[];
 	onToggleExpense: (key: string) => void;
+	timeFrame: number;
 };
 
 const ExpenseInput: React.FC<ExpenseInputProps> = ({
@@ -48,6 +48,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 	removedExpenses,
 	deactivatedExpenses,
 	onToggleExpense,
+	timeFrame,
 }) => {
 	const { t, i18n } = useTranslation();
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -103,8 +104,8 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 			case "yearly":
 				monthlyValue /= 12;
 				break;
-			case "5years":
-				monthlyValue /= 12 * 5;
+			case "timeFrame":
+				monthlyValue /= 12 * timeFrame;
 				break;
 		}
 
@@ -236,34 +237,46 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 										/>
 									</Table.Cell>
 								</Table.Row>
-								<Table.Row>
-									<Table.Cell>{t("expenseCards.fiveYears")}</Table.Cell>
-									<Table.Cell>
-										<TextField.Root
-											size="1"
-											value={formatAmount(expenses[key] * 12 * 5)}
-											onChange={(e) =>
-												handleInputChange(key, e.target.value, "5years", "JPY")
-											}
-											disabled={deactivatedExpenses.includes(key)}
-										/>
-									</Table.Cell>
-									<Table.Cell>
-										<TextField.Root
-											size="1"
-											value={formatAmount(expenses[key] * 12 * 5, true)}
-											onChange={(e) =>
-												handleInputChange(
-													key,
-													e.target.value,
-													"5years",
-													"foreign",
-												)
-											}
-											disabled={deactivatedExpenses.includes(key)}
-										/>
-									</Table.Cell>
-								</Table.Row>
+								{timeFrame > 1 && (
+									<Table.Row>
+										<Table.Cell>
+											{t("expenseCards.timeFrame", { timeFrame })}
+										</Table.Cell>
+										<Table.Cell>
+											<TextField.Root
+												size="1"
+												value={formatAmount(expenses[key] * 12 * timeFrame)}
+												onChange={(e) =>
+													handleInputChange(
+														key,
+														e.target.value,
+														"timeFrame",
+														"JPY",
+													)
+												}
+												disabled={deactivatedExpenses.includes(key)}
+											/>
+										</Table.Cell>
+										<Table.Cell>
+											<TextField.Root
+												size="1"
+												value={formatAmount(
+													expenses[key] * 12 * timeFrame,
+													true,
+												)}
+												onChange={(e) =>
+													handleInputChange(
+														key,
+														e.target.value,
+														"timeFrame",
+														"foreign",
+													)
+												}
+												disabled={deactivatedExpenses.includes(key)}
+											/>
+										</Table.Cell>
+									</Table.Row>
+								)}
 							</Table.Body>
 						</Table.Root>
 						<Box mt="3">

@@ -19,6 +19,7 @@ import { GearIcon } from "@radix-ui/react-icons";
 import ExpenseInput from "./ExpenseInput";
 import ExpenseDistribution from "./ExpenseDistribution";
 import FinancialInputs from "./FinancialInputs";
+import TimeFrameInput from "./TimeFrameInput";
 import Summary from "./Summary";
 import BitcoinInfoBox from "./BitcoinInfoBox";
 import TaxBreakdown from "./TaxBreakdown";
@@ -29,7 +30,7 @@ import { calculateTax } from "~/utils/calculations";
 import { useTranslation } from "react-i18next";
 import { getExchangeRates } from "~/utils/exchangeRate";
 
-// Custom hook for media query (keep this as is)
+// Custom hook for media query
 function useMediaQuery(query: string) {
 	const [matches, setMatches] = useState(false);
 
@@ -77,6 +78,7 @@ export default function BudgetCalculator({
 		setLoanAmountForeign(data.loanAmountForeign);
 		setRemovedExpenses([]);
 		setDeactivatedExpenses([]);
+		setTimeFrame(5); // Reset to default 5 years
 
 		// Selectively clear localStorage
 		if (isBrowser) {
@@ -143,6 +145,9 @@ export default function BudgetCalculator({
 	const [deactivatedExpenses, setDeactivatedExpenses] = useState<string[]>(
 		getInitialState("deactivatedExpenses", []),
 	);
+	const [timeFrame, setTimeFrame] = useState<number>(
+		getInitialState("timeFrame", 5),
+	);
 
 	useEffect(() => {
 		const fetchInitialExchangeRate = async () => {
@@ -187,6 +192,7 @@ export default function BudgetCalculator({
 				"deactivatedExpenses",
 				JSON.stringify(deactivatedExpenses),
 			);
+			localStorage.setItem("timeFrame", JSON.stringify(timeFrame));
 		}
 	}, [
 		expenses,
@@ -205,6 +211,7 @@ export default function BudgetCalculator({
 		loanAmountForeign,
 		removedExpenses,
 		deactivatedExpenses,
+		timeFrame,
 		isBrowser,
 	]);
 
@@ -220,11 +227,11 @@ export default function BudgetCalculator({
 			0,
 		);
 		const yearlyTotal = monthlyTotal * 12;
-		const fiveYearTotal = yearlyTotal * 5;
+		const totalForTimeFrame = yearlyTotal * timeFrame;
 
-		setTotalExpenses(fiveYearTotal);
+		setTotalExpenses(totalForTimeFrame);
 
-		const amountToSell = fiveYearTotal - loanAmountJPY;
+		const amountToSell = totalForTimeFrame - loanAmountJPY;
 		const btcToSell = amountToSell / (btcSalePrice * exchangeRate);
 		const gain = (btcSalePrice - btcPurchasePrice) * btcToSell * exchangeRate;
 
@@ -247,6 +254,7 @@ export default function BudgetCalculator({
 		yearlyIncome,
 		exchangeRate,
 		loanAmountJPY,
+		timeFrame,
 	]);
 
 	const handleExpenseChange = (key: string, value: number) => {
@@ -281,12 +289,12 @@ export default function BudgetCalculator({
 
 	return (
 		<Box className="relative">
-			<Heading size="8" mb="4" className="text-center">
-				{t("title")}
-			</Heading>
-			<Text size="3" mb="6" className="text-center">
-				{t("subtitle", { currency: foreignCurrency })}
-			</Text>
+			<Box className="text-center mb-6">
+				<Heading size="8" mb="2">
+					{t("title")}
+				</Heading>
+				<Text size="3">{t("subtitle", { currency: foreignCurrency })}</Text>
+			</Box>
 			{isSmallScreen && (
 				<Button
 					size="3"
@@ -315,6 +323,8 @@ export default function BudgetCalculator({
 					setForeignCurrency={setForeignCurrency}
 					exchangeRate={exchangeRate}
 					setExchangeRate={setExchangeRate}
+					timeFrame={timeFrame}
+					setTimeFrame={setTimeFrame}
 					onReset={resetToInitialState}
 				>
 					<LanguageSettings />
@@ -327,6 +337,10 @@ export default function BudgetCalculator({
 							gap="4"
 							style={{ position: "sticky", top: "20px" }}
 						>
+							<TimeFrameInput
+								timeFrame={timeFrame}
+								setTimeFrame={setTimeFrame}
+							/>
 							<FinancialInputs
 								yearlyIncome={yearlyIncome}
 								setYearlyIncome={setYearlyIncome}
@@ -348,7 +362,7 @@ export default function BudgetCalculator({
 						</Flex>
 					</Box>
 				)}
-				<Box style={{ flexGrow: 1 }}>
+				<Box style={{ flexGrow: 1, textAlign: "center" }}>
 					<ExpenseInput
 						expenses={expenses}
 						expenseItems={expenseItems}
@@ -361,6 +375,7 @@ export default function BudgetCalculator({
 						removedExpenses={removedExpenses}
 						deactivatedExpenses={deactivatedExpenses}
 						onToggleExpense={handleToggleExpense}
+						timeFrame={timeFrame}
 					/>
 					<Separator size="4" my="6" />
 					<ExpenseDistribution
@@ -381,6 +396,7 @@ export default function BudgetCalculator({
 						exchangeRate={exchangeRate}
 						foreignCurrency={foreignCurrency}
 						taxAmount={taxAmount}
+						timeFrame={timeFrame}
 					/>
 					<Separator size="4" my="6" />
 					<BitcoinInfoBox
@@ -391,6 +407,7 @@ export default function BudgetCalculator({
 						exchangeRate={exchangeRate}
 						foreignCurrency={foreignCurrency}
 						loanAmountJPY={loanAmountJPY}
+						timeFrame={timeFrame}
 					/>
 					<Separator size="4" my="6" />
 					<TaxBreakdown
