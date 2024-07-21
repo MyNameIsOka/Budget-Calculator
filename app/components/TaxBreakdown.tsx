@@ -2,6 +2,7 @@ import type React from "react";
 import { Box, Heading, Table, Text } from "@radix-ui/themes";
 import type { TaxBreakdownItem } from "~/types";
 import { formatCurrency } from "~/utils/calculations";
+import { useTranslation } from "react-i18next";
 
 type TaxBreakdownProps = {
 	taxBreakdown: TaxBreakdownItem[];
@@ -18,6 +19,8 @@ const TaxBreakdown: React.FC<TaxBreakdownProps> = ({
 	exchangeRate,
 	foreignCurrency,
 }) => {
+	const { t } = useTranslation();
+
 	const formatAmounts = (jpyAmount: string): string => {
 		const numericAmount = Number.parseFloat(
 			jpyAmount.replace(/[^0-9.-]+/g, ""),
@@ -35,12 +38,9 @@ const TaxBreakdown: React.FC<TaxBreakdownProps> = ({
 		return (
 			<Box>
 				<Heading size="5" mb="3">
-					Tax Breakdown
+					{t("taxBreakdown.title")}
 				</Heading>
-				<Text size="2">
-					Not enough data to calculate tax breakdown. Please enter all required
-					information.
-				</Text>
+				<Text size="2">{t("taxBreakdown.noData")}</Text>
 			</Box>
 		);
 	}
@@ -48,19 +48,29 @@ const TaxBreakdown: React.FC<TaxBreakdownProps> = ({
 	return (
 		<Box>
 			<Heading size="5" mb="3">
-				Tax Breakdown
+				{t("taxBreakdown.title")}
 			</Heading>
 			<Text size="2" mb="3">
-				Starting tax bracket: {startingBracket || "Not calculated yet"}
+				{t("taxBreakdown.startingBracket", {
+					bracket: startingBracket || t("taxBreakdown.notCalculated"),
+				})}
 			</Text>
 			<Box style={{ overflowX: "auto" }}>
 				<Table.Root style={{ borderCollapse: "collapse", width: "100%" }}>
 					<Table.Header>
 						<Table.Row>
-							<Table.ColumnHeaderCell>Bracket</Table.ColumnHeaderCell>
-							<Table.ColumnHeaderCell>Rate</Table.ColumnHeaderCell>
-							<Table.ColumnHeaderCell>Taxable Amount</Table.ColumnHeaderCell>
-							<Table.ColumnHeaderCell>Tax Amount</Table.ColumnHeaderCell>
+							<Table.ColumnHeaderCell>
+								{t("taxBreakdown.bracket")}
+							</Table.ColumnHeaderCell>
+							<Table.ColumnHeaderCell>
+								{t("taxBreakdown.rate")}
+							</Table.ColumnHeaderCell>
+							<Table.ColumnHeaderCell>
+								{t("taxBreakdown.taxableAmount")}
+							</Table.ColumnHeaderCell>
+							<Table.ColumnHeaderCell>
+								{t("taxBreakdown.taxAmount")}
+							</Table.ColumnHeaderCell>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
@@ -75,7 +85,7 @@ const TaxBreakdown: React.FC<TaxBreakdownProps> = ({
 						{taxAmount > 0 && (
 							<Table.Row>
 								<Table.Cell colSpan={3}>
-									<Text weight="bold">Municipal Tax (10% flat rate)</Text>
+									<Text weight="bold">{t("taxBreakdown.municipalTax")}</Text>
 								</Table.Cell>
 								<Table.Cell>
 									<Text weight="bold">

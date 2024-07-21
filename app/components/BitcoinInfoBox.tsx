@@ -1,6 +1,7 @@
 import type React from "react";
 import { Box, Heading, Table } from "@radix-ui/themes";
 import { formatCurrency } from "~/utils/calculations";
+import { useTranslation } from "react-i18next";
 
 type BitcoinInfoBoxProps = {
 	totalExpenses: number;
@@ -21,6 +22,8 @@ const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
 	foreignCurrency,
 	loanAmountJPY,
 }) => {
+	const { t } = useTranslation();
+
 	const totalNeeded = totalExpenses + taxAmount - loanAmountJPY;
 	const btcNeeded = totalNeeded / (btcSalePrice * exchangeRate);
 	const btcForExpenses =
@@ -30,7 +33,7 @@ const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
 	return (
 		<Box>
 			<Heading size="4" mb="3">
-				Bitcoin Calculations
+				{t("bitcoinInfo.title")}
 			</Heading>
 			<Table.Root style={{ borderCollapse: "collapse", width: "100%" }}>
 				<Table.Body>
@@ -42,7 +45,7 @@ const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
 								width: "50%",
 							}}
 						>
-							BTC needed for 5 years of expenses (after loan):
+							{t("bitcoinInfo.btcForExpenses")}
 						</Table.Cell>
 						<Table.Cell
 							style={{
@@ -59,7 +62,7 @@ const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
 						<Table.Cell
 							style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
 						>
-							BTC needed to pay for taxes:
+							{t("bitcoinInfo.btcForTaxes")}
 						</Table.Cell>
 						<Table.Cell
 							style={{
@@ -75,7 +78,7 @@ const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
 						<Table.Cell
 							style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
 						>
-							Total BTC needed to sell:
+							{t("bitcoinInfo.totalBTCToSell")}
 						</Table.Cell>
 						<Table.Cell
 							style={{
@@ -91,7 +94,9 @@ const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
 						<Table.Cell
 							style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
 						>
-							Equivalent in {foreignCurrency} (at sale price):
+							{t("bitcoinInfo.equivalentInForeignCurrency", {
+								currency: foreignCurrency,
+							})}
 						</Table.Cell>
 						<Table.Cell
 							style={{

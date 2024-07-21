@@ -23,6 +23,7 @@
 	},
 	"summary": {
 		"title": "概要",
+		"description": "項目",
 		"totalExpenses": "総経費（5年間）",
 		"loanAmount": "ローン金額",
 		"amountToSell": "売却金額（ローン後）",
@@ -41,7 +42,7 @@
 		"title": "税金内訳",
 		"startingBracket": "開始税率区分：{{bracket}}",
 		"notCalculated": "まだ計算されていません",
-		"bracket": "区分",
+		"bracket": "税率区分",
 		"rate": "税率",
 		"taxableAmount": "課税対象額",
 		"taxAmount": "税額",

@@ -36,7 +36,9 @@ const Summary: React.FC<SummaryProps> = ({
 			<Table.Root style={{ borderCollapse: "collapse", width: "100%" }}>
 				<Table.Header>
 					<Table.Row>
-						<Table.ColumnHeaderCell>{t("summary.item")}</Table.ColumnHeaderCell>
+						<Table.ColumnHeaderCell>
+							{t("summary.description")}
+						</Table.ColumnHeaderCell>
 						<Table.ColumnHeaderCell>JPY</Table.ColumnHeaderCell>
 						<Table.ColumnHeaderCell>{foreignCurrency}</Table.ColumnHeaderCell>
 						<Table.ColumnHeaderCell>BTC</Table.ColumnHeaderCell>

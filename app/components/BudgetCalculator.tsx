@@ -252,6 +252,8 @@ export default function BudgetCalculator({
 										taxAmount={taxAmount}
 									/>
 
+									<Separator size="4" my="6" />
+
 									<BitcoinInfoBox
 										totalExpenses={totalExpenses}
 										taxAmount={taxAmount}

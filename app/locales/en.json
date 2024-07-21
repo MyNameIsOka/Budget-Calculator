@@ -23,6 +23,7 @@
 	},
 	"summary": {
 		"title": "Summary",
+		"description": "Description",
 		"totalExpenses": "Total Expenses (5 years)",
 		"loanAmount": "Loan amount",
 		"amountToSell": "Amount to sell (after loan)",
