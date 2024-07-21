@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
 	Box,
 	Card,
@@ -8,7 +8,10 @@ import {
 	Text,
 	TextField,
 	Table,
+	IconButton,
+	Button,
 } from "@radix-ui/themes";
+import { Cross2Icon, PlusIcon } from "@radix-ui/react-icons";
 import type { Expense, ExpenseItems, CustomExpenseTitles } from "~/types";
 import { formatCurrency } from "~/utils/calculations";
 import { useTranslation } from "react-i18next";
@@ -25,6 +28,8 @@ type ExpenseInputProps = {
 		title: { en: string; ja: string };
 		items: Array<{ en: string; ja: string }>;
 	}) => void;
+	onRemoveExpense: (key: string) => void;
+	removedExpenses: string[];
 };
 
 const ExpenseInput: React.FC<ExpenseInputProps> = ({
@@ -35,9 +40,20 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 	exchangeRate,
 	foreignCurrency,
 	onAddExpense,
+	onRemoveExpense,
+	removedExpenses,
 }) => {
 	const { t, i18n } = useTranslation();
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [visibleExpenses, setVisibleExpenses] = useState<string[]>([]);
+
+	useEffect(() => {
+		const expenseKeys = Object.keys(expenses);
+		const updatedVisibleExpenses = expenseKeys.filter(
+			(key) => !removedExpenses.includes(key),
+		);
+		setVisibleExpenses(updatedVisibleExpenses);
+	}, [expenses, removedExpenses]);
 
 	const getLocalizedText = (text: { en: string; ja: string }) => {
 		const currentLanguage = i18n.language as "en" | "ja";
@@ -88,13 +104,34 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 		handleExpenseChange(key, Math.round(monthlyValue));
 	};
 
+	const handleRemoveExpense = (key: string) => {
+		onRemoveExpense(key);
+	};
+
+	const handleAddExpenseWrapper = (newExpense: {
+		title: { en: string; ja: string };
+		items: Array<{ en: string; ja: string }>;
+	}) => {
+		onAddExpense(newExpense);
+		setIsModalOpen(false);
+	};
+
 	return (
 		<>
 			<Grid columns={{ initial: "1", sm: "2" }} gap="4">
-				{Object.entries(expenses).map(([key, value]) => (
+				{visibleExpenses.map((key) => (
 					<Card key={key}>
 						<Heading size="3" mb="2">
 							{getExpenseTitle(key)}
+							<IconButton
+								size="1"
+								variant="ghost"
+								color="gray"
+								style={{ float: "right" }}
+								onClick={() => handleRemoveExpense(key)}
+							>
+								<Cross2Icon />
+							</IconButton>
 						</Heading>
 						<Table.Root>
 							<Table.Header>
@@ -112,7 +149,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 									<Table.Cell>
 										<TextField.Root
 											size="1"
-											value={formatAmount(value)}
+											value={formatAmount(expenses[key])}
 											onChange={(e) =>
 												handleInputChange(key, e.target.value, "monthly", "JPY")
 											}
@@ -121,7 +158,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 									<Table.Cell>
 										<TextField.Root
 											size="1"
-											value={formatAmount(value, true)}
+											value={formatAmount(expenses[key], true)}
 											onChange={(e) =>
 												handleInputChange(
 													key,
@@ -138,7 +175,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 									<Table.Cell>
 										<TextField.Root
 											size="1"
-											value={formatAmount(value * 12)}
+											value={formatAmount(expenses[key] * 12)}
 											onChange={(e) =>
 												handleInputChange(key, e.target.value, "yearly", "JPY")
 											}
@@ -147,7 +184,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 									<Table.Cell>
 										<TextField.Root
 											size="1"
-											value={formatAmount(value * 12, true)}
+											value={formatAmount(expenses[key] * 12, true)}
 											onChange={(e) =>
 												handleInputChange(
 													key,
@@ -164,7 +201,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 									<Table.Cell>
 										<TextField.Root
 											size="1"
-											value={formatAmount(value * 12 * 5)}
+											value={formatAmount(expenses[key] * 12 * 5)}
 											onChange={(e) =>
 												handleInputChange(key, e.target.value, "5years", "JPY")
 											}
@@ -173,7 +210,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 									<Table.Cell>
 										<TextField.Root
 											size="1"
-											value={formatAmount(value * 12 * 5, true)}
+											value={formatAmount(expenses[key] * 12 * 5, true)}
 											onChange={(e) =>
 												handleInputChange(
 													key,
@@ -205,7 +242,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 				<AddExpenseModal
 					open={isModalOpen}
 					onOpenChange={setIsModalOpen}
-					onAddExpense={onAddExpense}
+					onAddExpense={handleAddExpenseWrapper}
 				/>
 			</Box>
 		</>

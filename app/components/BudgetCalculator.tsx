@@ -89,6 +89,10 @@ export default function BudgetCalculator({
 	const [loanAmountForeign, setLoanAmountForeign] = useState<number>(
 		getInitialState("loanAmountForeign", data.loanAmountForeign),
 	);
+	const [removedExpenses, setRemovedExpenses] = useState<string[]>(
+		getInitialState("removedExpenses", []),
+	);
+	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	useEffect(() => {
 		const fetchInitialExchangeRate = async () => {
@@ -128,6 +132,7 @@ export default function BudgetCalculator({
 				"loanAmountForeign",
 				JSON.stringify(loanAmountForeign),
 			);
+			localStorage.setItem("removedExpenses", JSON.stringify(removedExpenses));
 		}
 	}, [
 		expenses,
@@ -144,11 +149,17 @@ export default function BudgetCalculator({
 		foreignCurrency,
 		loanAmountJPY,
 		loanAmountForeign,
+		removedExpenses,
 		isBrowser,
 	]);
 
 	useEffect(() => {
-		const monthlyTotal = Object.values(expenses).reduce<number>(
+		const activeExpenses = Object.fromEntries(
+			Object.entries(expenses).filter(
+				([key]) => !removedExpenses.includes(key),
+			),
+		);
+		const monthlyTotal = Object.values(activeExpenses).reduce<number>(
 			(sum, value) => sum + value,
 			0,
 		);
@@ -173,6 +184,7 @@ export default function BudgetCalculator({
 		setStartingBracket(startingBracket);
 	}, [
 		expenses,
+		removedExpenses,
 		btcPurchasePrice,
 		btcSalePrice,
 		yearlyIncome,
@@ -192,6 +204,11 @@ export default function BudgetCalculator({
 		setExpenses((prev) => ({ ...prev, [key]: 0 }));
 		setExpenseItems((prev) => ({ ...prev, [key]: newExpense.items }));
 		setCustomExpenseTitles((prev) => ({ ...prev, [key]: newExpense.title }));
+		setRemovedExpenses((prev) => prev.filter((item) => item !== key));
+	};
+
+	const handleRemoveExpense = (key: string) => {
+		setRemovedExpenses((prev) => [...prev, key]);
 	};
 
 	return (
@@ -255,10 +272,17 @@ export default function BudgetCalculator({
 										exchangeRate={exchangeRate}
 										foreignCurrency={foreignCurrency}
 										onAddExpense={handleAddExpense}
+										onRemoveExpense={handleRemoveExpense}
+										removedExpenses={removedExpenses}
+										setIsModalOpen={setIsModalOpen}
 									/>
 									<Separator size="4" my="6" />
 									<ExpenseDistribution
-										expenses={expenses}
+										expenses={Object.fromEntries(
+											Object.entries(expenses).filter(
+												([key]) => !removedExpenses.includes(key),
+											),
+										)}
 										customExpenseTitles={customExpenseTitles}
 									/>
 
