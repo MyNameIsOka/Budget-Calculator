@@ -60,6 +60,7 @@ export default function BudgetCalculator({
 		setLoanAmountJPY(data.loanAmountJPY);
 		setLoanAmountForeign(data.loanAmountForeign);
 		setRemovedExpenses([]);
+		setDeactivatedExpenses([]);
 
 		// Selectively clear localStorage
 		if (isBrowser) {
@@ -85,7 +86,6 @@ export default function BudgetCalculator({
 	const [expenseItems, setExpenseItems] = useState<ExpenseItems>(
 		getInitialState("expenseItems", initialExpenseItems),
 	);
-
 	const [customExpenseTitles, setCustomExpenseTitles] =
 		useState<CustomExpenseTitles>(getInitialState("customExpenseTitles", {}));
 	const [btcPurchasePrice, setBtcPurchasePrice] = useState<number>(
@@ -124,7 +124,9 @@ export default function BudgetCalculator({
 	const [removedExpenses, setRemovedExpenses] = useState<string[]>(
 		getInitialState("removedExpenses", []),
 	);
-	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [deactivatedExpenses, setDeactivatedExpenses] = useState<string[]>(
+		getInitialState("deactivatedExpenses", []),
+	);
 
 	useEffect(() => {
 		const fetchInitialExchangeRate = async () => {
@@ -165,6 +167,10 @@ export default function BudgetCalculator({
 				JSON.stringify(loanAmountForeign),
 			);
 			localStorage.setItem("removedExpenses", JSON.stringify(removedExpenses));
+			localStorage.setItem(
+				"deactivatedExpenses",
+				JSON.stringify(deactivatedExpenses),
+			);
 		}
 	}, [
 		expenses,
@@ -182,13 +188,15 @@ export default function BudgetCalculator({
 		loanAmountJPY,
 		loanAmountForeign,
 		removedExpenses,
+		deactivatedExpenses,
 		isBrowser,
 	]);
 
 	useEffect(() => {
 		const activeExpenses = Object.fromEntries(
 			Object.entries(expenses).filter(
-				([key]) => !removedExpenses.includes(key),
+				([key]) =>
+					!removedExpenses.includes(key) && !deactivatedExpenses.includes(key),
 			),
 		);
 		const monthlyTotal = Object.values(activeExpenses).reduce<number>(
@@ -217,6 +225,7 @@ export default function BudgetCalculator({
 	}, [
 		expenses,
 		removedExpenses,
+		deactivatedExpenses,
 		btcPurchasePrice,
 		btcSalePrice,
 		yearlyIncome,
@@ -237,10 +246,17 @@ export default function BudgetCalculator({
 		setExpenseItems((prev) => ({ ...prev, [key]: newExpense.items }));
 		setCustomExpenseTitles((prev) => ({ ...prev, [key]: newExpense.title }));
 		setRemovedExpenses((prev) => prev.filter((item) => item !== key));
+		setDeactivatedExpenses((prev) => prev.filter((item) => item !== key));
 	};
 
 	const handleRemoveExpense = (key: string) => {
 		setRemovedExpenses((prev) => [...prev, key]);
+	};
+
+	const handleToggleExpense = (key: string) => {
+		setDeactivatedExpenses((prev) =>
+			prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key],
+		);
 	};
 
 	return (
@@ -315,13 +331,16 @@ export default function BudgetCalculator({
 										onAddExpense={handleAddExpense}
 										onRemoveExpense={handleRemoveExpense}
 										removedExpenses={removedExpenses}
-										setIsModalOpen={setIsModalOpen}
+										deactivatedExpenses={deactivatedExpenses}
+										onToggleExpense={handleToggleExpense}
 									/>
 									<Separator size="4" my="6" />
 									<ExpenseDistribution
 										expenses={Object.fromEntries(
 											Object.entries(expenses).filter(
-												([key]) => !removedExpenses.includes(key),
+												([key]) =>
+													!removedExpenses.includes(key) &&
+													!deactivatedExpenses.includes(key),
 											),
 										)}
 										customExpenseTitles={customExpenseTitles}

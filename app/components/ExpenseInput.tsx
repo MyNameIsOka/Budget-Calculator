@@ -10,8 +10,10 @@ import {
 	Table,
 	IconButton,
 	Button,
+	Flex,
+	Dialog,
 } from "@radix-ui/themes";
-import { Cross2Icon, PlusIcon } from "@radix-ui/react-icons";
+import { Cross2Icon, PlusIcon, MinusIcon } from "@radix-ui/react-icons";
 import type { Expense, ExpenseItems, CustomExpenseTitles } from "~/types";
 import { formatCurrency } from "~/utils/calculations";
 import { useTranslation } from "react-i18next";
@@ -30,6 +32,8 @@ type ExpenseInputProps = {
 	}) => void;
 	onRemoveExpense: (key: string) => void;
 	removedExpenses: string[];
+	deactivatedExpenses: string[];
+	onToggleExpense: (key: string) => void;
 };
 
 const ExpenseInput: React.FC<ExpenseInputProps> = ({
@@ -42,10 +46,13 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 	onAddExpense,
 	onRemoveExpense,
 	removedExpenses,
+	deactivatedExpenses,
+	onToggleExpense,
 }) => {
 	const { t, i18n } = useTranslation();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [visibleExpenses, setVisibleExpenses] = useState<string[]>([]);
+	const [expenseToDelete, setExpenseToDelete] = useState<string | null>(null);
 
 	useEffect(() => {
 		const expenseKeys = Object.keys(expenses);
@@ -105,7 +112,18 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 	};
 
 	const handleRemoveExpense = (key: string) => {
-		onRemoveExpense(key);
+		setExpenseToDelete(key);
+	};
+
+	const confirmRemoveExpense = () => {
+		if (expenseToDelete) {
+			onRemoveExpense(expenseToDelete);
+			setExpenseToDelete(null);
+		}
+	};
+
+	const handleToggleExpense = (key: string) => {
+		onToggleExpense(key);
 	};
 
 	const handleAddExpenseWrapper = (newExpense: {
@@ -120,19 +138,37 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 		<>
 			<Grid columns={{ initial: "1", sm: "2" }} gap="4">
 				{visibleExpenses.map((key) => (
-					<Card key={key}>
-						<Heading size="3" mb="2">
-							{getExpenseTitle(key)}
-							<IconButton
-								size="1"
-								variant="ghost"
-								color="gray"
-								style={{ float: "right" }}
-								onClick={() => handleRemoveExpense(key)}
-							>
-								<Cross2Icon />
-							</IconButton>
-						</Heading>
+					<Card
+						key={key}
+						style={{
+							opacity: deactivatedExpenses.includes(key) ? 0.5 : 1,
+						}}
+					>
+						<Flex justify="between" align="center" mb="2">
+							<Heading size="3">{getExpenseTitle(key)}</Heading>
+							<Flex gap="2">
+								<IconButton
+									size="1"
+									variant="ghost"
+									color="gray"
+									onClick={() => handleToggleExpense(key)}
+								>
+									{deactivatedExpenses.includes(key) ? (
+										<PlusIcon />
+									) : (
+										<MinusIcon />
+									)}
+								</IconButton>
+								<IconButton
+									size="1"
+									variant="ghost"
+									color="gray"
+									onClick={() => handleRemoveExpense(key)}
+								>
+									<Cross2Icon />
+								</IconButton>
+							</Flex>
+						</Flex>
 						<Table.Root>
 							<Table.Header>
 								<Table.Row>
@@ -153,6 +189,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 											onChange={(e) =>
 												handleInputChange(key, e.target.value, "monthly", "JPY")
 											}
+											disabled={deactivatedExpenses.includes(key)}
 										/>
 									</Table.Cell>
 									<Table.Cell>
@@ -167,6 +204,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 													"foreign",
 												)
 											}
+											disabled={deactivatedExpenses.includes(key)}
 										/>
 									</Table.Cell>
 								</Table.Row>
@@ -179,6 +217,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 											onChange={(e) =>
 												handleInputChange(key, e.target.value, "yearly", "JPY")
 											}
+											disabled={deactivatedExpenses.includes(key)}
 										/>
 									</Table.Cell>
 									<Table.Cell>
@@ -193,6 +232,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 													"foreign",
 												)
 											}
+											disabled={deactivatedExpenses.includes(key)}
 										/>
 									</Table.Cell>
 								</Table.Row>
@@ -205,6 +245,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 											onChange={(e) =>
 												handleInputChange(key, e.target.value, "5years", "JPY")
 											}
+											disabled={deactivatedExpenses.includes(key)}
 										/>
 									</Table.Cell>
 									<Table.Cell>
@@ -219,6 +260,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 													"foreign",
 												)
 											}
+											disabled={deactivatedExpenses.includes(key)}
 										/>
 									</Table.Cell>
 								</Table.Row>
@@ -245,6 +287,30 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 					onAddExpense={handleAddExpenseWrapper}
 				/>
 			</Box>
+			<Dialog.Root
+				open={expenseToDelete !== null}
+				onOpenChange={() => setExpenseToDelete(null)}
+			>
+				<Dialog.Content style={{ maxWidth: 450 }}>
+					<Dialog.Title>{t("deleteExpense.title")}</Dialog.Title>
+					<Dialog.Description size="2">
+						{t("deleteExpense.description")}
+					</Dialog.Description>
+
+					<Flex gap="3" mt="4" justify="end">
+						<Dialog.Close>
+							<Button variant="soft" color="gray">
+								{t("deleteExpense.cancel")}
+							</Button>
+						</Dialog.Close>
+						<Dialog.Close>
+							<Button onClick={confirmRemoveExpense} color="red">
+								{t("deleteExpense.confirm")}
+							</Button>
+						</Dialog.Close>
+					</Flex>
+				</Dialog.Content>
+			</Dialog.Root>
 		</>
 	);
 };

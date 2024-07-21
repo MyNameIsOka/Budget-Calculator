@@ -78,6 +78,12 @@
 		"submit": "経費を追加",
 		"cancel": "キャンセル"
 	},
+	"deleteExpense": {
+		"title": "経費を削除",
+		"description": "この経費を削除してもよろしいですか？この操作は取り消せません。",
+		"cancel": "キャンセル",
+		"confirm": "削除"
+	},
 	"reset": {
 		"button": "初期状態にリセット"
 	}
