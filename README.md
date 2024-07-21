@@ -1,5 +1,5 @@
 ### Todo
 
-- add functionality to add/remove cards
-- reset button
+- add functionality to deactivate a card
+- support mobile and resizing
 - dark mode

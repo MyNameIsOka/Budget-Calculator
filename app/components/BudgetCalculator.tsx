@@ -7,6 +7,7 @@ import type {
 } from "~/types";
 import {
 	Box,
+	Button,
 	Container,
 	Flex,
 	Heading,
@@ -26,11 +27,15 @@ import { calculateTax } from "~/utils/calculations";
 import { Form } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { getExchangeRates } from "~/utils/exchangeRate";
+import ResetButton from "./ResetButton";
+import { ResetIcon } from "@radix-ui/react-icons";
 
 type BudgetCalculatorProps = {
 	data: CombinedData;
 	expenseItems: ExpenseItems;
 };
+
+const EXCHANGE_RATE_CACHE_KEY = "exchangeRateCache";
 
 export default function BudgetCalculator({
 	data,
@@ -38,6 +43,33 @@ export default function BudgetCalculator({
 }: BudgetCalculatorProps) {
 	const isBrowser = typeof window !== "undefined";
 	const { t } = useTranslation();
+
+	const resetToInitialState = () => {
+		setExpenses(data.expenses);
+		setExpenseItems(initialExpenseItems);
+		setCustomExpenseTitles({});
+		setBtcPurchasePrice(data.btcPurchasePrice);
+		setBtcSalePrice(data.btcSalePrice);
+		setYearlyIncome(data.yearlyIncome);
+		setTotalExpenses(data.totalExpenses || 0);
+		setTaxAmount(data.taxAmount || 0);
+		setTaxBreakdown(data.taxBreakdown || []);
+		setStartingBracket(data.startingBracket || "");
+		setExchangeRate(data.exchangeRate);
+		setForeignCurrency(data.foreignCurrency);
+		setLoanAmountJPY(data.loanAmountJPY);
+		setLoanAmountForeign(data.loanAmountForeign);
+		setRemovedExpenses([]);
+
+		// Selectively clear localStorage
+		if (isBrowser) {
+			const exchangeRateCache = localStorage.getItem(EXCHANGE_RATE_CACHE_KEY);
+			localStorage.clear();
+			if (exchangeRateCache) {
+				localStorage.setItem(EXCHANGE_RATE_CACHE_KEY, exchangeRateCache);
+			}
+		}
+	};
 
 	const getInitialState = (key: string, fallback: any) => {
 		if (isBrowser) {
@@ -259,8 +291,17 @@ export default function BudgetCalculator({
 											setForeignCurrency={setForeignCurrency}
 											exchangeRate={exchangeRate}
 											setExchangeRate={setExchangeRate}
+											onReset={resetToInitialState}
 										/>
 										<LanguageSettings />
+										<Button
+											onClick={resetToInitialState}
+											color="red"
+											variant="soft"
+										>
+											<ResetIcon />
+											{t("reset.button")}
+										</Button>
 									</Flex>
 								</Box>
 								<Box style={{ flexGrow: 1 }}>

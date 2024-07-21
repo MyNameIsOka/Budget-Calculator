@@ -77,5 +77,8 @@
 		"addItem": "Add Item",
 		"submit": "Add Expense",
 		"cancel": "Cancel"
+	},
+	"reset": {
+		"button": "Reset to Initial State"
 	}
 }
