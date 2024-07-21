@@ -48,5 +48,24 @@
 		"taxAmount": "Tax Amount",
 		"municipalTax": "Municipal Tax (10% flat rate)",
 		"noData": "Not enough data to calculate tax breakdown. Please enter all required information."
+	},
+	"expenseCards": {
+		"monthly": "Monthly",
+		"yearly": "Yearly",
+		"fiveYears": "5 Years",
+		"rent": "Rent",
+		"utilities": "Utilities",
+		"food": "Food",
+		"carLease": "Car Lease",
+		"carExpenses": "Car Expenses",
+		"publicTransport": "Public Transport",
+		"healthcare": "Healthcare",
+		"childcare": "Childcare",
+		"petCare": "Pet Care",
+		"travel": "Travel",
+		"personalCare": "Personal Care",
+		"entertainment": "Entertainment",
+		"communication": "Communication",
+		"miscellaneous": "Miscellaneous"
 	}
 }

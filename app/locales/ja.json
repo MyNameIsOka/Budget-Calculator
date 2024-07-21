@@ -48,5 +48,24 @@
 		"taxAmount": "税額",
 		"municipalTax": "住民税（10%固定税率）",
 		"noData": "税金内訳を計算するのに十分なデータがありません。必要な情報をすべて入力してください。"
+	},
+	"expenseCards": {
+		"monthly": "月次",
+		"yearly": "年次",
+		"fiveYears": "5年間",
+		"rent": "家賃",
+		"utilities": "光熱費",
+		"food": "食費",
+		"carLease": "車リース",
+		"carExpenses": "車関連費用",
+		"publicTransport": "公共交通機関",
+		"healthcare": "医療費",
+		"childcare": "育児費",
+		"petCare": "ペット関連費用",
+		"travel": "旅行",
+		"personalCare": "個人的な支出",
+		"entertainment": "娯楽費",
+		"communication": "通信費",
+		"miscellaneous": "雑費"
 	}
 }

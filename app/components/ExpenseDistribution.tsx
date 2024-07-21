@@ -40,7 +40,7 @@ const ExpenseDistribution: React.FC<ExpenseDistributionProps> = ({
 	const { t } = useTranslation();
 
 	const pieChartData = Object.entries(expenses).map(([key, value]) => ({
-		name: key.charAt(0).toUpperCase() + key.slice(1),
+		name: t(`expenseCards.${key}`),
 		value: value * 12 * 5,
 	}));
 
@@ -66,12 +66,15 @@ const ExpenseDistribution: React.FC<ExpenseDistributionProps> = ({
 						>
 							{pieChartData.map((entry, index) => (
 								<Cell
-									key={`cell-${entry}`}
+									key={`cell-${index}`}
 									fill={COLORS[index % COLORS.length]}
 								/>
 							))}
 						</Pie>
-						<Tooltip formatter={(value: number) => formatCurrency(value)} />
+						<Tooltip
+							formatter={(value: number) => formatCurrency(value)}
+							labelFormatter={(label: string) => t(`expenseCards.${label}`)}
+						/>
 						<Legend />
 					</PieChart>
 				</ResponsiveContainer>

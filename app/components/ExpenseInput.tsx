@@ -11,6 +11,7 @@ import {
 } from "@radix-ui/themes";
 import type { Expense, ExpenseItems } from "~/types";
 import { formatCurrency } from "~/utils/calculations";
+import { useTranslation } from "react-i18next";
 
 type ExpenseInputProps = {
 	expenses: Expense;
@@ -27,6 +28,8 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 	exchangeRate,
 	foreignCurrency,
 }) => {
+	const { t, i18n } = useTranslation();
+
 	const formatAmount = (amount: number, isForeign = false) => {
 		if (isForeign) {
 			return (amount / exchangeRate).toFixed(2);
@@ -68,7 +71,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 			{Object.entries(expenses).map(([key, value]) => (
 				<Card key={key}>
 					<Heading size="3" mb="2">
-						{key.charAt(0).toUpperCase() + key.slice(1)}
+						{t(`expenseCards.${key}`)}
 					</Heading>
 					<Table.Root>
 						<Table.Header>
@@ -82,7 +85,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 						</Table.Header>
 						<Table.Body>
 							<Table.Row>
-								<Table.Cell>Monthly</Table.Cell>
+								<Table.Cell>{t("expenseCards.monthly")}</Table.Cell>
 								<Table.Cell>
 									<TextField.Root
 										size="1"
@@ -108,7 +111,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 								</Table.Cell>
 							</Table.Row>
 							<Table.Row>
-								<Table.Cell>Yearly</Table.Cell>
+								<Table.Cell>{t("expenseCards.yearly")}</Table.Cell>
 								<Table.Cell>
 									<TextField.Root
 										size="1"
@@ -134,7 +137,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 								</Table.Cell>
 							</Table.Row>
 							<Table.Row>
-								<Table.Cell>5 Years</Table.Cell>
+								<Table.Cell>{t("expenseCards.fiveYears")}</Table.Cell>
 								<Table.Cell>
 									<TextField.Root
 										size="1"
@@ -168,7 +171,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 							style={{ listStyleType: "disc", paddingLeft: "1rem" }}
 						>
 							{expenseItems[key].map((item, index) => (
-								<li key={index}>{item}</li>
+								<li key={index}>{item[i18n.language as "en" | "ja"]}</li>
 							))}
 						</Text>
 					</Box>

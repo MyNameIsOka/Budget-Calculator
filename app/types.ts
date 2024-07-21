@@ -1,5 +1,8 @@
 export type ExpenseItems = {
-	[key: string]: string[];
+	[key: string]: Array<{
+		en: string;
+		ja: string;
+	}>;
 };
 
 export type TaxBracket = {
