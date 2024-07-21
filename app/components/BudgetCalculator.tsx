@@ -7,28 +7,44 @@ import type {
 } from "~/types";
 import {
 	Box,
-	Button,
 	Container,
 	Flex,
-	Heading,
-	Section,
-	Separator,
 	Text,
+	Separator,
+	Button,
+	Heading,
 } from "@radix-ui/themes";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { GearIcon } from "@radix-ui/react-icons";
 import ExpenseInput from "./ExpenseInput";
 import ExpenseDistribution from "./ExpenseDistribution";
 import FinancialInputs from "./FinancialInputs";
 import Summary from "./Summary";
 import BitcoinInfoBox from "./BitcoinInfoBox";
 import TaxBreakdown from "./TaxBreakdown";
+import SettingsDrawer from "./SettingsDrawer";
 import LanguageSettings from "./LanguageSettings";
+import ResetButton from "./ResetButton";
 import { calculateTax } from "~/utils/calculations";
-import { Form } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { getExchangeRates } from "~/utils/exchangeRate";
-import ResetButton from "./ResetButton";
-import { ResetIcon } from "@radix-ui/react-icons";
+
+// Custom hook for media query (keep this as is)
+function useMediaQuery(query: string) {
+	const [matches, setMatches] = useState(false);
+
+	useEffect(() => {
+		const media = window.matchMedia(query);
+		if (media.matches !== matches) {
+			setMatches(media.matches);
+		}
+		const listener = () => setMatches(media.matches);
+		window.addEventListener("resize", listener);
+		return () => window.removeEventListener("resize", listener);
+	}, [matches, query]);
+
+	return matches;
+}
 
 type BudgetCalculatorProps = {
 	data: CombinedData;
@@ -259,131 +275,133 @@ export default function BudgetCalculator({
 		);
 	};
 
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+	const isSmallScreen = useMediaQuery("(max-width: 768px)");
+
 	return (
-		<Box>
-			<Section size="3">
-				<Container size="4">
-					<Flex direction="column" gap="6">
-						<Box
-							style={{
-								backgroundColor: "var(--blue-9)",
-								padding: "1rem",
-								borderRadius: "var(--radius-3)",
-							}}
+		<Box className="relative">
+			<Heading size="8" mb="4" className="text-center">
+				{t("title")}
+			</Heading>
+			<Text size="3" mb="6" className="text-center">
+				{t("subtitle", { currency: foreignCurrency })}
+			</Text>
+			{isSmallScreen && (
+				<Button
+					size="3"
+					variant="soft"
+					onClick={() => setIsDrawerOpen(true)}
+					className="fixed top-4 left-4 z-50"
+				>
+					<GearIcon />
+				</Button>
+			)}
+			<Flex gap="6" direction={isSmallScreen ? "column" : "row"}>
+				<SettingsDrawer
+					isOpen={isDrawerOpen}
+					onClose={() => setIsDrawerOpen(false)}
+					yearlyIncome={yearlyIncome}
+					setYearlyIncome={setYearlyIncome}
+					btcPurchasePrice={btcPurchasePrice}
+					setBtcPurchasePrice={setBtcPurchasePrice}
+					btcSalePrice={btcSalePrice}
+					setBtcSalePrice={setBtcSalePrice}
+					loanAmountJPY={loanAmountJPY}
+					setLoanAmountJPY={setLoanAmountJPY}
+					loanAmountForeign={loanAmountForeign}
+					setLoanAmountForeign={setLoanAmountForeign}
+					foreignCurrency={foreignCurrency}
+					setForeignCurrency={setForeignCurrency}
+					exchangeRate={exchangeRate}
+					setExchangeRate={setExchangeRate}
+					onReset={resetToInitialState}
+				>
+					<LanguageSettings />
+					<ResetButton onReset={resetToInitialState} />
+				</SettingsDrawer>
+				{!isSmallScreen && (
+					<Box style={{ width: "300px", flexShrink: 0 }}>
+						<Flex
+							direction="column"
+							gap="4"
+							style={{ position: "sticky", top: "20px" }}
 						>
-							<Heading size="8" mb="2" style={{ color: "white" }}>
-								{t("title")}
-							</Heading>
-							<Text size="5" style={{ color: "var(--blue-1)" }}>
-								{t("subtitle", { currency: foreignCurrency })}
-							</Text>
-						</Box>
-
-						<Form method="post">
-							<input
-								type="hidden"
-								name="expenses"
-								value={JSON.stringify(expenses)}
+							<FinancialInputs
+								yearlyIncome={yearlyIncome}
+								setYearlyIncome={setYearlyIncome}
+								btcPurchasePrice={btcPurchasePrice}
+								setBtcPurchasePrice={setBtcPurchasePrice}
+								btcSalePrice={btcSalePrice}
+								setBtcSalePrice={setBtcSalePrice}
+								loanAmountJPY={loanAmountJPY}
+								setLoanAmountJPY={setLoanAmountJPY}
+								loanAmountForeign={loanAmountForeign}
+								setLoanAmountForeign={setLoanAmountForeign}
+								foreignCurrency={foreignCurrency}
+								setForeignCurrency={setForeignCurrency}
+								exchangeRate={exchangeRate}
+								setExchangeRate={setExchangeRate}
 							/>
-							<Flex gap="6">
-								<Box style={{ width: "300px", flexShrink: 0 }}>
-									<Flex
-										direction="column"
-										gap="4"
-										style={{ position: "sticky", top: "20px" }}
-									>
-										<FinancialInputs
-											yearlyIncome={yearlyIncome}
-											setYearlyIncome={setYearlyIncome}
-											btcPurchasePrice={btcPurchasePrice}
-											setBtcPurchasePrice={setBtcPurchasePrice}
-											btcSalePrice={btcSalePrice}
-											setBtcSalePrice={setBtcSalePrice}
-											loanAmountJPY={loanAmountJPY}
-											setLoanAmountJPY={setLoanAmountJPY}
-											loanAmountForeign={loanAmountForeign}
-											setLoanAmountForeign={setLoanAmountForeign}
-											foreignCurrency={foreignCurrency}
-											setForeignCurrency={setForeignCurrency}
-											exchangeRate={exchangeRate}
-											setExchangeRate={setExchangeRate}
-											onReset={resetToInitialState}
-										/>
-										<LanguageSettings />
-										<Button
-											onClick={resetToInitialState}
-											color="red"
-											variant="soft"
-										>
-											<ResetIcon />
-											{t("reset.button")}
-										</Button>
-									</Flex>
-								</Box>
-								<Box style={{ flexGrow: 1 }}>
-									<ExpenseInput
-										expenses={expenses}
-										expenseItems={expenseItems}
-										customExpenseTitles={customExpenseTitles}
-										handleExpenseChange={handleExpenseChange}
-										exchangeRate={exchangeRate}
-										foreignCurrency={foreignCurrency}
-										onAddExpense={handleAddExpense}
-										onRemoveExpense={handleRemoveExpense}
-										removedExpenses={removedExpenses}
-										deactivatedExpenses={deactivatedExpenses}
-										onToggleExpense={handleToggleExpense}
-									/>
-									<Separator size="4" my="6" />
-									<ExpenseDistribution
-										expenses={Object.fromEntries(
-											Object.entries(expenses).filter(
-												([key]) =>
-													!removedExpenses.includes(key) &&
-													!deactivatedExpenses.includes(key),
-											),
-										)}
-										customExpenseTitles={customExpenseTitles}
-									/>
-
-									<Separator size="4" my="6" />
-
-									<Summary
-										totalExpenses={totalExpenses}
-										loanAmountJPY={loanAmountJPY}
-										btcSalePrice={btcSalePrice}
-										exchangeRate={exchangeRate}
-										foreignCurrency={foreignCurrency}
-										taxAmount={taxAmount}
-									/>
-
-									<Separator size="4" my="6" />
-
-									<BitcoinInfoBox
-										totalExpenses={totalExpenses}
-										taxAmount={taxAmount}
-										btcSalePrice={btcSalePrice}
-										btcPurchasePrice={btcPurchasePrice}
-										exchangeRate={exchangeRate}
-										foreignCurrency={foreignCurrency}
-										loanAmountJPY={loanAmountJPY}
-									/>
-
-									<Separator size="4" my="6" />
-
-									<TaxBreakdown
-										taxBreakdown={taxBreakdown}
-										taxAmount={taxAmount}
-										startingBracket={startingBracket}
-										exchangeRate={exchangeRate}
-										foreignCurrency={foreignCurrency}
-									/>
-								</Box>
-							</Flex>
-						</Form>
-					</Flex>
-				</Container>
-			</Section>
+							<LanguageSettings />
+							<ResetButton onReset={resetToInitialState} />
+						</Flex>
+					</Box>
+				)}
+				<Box style={{ flexGrow: 1 }}>
+					<ExpenseInput
+						expenses={expenses}
+						expenseItems={expenseItems}
+						customExpenseTitles={customExpenseTitles}
+						handleExpenseChange={handleExpenseChange}
+						exchangeRate={exchangeRate}
+						foreignCurrency={foreignCurrency}
+						onAddExpense={handleAddExpense}
+						onRemoveExpense={handleRemoveExpense}
+						removedExpenses={removedExpenses}
+						deactivatedExpenses={deactivatedExpenses}
+						onToggleExpense={handleToggleExpense}
+					/>
+					<Separator size="4" my="6" />
+					<ExpenseDistribution
+						expenses={Object.fromEntries(
+							Object.entries(expenses).filter(
+								([key]) =>
+									!removedExpenses.includes(key) &&
+									!deactivatedExpenses.includes(key),
+							),
+						)}
+						customExpenseTitles={customExpenseTitles}
+					/>
+					<Separator size="4" my="6" />
+					<Summary
+						totalExpenses={totalExpenses}
+						loanAmountJPY={loanAmountJPY}
+						btcSalePrice={btcSalePrice}
+						exchangeRate={exchangeRate}
+						foreignCurrency={foreignCurrency}
+						taxAmount={taxAmount}
+					/>
+					<Separator size="4" my="6" />
+					<BitcoinInfoBox
+						totalExpenses={totalExpenses}
+						taxAmount={taxAmount}
+						btcSalePrice={btcSalePrice}
+						btcPurchasePrice={btcPurchasePrice}
+						exchangeRate={exchangeRate}
+						foreignCurrency={foreignCurrency}
+						loanAmountJPY={loanAmountJPY}
+					/>
+					<Separator size="4" my="6" />
+					<TaxBreakdown
+						taxBreakdown={taxBreakdown}
+						taxAmount={taxAmount}
+						startingBracket={startingBracket}
+						exchangeRate={exchangeRate}
+						foreignCurrency={foreignCurrency}
+					/>
+				</Box>
+			</Flex>
 		</Box>
 	);
 }

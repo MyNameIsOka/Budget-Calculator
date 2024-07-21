@@ -1,0 +1,52 @@
+@media (max-width: 768px) {
+  .fixed {
+    position: fixed;
+  }
+
+  .top-4 {
+    top: 1rem;
+  }
+
+  .left-4 {
+    left: 1rem;
+  }
+
+  .z-50 {
+    z-index: 50;
+  }
+}
+
+.pointer-events-auto {
+  pointer-events: auto;
+}
+
+.pointer-events-none {
+  pointer-events: none;
+}
+
+.translate-x-0 {
+  transform: translateX(0);
+}
+
+.-translate-x-full {
+  transform: translateX(-100%);
+}
+
+.bg-gray-100 {
+  background-color: #f3f4f6;
+}
+
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.opacity-50 {
+  opacity: 0.5;
+}
+
+.opacity-0 {
+  opacity: 0;
+}

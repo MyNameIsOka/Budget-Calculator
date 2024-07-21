@@ -10,20 +10,20 @@ const LanguageSettings: React.FC = () => {
 	};
 
 	return (
-		<Card style={{ width: "100%" }}>
+		<Card className="w-full">
 			<Box>
 				<Heading size="3" mb="2">
 					{t("languageSettings.title")}
 				</Heading>
 				<RadioGroup.Root value={i18n.language} onValueChange={changeLanguage}>
-					<Flex gap="2" direction="column">
+					<Flex direction="column" gap="2">
 						<Text as="label" size="2">
-							<Flex gap="2">
+							<Flex gap="2" align="center">
 								<RadioGroup.Item value="en" /> {t("languageSettings.en")}
 							</Flex>
 						</Text>
 						<Text as="label" size="2">
-							<Flex gap="2">
+							<Flex gap="2" align="center">
 								<RadioGroup.Item value="ja" /> {t("languageSettings.ja")}
 							</Flex>
 						</Text>

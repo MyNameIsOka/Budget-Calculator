@@ -31,80 +31,43 @@ const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
 	const btcForTaxes = taxAmount / (btcSalePrice * exchangeRate);
 
 	return (
-		<Box>
-			<Heading size="4" mb="3">
+		<Box className="w-full overflow-x-auto">
+			<Heading size="4" mb="3" className="text-center md:text-left">
 				{t("bitcoinInfo.title")}
 			</Heading>
-			<Table.Root style={{ borderCollapse: "collapse", width: "100%" }}>
+			<Table.Root>
 				<Table.Body>
 					<Table.Row>
-						<Table.Cell
-							style={{
-								border: "1px solid var(--gray-6)",
-								padding: "8px",
-								width: "50%",
-							}}
-						>
+						<Table.Cell className="whitespace-nowrap font-medium">
 							{t("bitcoinInfo.btcForExpenses")}
 						</Table.Cell>
-						<Table.Cell
-							style={{
-								border: "1px solid var(--gray-6)",
-								padding: "8px",
-								width: "50%",
-								textAlign: "right",
-							}}
-						>
+						<Table.Cell className="text-right">
 							{btcForExpenses.toFixed(4)} BTC
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell
-							style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
-						>
+						<Table.Cell className="whitespace-nowrap font-medium">
 							{t("bitcoinInfo.btcForTaxes")}
 						</Table.Cell>
-						<Table.Cell
-							style={{
-								border: "1px solid var(--gray-6)",
-								padding: "8px",
-								textAlign: "right",
-							}}
-						>
+						<Table.Cell className="text-right">
 							{btcForTaxes.toFixed(4)} BTC
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell
-							style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
-						>
+						<Table.Cell className="whitespace-nowrap font-medium">
 							{t("bitcoinInfo.totalBTCToSell")}
 						</Table.Cell>
-						<Table.Cell
-							style={{
-								border: "1px solid var(--gray-6)",
-								padding: "8px",
-								textAlign: "right",
-							}}
-						>
+						<Table.Cell className="text-right">
 							{btcNeeded.toFixed(4)} BTC
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell
-							style={{ border: "1px solid var(--gray-6)", padding: "8px" }}
-						>
+						<Table.Cell className="whitespace-nowrap font-medium">
 							{t("bitcoinInfo.equivalentInForeignCurrency", {
 								currency: foreignCurrency,
 							})}
 						</Table.Cell>
-						<Table.Cell
-							style={{
-								border: "1px solid var(--gray-6)",
-								padding: "8px",
-								textAlign: "right",
-							}}
-						>
+						<Table.Cell className="text-right">
 							{formatCurrency(btcNeeded * btcSalePrice, foreignCurrency)}
 						</Table.Cell>
 					</Table.Row>

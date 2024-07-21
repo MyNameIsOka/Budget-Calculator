@@ -140,9 +140,9 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 				{visibleExpenses.map((key) => (
 					<Card
 						key={key}
-						style={{
-							opacity: deactivatedExpenses.includes(key) ? 0.5 : 1,
-						}}
+						className={`${
+							deactivatedExpenses.includes(key) ? "opacity-50" : ""
+						}`}
 					>
 						<Flex justify="between" align="center" mb="2">
 							<Heading size="3">{getExpenseTitle(key)}</Heading>
@@ -267,11 +267,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 							</Table.Body>
 						</Table.Root>
 						<Box mt="3">
-							<Text
-								size="2"
-								as="ul"
-								style={{ listStyleType: "disc", paddingLeft: "1rem" }}
-							>
+							<Text size="2" as="ul" className="list-disc pl-4">
 								{expenseItems[key]?.map((item, index) => (
 									<li key={index}>{getLocalizedText(item)}</li>
 								)) ?? []}

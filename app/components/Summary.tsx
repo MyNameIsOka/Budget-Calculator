@@ -29,24 +29,32 @@ const Summary: React.FC<SummaryProps> = ({
 	const effectiveTaxRate = (taxAmount / amountToSell) * 100;
 
 	return (
-		<Box>
-			<Heading size="5" mb="3">
+		<Box className="w-full overflow-x-auto">
+			<Heading size="5" mb="3" className="text-center md:text-left">
 				{t("summary.title")}
 			</Heading>
-			<Table.Root style={{ borderCollapse: "collapse", width: "100%" }}>
+			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.ColumnHeaderCell>
+						<Table.ColumnHeaderCell className="whitespace-nowrap">
 							{t("summary.description")}
 						</Table.ColumnHeaderCell>
-						<Table.ColumnHeaderCell>JPY</Table.ColumnHeaderCell>
-						<Table.ColumnHeaderCell>{foreignCurrency}</Table.ColumnHeaderCell>
-						<Table.ColumnHeaderCell>BTC</Table.ColumnHeaderCell>
+						<Table.ColumnHeaderCell className="whitespace-nowrap">
+							JPY
+						</Table.ColumnHeaderCell>
+						<Table.ColumnHeaderCell className="whitespace-nowrap">
+							{foreignCurrency}
+						</Table.ColumnHeaderCell>
+						<Table.ColumnHeaderCell className="whitespace-nowrap">
+							BTC
+						</Table.ColumnHeaderCell>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
 					<Table.Row>
-						<Table.Cell>{t("summary.totalExpenses")}</Table.Cell>
+						<Table.Cell className="whitespace-nowrap">
+							{t("summary.totalExpenses")}
+						</Table.Cell>
 						<Table.Cell>{formatCurrency(totalExpenses)}</Table.Cell>
 						<Table.Cell>
 							{formatCurrency(totalExpenses / exchangeRate, foreignCurrency)}
@@ -56,7 +64,9 @@ const Summary: React.FC<SummaryProps> = ({
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>{t("summary.loanAmount")}</Table.Cell>
+						<Table.Cell className="whitespace-nowrap">
+							{t("summary.loanAmount")}
+						</Table.Cell>
 						<Table.Cell>{formatCurrency(loanAmountJPY)}</Table.Cell>
 						<Table.Cell>
 							{formatCurrency(loanAmountJPY / exchangeRate, foreignCurrency)}
@@ -66,7 +76,9 @@ const Summary: React.FC<SummaryProps> = ({
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>{t("summary.amountToSell")}</Table.Cell>
+						<Table.Cell className="whitespace-nowrap">
+							{t("summary.amountToSell")}
+						</Table.Cell>
 						<Table.Cell>{formatCurrency(amountToSell)}</Table.Cell>
 						<Table.Cell>
 							{formatCurrency(amountToSell / exchangeRate, foreignCurrency)}
@@ -74,7 +86,9 @@ const Summary: React.FC<SummaryProps> = ({
 						<Table.Cell>{btcToSell.toFixed(4)}</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>{t("summary.taxesFromSelling")}</Table.Cell>
+						<Table.Cell className="whitespace-nowrap">
+							{t("summary.taxesFromSelling")}
+						</Table.Cell>
 						<Table.Cell>{formatCurrency(taxAmount)}</Table.Cell>
 						<Table.Cell>
 							{formatCurrency(taxAmount / exchangeRate, foreignCurrency)}
@@ -82,7 +96,9 @@ const Summary: React.FC<SummaryProps> = ({
 						<Table.Cell>{btcForTaxes.toFixed(4)}</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>{t("summary.totalBTCNeeded")}</Table.Cell>
+						<Table.Cell className="whitespace-nowrap">
+							{t("summary.totalBTCNeeded")}
+						</Table.Cell>
 						<Table.Cell>
 							{formatCurrency(totalBtcNeeded * btcSalePrice * exchangeRate)}
 						</Table.Cell>
@@ -92,7 +108,9 @@ const Summary: React.FC<SummaryProps> = ({
 						<Table.Cell>{totalBtcNeeded.toFixed(4)}</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>{t("summary.effectiveTaxRate")}</Table.Cell>
+						<Table.Cell className="whitespace-nowrap">
+							{t("summary.effectiveTaxRate")}
+						</Table.Cell>
 						<Table.Cell colSpan={3}>{effectiveTaxRate.toFixed(2)}%</Table.Cell>
 					</Table.Row>
 				</Table.Body>

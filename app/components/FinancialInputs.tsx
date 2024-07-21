@@ -1,5 +1,4 @@
-import type React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
 	Box,
 	Flex,
@@ -51,7 +50,7 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 	setExchangeRate,
 }) => {
 	const { t } = useTranslation();
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = React.useState(false);
 
 	useEffect(() => {
 		const fetchExchangeRates = async () => {
@@ -81,21 +80,8 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 		setLoanAmountJPY(Number((amount * exchangeRate).toFixed(0)));
 	};
 
-	const handleCurrencyChange = async (value: string) => {
-		setForeignCurrency(value);
-		setLoading(true);
-		try {
-			const rates = await getExchangeRates();
-			setExchangeRate(rates[value as keyof typeof rates]);
-		} catch (error) {
-			console.error("Failed to fetch exchange rates:", error);
-		} finally {
-			setLoading(false);
-		}
-	};
-
 	return (
-		<Card style={{ width: "100%", position: "sticky", top: "20px" }}>
+		<Card className="w-full">
 			<Flex direction="column" gap="4">
 				<Box>
 					<Heading size="3" mb="3">
@@ -103,11 +89,11 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 					</Heading>
 					<Flex direction="column" gap="2">
 						<Box>
-							<Text as="label" size="1" weight="bold">
+							<Text as="label" size="2" weight="bold">
 								{t("financialInputs.yearlyIncome")}
 							</Text>
 							<TextField.Root
-								size="1"
+								size="2"
 								value={formatNumberWithCommas(yearlyIncome.toString())}
 								onChange={(e) =>
 									setYearlyIncome(Number(e.target.value.replace(/,/g, "")))
@@ -115,13 +101,13 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 							/>
 						</Box>
 						<Box>
-							<Text as="label" size="1" weight="bold">
+							<Text as="label" size="2" weight="bold">
 								{t("financialInputs.btcPurchasePrice", {
 									currency: foreignCurrency,
 								})}
 							</Text>
 							<TextField.Root
-								size="1"
+								size="2"
 								value={formatNumberWithCommas(btcPurchasePrice.toString())}
 								onChange={(e) =>
 									setBtcPurchasePrice(Number(e.target.value.replace(/,/g, "")))
@@ -129,13 +115,13 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 							/>
 						</Box>
 						<Box>
-							<Text as="label" size="1" weight="bold">
+							<Text as="label" size="2" weight="bold">
 								{t("financialInputs.btcSalePrice", {
 									currency: foreignCurrency,
 								})}
 							</Text>
 							<TextField.Root
-								size="1"
+								size="2"
 								value={formatNumberWithCommas(btcSalePrice.toString())}
 								onChange={(e) =>
 									setBtcSalePrice(Number(e.target.value.replace(/,/g, "")))
@@ -143,23 +129,23 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 							/>
 						</Box>
 						<Box>
-							<Text as="label" size="1" weight="bold">
+							<Text as="label" size="2" weight="bold">
 								{t("financialInputs.loanAmountJPY")}
 							</Text>
 							<TextField.Root
-								size="1"
+								size="2"
 								value={formatNumberWithCommas(loanAmountJPY.toString())}
 								onChange={(e) => handleLoanJPYChange(e.target.value)}
 							/>
 						</Box>
 						<Box>
-							<Text as="label" size="1" weight="bold">
+							<Text as="label" size="2" weight="bold">
 								{t("financialInputs.loanAmountForeign", {
 									currency: foreignCurrency,
 								})}
 							</Text>
 							<TextField.Root
-								size="1"
+								size="2"
 								value={formatNumberWithCommas(loanAmountForeign.toString())}
 								onChange={(e) => handleLoanForeignChange(e.target.value)}
 							/>
@@ -174,7 +160,7 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 					<Flex direction="column" gap="2">
 						<RadioGroup.Root
 							value={foreignCurrency}
-							onValueChange={handleCurrencyChange}
+							onValueChange={setForeignCurrency}
 						>
 							<Flex gap="2">
 								<Text as="label" size="2">

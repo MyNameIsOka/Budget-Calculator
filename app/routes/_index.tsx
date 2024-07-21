@@ -7,15 +7,8 @@ import { json } from "@remix-run/node";
 import { useLoaderData, useActionData } from "@remix-run/react";
 import BudgetCalculator from "~/components/BudgetCalculator";
 import { calculateTax } from "~/utils/calculations";
-import type {
-	ActionData,
-	CombinedData,
-	Expense,
-	ExpenseItems,
-	Language,
-} from "~/types";
+import type { ActionData, CombinedData, Expense, ExpenseItems } from "~/types";
 import { initialExpenses, expenseItems } from "~/data/expenseData";
-import assert from "node:assert";
 
 export const meta: MetaFunction = () => {
 	return [
@@ -30,44 +23,17 @@ export const meta: MetaFunction = () => {
 
 export const loader: LoaderFunction = async () => {
 	console.log("Loader function called");
-	assert(
-		process.env.INITIAL_BTC_PURCHASE_PRICE,
-		"INITIAL_BTC_PURCHASE_PRICE is required",
-	);
-	assert(
-		process.env.INITIAL_BTC_SALE_PRICE,
-		"INITIAL_BTC_SALE_PRICE is required",
-	);
-	assert(
-		process.env.INITIAL_YEARLY_INCOME,
-		"INITIAL_YEARLY_INCOME is required",
-	);
-	assert(
-		process.env.INITIAL_EXCHANGE_RATE,
-		"INITIAL_EXCHANGE_RATE is required",
-	);
-	assert(
-		process.env.INITIAL_FOREIGN_CURRENCY,
-		"INITIAL_FOREIGN_CURRENCY is required",
-	);
-	assert(
-		process.env.INITIAL_LOAN_AMOUNT_JPY,
-		"INITIAL_LOAN_AMOUNT_JPY is required",
-	);
-	assert(
-		process.env.INITIAL_LOAN_AMOUNT_FOREIGN,
-		"INITIAL_LOAN_AMOUNT_FOREIGN is required",
-	);
 
+	// In a real application, you might fetch these values from an API or environment variables
 	const initialState: CombinedData = {
 		expenses: initialExpenses,
-		btcPurchasePrice: Number(process.env.INITIAL_BTC_PURCHASE_PRICE) || 10000,
-		btcSalePrice: Number(process.env.INITIAL_BTC_SALE_PRICE) || 50000,
-		yearlyIncome: Number(process.env.INITIAL_YEARLY_INCOME) || 0,
-		exchangeRate: Number(process.env.INITIAL_EXCHANGE_RATE) || 160,
-		foreignCurrency: process.env.INITIAL_FOREIGN_CURRENCY || "USD",
-		loanAmountJPY: Number(process.env.INITIAL_LOAN_AMOUNT_JPY) || 0,
-		loanAmountForeign: Number(process.env.INITIAL_LOAN_AMOUNT_FOREIGN) || 0,
+		btcPurchasePrice: 10000,
+		btcSalePrice: 50000,
+		yearlyIncome: 0,
+		exchangeRate: 110,
+		foreignCurrency: "USD",
+		loanAmountJPY: 0,
+		loanAmountForeign: 0,
 	};
 
 	return json({ initialState, expenseItems });
@@ -95,11 +61,10 @@ export const action: ActionFunction = async ({ request }) => {
 	const btcToSell = amountToSell / (btcSalePrice * exchangeRate);
 	const gain = (btcSalePrice - btcPurchasePrice) * btcToSell * exchangeRate;
 
-	const {
-		totalTax,
-		breakdown,
-		startingBracket: bracket,
-	} = calculateTax(gain, yearlyIncome);
+	const { totalTax, breakdown, startingBracket } = calculateTax(
+		gain,
+		yearlyIncome,
+	);
 	const municipalTax = gain * 0.1;
 	const totalTaxAmount = totalTax + municipalTax;
 
@@ -107,7 +72,7 @@ export const action: ActionFunction = async ({ request }) => {
 		totalExpenses: fiveYearTotal,
 		taxAmount: totalTaxAmount,
 		taxBreakdown: breakdown,
-		startingBracket: bracket,
+		startingBracket,
 	});
 };
 
@@ -120,5 +85,13 @@ export default function Index() {
 
 	const data = { ...initialState, ...actionData };
 
-	return <BudgetCalculator data={data} expenseItems={expenseItems} />;
+	return (
+		<div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+			<div className="relative py-3 sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-6xl mx-auto">
+				<div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
+					<BudgetCalculator data={data} expenseItems={expenseItems} />
+				</div>
+			</div>
+		</div>
+	);
 }

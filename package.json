@@ -10,6 +10,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-icons": "^1.3.0",
     "@radix-ui/react-radio-group": "^1.1.3",
     "@radix-ui/themes": "^3.1.1",
@@ -32,7 +33,10 @@
     "@remix-run/eslint-config": "^2.0.0",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
+    "autoprefixer": "^10.4.19",
     "eslint": "^8.38.0",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.6",
     "typescript": "^5.1.6"
   },
   "engines": {

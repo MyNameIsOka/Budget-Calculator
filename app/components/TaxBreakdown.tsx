@@ -1,5 +1,5 @@
 import type React from "react";
-import { Box, Heading, Table, Text } from "@radix-ui/themes";
+import { Box, Heading, Table, Text, Flex } from "@radix-ui/themes";
 import type { TaxBreakdownItem } from "~/types";
 import { formatCurrency } from "~/utils/calculations";
 import { useTranslation } from "react-i18next";
@@ -25,7 +25,7 @@ const TaxBreakdown: React.FC<TaxBreakdownProps> = ({
 		const numericAmount = Number.parseFloat(
 			jpyAmount.replace(/[^0-9.-]+/g, ""),
 		);
-		if (isNaN(numericAmount) || !exchangeRate || !foreignCurrency) {
+		if (Number.isNaN(numericAmount) || !exchangeRate || !foreignCurrency) {
 			return jpyAmount; // Return original string if conversion is not possible
 		}
 		const foreignAmount = numericAmount / exchangeRate;
@@ -36,8 +36,8 @@ const TaxBreakdown: React.FC<TaxBreakdownProps> = ({
 
 	if (!taxBreakdown.length || !exchangeRate || !foreignCurrency) {
 		return (
-			<Box>
-				<Heading size="5" mb="3">
+			<Box className="w-full">
+				<Heading size="5" mb="3" className="text-center md:text-left">
 					{t("taxBreakdown.title")}
 				</Heading>
 				<Text size="2">{t("taxBreakdown.noData")}</Text>
@@ -46,8 +46,8 @@ const TaxBreakdown: React.FC<TaxBreakdownProps> = ({
 	}
 
 	return (
-		<Box>
-			<Heading size="5" mb="3">
+		<Box className="w-full">
+			<Heading size="5" mb="3" className="text-center md:text-left">
 				{t("taxBreakdown.title")}
 			</Heading>
 			<Text size="2" mb="3">
@@ -55,20 +55,20 @@ const TaxBreakdown: React.FC<TaxBreakdownProps> = ({
 					bracket: startingBracket || t("taxBreakdown.notCalculated"),
 				})}
 			</Text>
-			<Box style={{ overflowX: "auto" }}>
-				<Table.Root style={{ borderCollapse: "collapse", width: "100%" }}>
+			<Box className="overflow-x-auto">
+				<Table.Root>
 					<Table.Header>
 						<Table.Row>
-							<Table.ColumnHeaderCell>
+							<Table.ColumnHeaderCell className="whitespace-nowrap">
 								{t("taxBreakdown.bracket")}
 							</Table.ColumnHeaderCell>
-							<Table.ColumnHeaderCell>
+							<Table.ColumnHeaderCell className="whitespace-nowrap">
 								{t("taxBreakdown.rate")}
 							</Table.ColumnHeaderCell>
-							<Table.ColumnHeaderCell>
+							<Table.ColumnHeaderCell className="whitespace-nowrap">
 								{t("taxBreakdown.taxableAmount")}
 							</Table.ColumnHeaderCell>
-							<Table.ColumnHeaderCell>
+							<Table.ColumnHeaderCell className="whitespace-nowrap">
 								{t("taxBreakdown.taxAmount")}
 							</Table.ColumnHeaderCell>
 						</Table.Row>
@@ -76,7 +76,9 @@ const TaxBreakdown: React.FC<TaxBreakdownProps> = ({
 					<Table.Body>
 						{taxBreakdown.map((item, index) => (
 							<Table.Row key={index}>
-								<Table.Cell>{item.bracket}</Table.Cell>
+								<Table.Cell className="whitespace-nowrap">
+									{item.bracket}
+								</Table.Cell>
 								<Table.Cell>{item.rate}</Table.Cell>
 								<Table.Cell>{formatAmounts(item.taxableAmount)}</Table.Cell>
 								<Table.Cell>{formatAmounts(item.taxAmount)}</Table.Cell>
@@ -84,26 +86,24 @@ const TaxBreakdown: React.FC<TaxBreakdownProps> = ({
 						))}
 						{taxAmount > 0 && (
 							<Table.Row>
-								<Table.Cell colSpan={3}>
-									<Text weight="bold">{t("taxBreakdown.municipalTax")}</Text>
+								<Table.Cell colSpan={3} className="font-bold">
+									{t("taxBreakdown.municipalTax")}
 								</Table.Cell>
-								<Table.Cell>
-									<Text weight="bold">
-										{formatAmounts(
-											formatCurrency(
-												taxAmount -
-													taxBreakdown.reduce(
-														(sum, item) =>
-															sum +
-															Number.parseFloat(
-																item.taxAmount.replace(/[^0-9.-]+/g, ""),
-															),
-														0,
-													),
-												"JPY",
-											),
-										)}
-									</Text>
+								<Table.Cell className="font-bold">
+									{formatAmounts(
+										formatCurrency(
+											taxAmount -
+												taxBreakdown.reduce(
+													(sum, item) =>
+														sum +
+														Number.parseFloat(
+															item.taxAmount.replace(/[^0-9.-]+/g, ""),
+														),
+													0,
+												),
+											"JPY",
+										),
+									)}
 								</Table.Cell>
 							</Table.Row>
 						)}
