@@ -5,7 +5,7 @@ export const formatCurrency = (amount: number, currency = "JPY"): string => {
 		style: "currency",
 		currency: currency,
 		maximumFractionDigits: 0,
-	}).format(amount);
+	}).format(Math.round(amount));
 };
 
 export const calculateTax = (
@@ -56,11 +56,15 @@ export const calculateTax = (
 		taxBreakdown.push({
 			bracket: `¥${prevLimit.toLocaleString()} - ¥${bracket.limit.toLocaleString()}`,
 			rate: `${(bracket.rate * 100).toFixed(0)}%`,
-			taxableAmount: `¥${taxableInThisBracket.toLocaleString()}`,
-			taxAmount: `¥${taxInThisBracket.toLocaleString()}`,
+			taxableAmount: `¥${Math.round(taxableInThisBracket).toLocaleString()}`,
+			taxAmount: `¥${Math.round(taxInThisBracket).toLocaleString()}`,
 		});
 		remainingIncome -= taxableInThisBracket;
 	}
 
-	return { totalTax: tax, breakdown: taxBreakdown, startingBracket };
+	return {
+		totalTax: Math.round(tax),
+		breakdown: taxBreakdown,
+		startingBracket,
+	};
 };

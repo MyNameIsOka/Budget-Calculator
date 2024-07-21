@@ -67,5 +67,15 @@
 		"entertainment": "Entertainment",
 		"communication": "Communication",
 		"miscellaneous": "Miscellaneous"
+	},
+	"addExpense": {
+		"title": "Add New Expense",
+		"titleEn": "Title (English)",
+		"titleJa": "Title (Japanese)",
+		"itemEn": "Item (English)",
+		"itemJa": "Item (Japanese)",
+		"addItem": "Add Item",
+		"submit": "Add Expense",
+		"cancel": "Cancel"
 	}
 }

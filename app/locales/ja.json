@@ -67,5 +67,15 @@
 		"entertainment": "娯楽費",
 		"communication": "通信費",
 		"miscellaneous": "雑費"
+	},
+	"addExpense": {
+		"title": "新しい経費を追加",
+		"titleEn": "タイトル（英語）",
+		"titleJa": "タイトル（日本語）",
+		"itemEn": "項目（英語）",
+		"itemJa": "項目（日本語）",
+		"addItem": "項目を追加",
+		"submit": "経費を追加",
+		"cancel": "キャンセル"
 	}
 }

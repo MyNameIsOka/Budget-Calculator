@@ -1,8 +1,25 @@
-export type ExpenseItems = {
-	[key: string]: Array<{
+export type CustomExpenseItem = {
+	en: string;
+	ja: string;
+};
+
+export type CustomExpenseTitles = {
+	[key: string]: {
 		en: string;
 		ja: string;
-	}>;
+	};
+};
+
+export type CustomExpense = {
+	title: {
+		en: string;
+		ja: string;
+	};
+	items: CustomExpenseItem[];
+};
+
+export type ExpenseItems = {
+	[key: string]: CustomExpenseItem[];
 };
 
 export type TaxBracket = {

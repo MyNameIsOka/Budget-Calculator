@@ -8,7 +8,7 @@ import {
 	Legend,
 	Tooltip,
 } from "recharts";
-import type { Expense } from "~/types";
+import type { Expense, CustomExpenseTitles } from "~/types";
 import { formatCurrency } from "~/utils/calculations";
 import { useTranslation } from "react-i18next";
 
@@ -32,15 +32,28 @@ const COLORS = [
 
 type ExpenseDistributionProps = {
 	expenses: Expense;
+	customExpenseTitles: CustomExpenseTitles;
 };
 
 const ExpenseDistribution: React.FC<ExpenseDistributionProps> = ({
 	expenses,
+	customExpenseTitles,
 }) => {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
+
+	const getExpenseTitle = (key: string) => {
+		if (customExpenseTitles[key]) {
+			return (
+				customExpenseTitles[key][i18n.language as "en" | "ja"] ||
+				customExpenseTitles[key]["en"] ||
+				customExpenseTitles[key]["ja"]
+			);
+		}
+		return t(`expenseCards.${key}`);
+	};
 
 	const pieChartData = Object.entries(expenses).map(([key, value]) => ({
-		name: t(`expenseCards.${key}`),
+		name: getExpenseTitle(key),
 		value: value * 12 * 5,
 	}));
 
@@ -71,10 +84,7 @@ const ExpenseDistribution: React.FC<ExpenseDistributionProps> = ({
 								/>
 							))}
 						</Pie>
-						<Tooltip
-							formatter={(value: number) => formatCurrency(value)}
-							labelFormatter={(label: string) => t(`expenseCards.${label}`)}
-						/>
+						<Tooltip formatter={(value: number) => formatCurrency(value)} />
 						<Legend />
 					</PieChart>
 				</ResponsiveContainer>

@@ -3,6 +3,7 @@ import type {
 	Expense,
 	ExpenseItems,
 	TaxBreakdownItem,
+	CustomExpenseTitles,
 } from "~/types";
 import {
 	Box,
@@ -33,7 +34,7 @@ type BudgetCalculatorProps = {
 
 export default function BudgetCalculator({
 	data,
-	expenseItems,
+	expenseItems: initialExpenseItems,
 }: BudgetCalculatorProps) {
 	const isBrowser = typeof window !== "undefined";
 	const { t } = useTranslation();
@@ -49,6 +50,12 @@ export default function BudgetCalculator({
 	const [expenses, setExpenses] = useState<Expense>(
 		getInitialState("expenses", data.expenses),
 	);
+	const [expenseItems, setExpenseItems] = useState<ExpenseItems>(
+		getInitialState("expenseItems", initialExpenseItems),
+	);
+
+	const [customExpenseTitles, setCustomExpenseTitles] =
+		useState<CustomExpenseTitles>(getInitialState("customExpenseTitles", {}));
 	const [btcPurchasePrice, setBtcPurchasePrice] = useState<number>(
 		getInitialState("btcPurchasePrice", data.btcPurchasePrice),
 	);
@@ -99,6 +106,11 @@ export default function BudgetCalculator({
 	useEffect(() => {
 		if (isBrowser) {
 			localStorage.setItem("expenses", JSON.stringify(expenses));
+			localStorage.setItem("expenseItems", JSON.stringify(expenseItems));
+			localStorage.setItem(
+				"customExpenseTitles",
+				JSON.stringify(customExpenseTitles),
+			);
 			localStorage.setItem(
 				"btcPurchasePrice",
 				JSON.stringify(btcPurchasePrice),
@@ -119,6 +131,8 @@ export default function BudgetCalculator({
 		}
 	}, [
 		expenses,
+		expenseItems,
+		customExpenseTitles,
 		btcPurchasePrice,
 		btcSalePrice,
 		yearlyIncome,
@@ -168,6 +182,16 @@ export default function BudgetCalculator({
 
 	const handleExpenseChange = (key: string, value: number) => {
 		setExpenses((prev) => ({ ...prev, [key]: value }));
+	};
+
+	const handleAddExpense = (newExpense: {
+		title: { en: string; ja: string };
+		items: Array<{ en: string; ja: string }>;
+	}) => {
+		const key = newExpense.title.en.toLowerCase().replace(/\s+/g, "_");
+		setExpenses((prev) => ({ ...prev, [key]: 0 }));
+		setExpenseItems((prev) => ({ ...prev, [key]: newExpense.items }));
+		setCustomExpenseTitles((prev) => ({ ...prev, [key]: newExpense.title }));
 	};
 
 	return (
@@ -226,14 +250,17 @@ export default function BudgetCalculator({
 									<ExpenseInput
 										expenses={expenses}
 										expenseItems={expenseItems}
+										customExpenseTitles={customExpenseTitles}
 										handleExpenseChange={handleExpenseChange}
 										exchangeRate={exchangeRate}
 										foreignCurrency={foreignCurrency}
+										onAddExpense={handleAddExpense}
 									/>
-
 									<Separator size="4" my="6" />
-
-									<ExpenseDistribution expenses={expenses} />
+									<ExpenseDistribution
+										expenses={expenses}
+										customExpenseTitles={customExpenseTitles}
+									/>
 
 									<Separator size="4" my="6" />
 
