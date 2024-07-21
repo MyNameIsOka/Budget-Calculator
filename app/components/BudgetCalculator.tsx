@@ -13,7 +13,6 @@ import {
 	Section,
 	Separator,
 	Text,
-	RadioGroup,
 } from "@radix-ui/themes";
 import ExpenseInput from "./ExpenseInput";
 import ExpenseDistribution from "./ExpenseDistribution";
@@ -21,11 +20,11 @@ import FinancialInputs from "./FinancialInputs";
 import Summary from "./Summary";
 import BitcoinInfoBox from "./BitcoinInfoBox";
 import TaxBreakdown from "./TaxBreakdown";
+import LanguageSettings from "./LanguageSettings";
 import { calculateTax } from "~/utils/calculations";
 import { useEffect, useState } from "react";
 import { Form } from "@remix-run/react";
-import { useTranslations } from "~/useTranslations";
-import LanguageSettings from "./LanguageSettings";
+import { useTranslation } from "react-i18next";
 
 type BudgetCalculatorProps = {
 	data: CombinedData;
@@ -37,6 +36,7 @@ export default function BudgetCalculator({
 	expenseItems,
 }: BudgetCalculatorProps) {
 	const isBrowser = typeof window !== "undefined";
+	const { t } = useTranslation();
 
 	const getInitialState = (key: string, fallback: any) => {
 		if (isBrowser) {
@@ -85,8 +85,6 @@ export default function BudgetCalculator({
 	const [language, setLanguage] = useState<Language>(
 		getInitialState("language", "en"),
 	);
-
-	const t = useTranslations(language);
 
 	// Save state to localStorage whenever it changes (only in the browser)
 	useEffect(() => {
@@ -226,13 +224,8 @@ export default function BudgetCalculator({
 											setForeignCurrency={setForeignCurrency}
 											exchangeRate={exchangeRate}
 											setExchangeRate={setExchangeRate}
-											t={t}
 										/>
-										<LanguageSettings
-											language={language}
-											setLanguage={setLanguage}
-											t={t}
-										/>
+										<LanguageSettings />
 									</Flex>
 								</Box>
 								<Box style={{ flexGrow: 1 }}>
@@ -242,12 +235,11 @@ export default function BudgetCalculator({
 										handleExpenseChange={handleExpenseChange}
 										exchangeRate={exchangeRate}
 										foreignCurrency={foreignCurrency}
-										t={t}
 									/>
 
 									<Separator size="4" my="6" />
 
-									<ExpenseDistribution expenses={expenses} t={t} />
+									<ExpenseDistribution expenses={expenses} />
 
 									<Separator size="4" my="6" />
 
@@ -258,7 +250,6 @@ export default function BudgetCalculator({
 										exchangeRate={exchangeRate}
 										foreignCurrency={foreignCurrency}
 										taxAmount={taxAmount}
-										t={t}
 									/>
 
 									<BitcoinInfoBox
@@ -269,7 +260,6 @@ export default function BudgetCalculator({
 										exchangeRate={exchangeRate}
 										foreignCurrency={foreignCurrency}
 										loanAmountJPY={loanAmountJPY}
-										t={t}
 									/>
 
 									<Separator size="4" my="6" />
@@ -280,7 +270,6 @@ export default function BudgetCalculator({
 										startingBracket={startingBracket}
 										exchangeRate={exchangeRate}
 										foreignCurrency={foreignCurrency}
-										t={t}
 									/>
 								</Box>
 							</Flex>

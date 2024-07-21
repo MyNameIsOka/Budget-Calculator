@@ -8,6 +8,7 @@ import {
 	Card,
 	RadioGroup,
 } from "@radix-ui/themes";
+import { useTranslation } from "react-i18next";
 
 type FinancialInputsProps = {
 	yearlyIncome: number;
@@ -24,7 +25,6 @@ type FinancialInputsProps = {
 	setForeignCurrency: (currency: string) => void;
 	exchangeRate: number;
 	setExchangeRate: (rate: number) => void;
-	t: (key: string, placeholders?: Record<string, string>) => string;
 };
 
 const formatNumberWithCommas = (value: string) => {
@@ -47,8 +47,9 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 	setForeignCurrency,
 	exchangeRate,
 	setExchangeRate,
-	t,
 }) => {
+	const { t } = useTranslation();
+
 	const handleLoanJPYChange = (value: string) => {
 		const amount = Number(value.replace(/,/g, ""));
 		setLoanAmountJPY(amount);

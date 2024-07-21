@@ -1,6 +1,7 @@
 import type React from "react";
 import { Box, Heading, Table } from "@radix-ui/themes";
 import { formatCurrency } from "~/utils/calculations";
+import { useTranslation } from "react-i18next";
 
 type SummaryProps = {
 	totalExpenses: number;
@@ -9,7 +10,6 @@ type SummaryProps = {
 	exchangeRate: number;
 	foreignCurrency: string;
 	taxAmount: number;
-	t: (key: string, placeholders?: Record<string, string>) => string;
 };
 
 const Summary: React.FC<SummaryProps> = ({
@@ -19,8 +19,9 @@ const Summary: React.FC<SummaryProps> = ({
 	exchangeRate,
 	foreignCurrency,
 	taxAmount,
-	t,
 }) => {
+	const { t } = useTranslation();
+
 	const amountToSell = totalExpenses - loanAmountJPY;
 	const btcToSell = amountToSell / (btcSalePrice * exchangeRate);
 	const btcForTaxes = taxAmount / (btcSalePrice * exchangeRate);

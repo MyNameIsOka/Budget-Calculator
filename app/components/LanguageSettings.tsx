@@ -1,28 +1,21 @@
 import type React from "react";
 import { Box, Flex, Text, Heading, Card, RadioGroup } from "@radix-ui/themes";
-import type { Language } from "~/types";
+import { useTranslation } from "react-i18next";
 
-type LanguageSettingsProps = {
-	language: Language;
-	setLanguage: (language: Language) => void;
-	t: (key: string, placeholders?: Record<string, string>) => string;
-};
+const LanguageSettings: React.FC = () => {
+	const { t, i18n } = useTranslation();
 
-const LanguageSettings: React.FC<LanguageSettingsProps> = ({
-	language,
-	setLanguage,
-	t,
-}) => {
+	const changeLanguage = (lng: string) => {
+		i18n.changeLanguage(lng);
+	};
+
 	return (
 		<Card style={{ width: "100%" }}>
 			<Box>
 				<Heading size="3" mb="2">
 					{t("languageSettings.title")}
 				</Heading>
-				<RadioGroup.Root
-					value={language}
-					onValueChange={(value) => setLanguage(value as Language)}
-				>
+				<RadioGroup.Root value={i18n.language} onValueChange={changeLanguage}>
 					<Flex gap="2" direction="column">
 						<Text as="label" size="2">
 							<Flex gap="2">

@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import type { Expense } from "~/types";
 import { formatCurrency } from "~/utils/calculations";
+import { useTranslation } from "react-i18next";
 
 const COLORS = [
 	"#0088FE",
@@ -31,13 +32,13 @@ const COLORS = [
 
 type ExpenseDistributionProps = {
 	expenses: Expense;
-	t: (key: string, placeholders?: Record<string, string>) => string;
 };
 
 const ExpenseDistribution: React.FC<ExpenseDistributionProps> = ({
 	expenses,
-	t,
 }) => {
+	const { t } = useTranslation();
+
 	const pieChartData = Object.entries(expenses).map(([key, value]) => ({
 		name: key.charAt(0).toUpperCase() + key.slice(1),
 		value: value * 12 * 5,

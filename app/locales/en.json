@@ -1,0 +1,51 @@
+{
+	"title": "5-Year Budget Calculator for Japan",
+	"subtitle": "with Bitcoin Tax and {{currency}} Conversion",
+	"financialInputs": {
+		"title": "Financial Inputs",
+		"yearlyIncome": "Yearly Income (JPY)",
+		"btcPurchasePrice": "BTC Purchase Price ({{currency}})",
+		"btcSalePrice": "BTC Sale Price ({{currency}})",
+		"loanAmountJPY": "Loan Amount (JPY)",
+		"loanAmountForeign": "Loan Amount ({{currency}})"
+	},
+	"currencySettings": {
+		"title": "Currency Settings",
+		"exchangeRate": "{{currency}} to JPY Exchange Rate"
+	},
+	"languageSettings": {
+		"title": "Language",
+		"en": "English",
+		"ja": "日本語"
+	},
+	"expenseDistribution": {
+		"title": "Expense Distribution"
+	},
+	"summary": {
+		"title": "Summary",
+		"totalExpenses": "Total Expenses (5 years)",
+		"loanAmount": "Loan amount",
+		"amountToSell": "Amount to sell (after loan)",
+		"taxesFromSelling": "Taxes from selling BTC",
+		"totalBTCNeeded": "Total BTC needed",
+		"effectiveTaxRate": "Effective Tax Rate"
+	},
+	"bitcoinInfo": {
+		"title": "Bitcoin Calculations",
+		"btcForExpenses": "BTC needed for 5 years of expenses (after loan):",
+		"btcForTaxes": "BTC needed to pay for taxes:",
+		"totalBTCToSell": "Total BTC needed to sell:",
+		"equivalentInForeignCurrency": "Equivalent in {{currency}} (at sale price):"
+	},
+	"taxBreakdown": {
+		"title": "Tax Breakdown",
+		"startingBracket": "Starting tax bracket: {{bracket}}",
+		"notCalculated": "Not calculated yet",
+		"bracket": "Bracket",
+		"rate": "Rate",
+		"taxableAmount": "Taxable Amount",
+		"taxAmount": "Tax Amount",
+		"municipalTax": "Municipal Tax (10% flat rate)",
+		"noData": "Not enough data to calculate tax breakdown. Please enter all required information."
+	}
+}
