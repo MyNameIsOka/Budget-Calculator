@@ -7,11 +7,26 @@ import { json } from "@remix-run/node";
 import { useLoaderData, useActionData } from "@remix-run/react";
 import BudgetCalculator from "~/components/BudgetCalculator";
 import { calculateTax } from "~/utils/calculations";
-import type { ActionData, CombinedData, Expense, ExpenseItems } from "~/types";
+import type {
+	ActionData,
+	CombinedData,
+	Expense,
+	ExpenseItems,
+	Language,
+} from "~/types";
 import { initialExpenses, expenseItems } from "~/data/expenseData";
 import assert from "node:assert";
 
-// ... (keep existing meta function)
+export const meta: MetaFunction = () => {
+	return [
+		{ title: "5-Year Budget Calculator for Japan" },
+		{
+			name: "description",
+			content:
+				"Calculate your 5-year budget in Japan with Bitcoin tax considerations",
+		},
+	];
+};
 
 export const loader: LoaderFunction = async () => {
 	console.log("Loader function called");

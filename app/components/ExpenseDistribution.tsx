@@ -31,10 +31,12 @@ const COLORS = [
 
 type ExpenseDistributionProps = {
 	expenses: Expense;
+	t: (key: string, placeholders?: Record<string, string>) => string;
 };
 
 const ExpenseDistribution: React.FC<ExpenseDistributionProps> = ({
 	expenses,
+	t,
 }) => {
 	const pieChartData = Object.entries(expenses).map(([key, value]) => ({
 		name: key.charAt(0).toUpperCase() + key.slice(1),
@@ -44,7 +46,7 @@ const ExpenseDistribution: React.FC<ExpenseDistributionProps> = ({
 	return (
 		<Box>
 			<Heading size="6" mb="4">
-				Expense Distribution
+				{t("expenseDistribution.title")}
 			</Heading>
 			<Box style={{ height: 400, width: "100%" }}>
 				<ResponsiveContainer>

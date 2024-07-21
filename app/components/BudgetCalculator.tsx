@@ -3,6 +3,7 @@ import type {
 	Expense,
 	ExpenseItems,
 	TaxBreakdownItem,
+	Language,
 } from "~/types";
 import {
 	Box,
@@ -12,6 +13,7 @@ import {
 	Section,
 	Separator,
 	Text,
+	RadioGroup,
 } from "@radix-ui/themes";
 import ExpenseInput from "./ExpenseInput";
 import ExpenseDistribution from "./ExpenseDistribution";
@@ -22,6 +24,8 @@ import TaxBreakdown from "./TaxBreakdown";
 import { calculateTax } from "~/utils/calculations";
 import { useEffect, useState } from "react";
 import { Form } from "@remix-run/react";
+import { useTranslations } from "~/useTranslations";
+import LanguageSettings from "./LanguageSettings";
 
 type BudgetCalculatorProps = {
 	data: CombinedData;
@@ -78,85 +82,51 @@ export default function BudgetCalculator({
 	const [loanAmountForeign, setLoanAmountForeign] = useState<number>(
 		getInitialState("loanAmountForeign", data.loanAmountForeign),
 	);
+	const [language, setLanguage] = useState<Language>(
+		getInitialState("language", "en"),
+	);
+
+	const t = useTranslations(language);
 
 	// Save state to localStorage whenever it changes (only in the browser)
 	useEffect(() => {
 		if (isBrowser) {
 			localStorage.setItem("expenses", JSON.stringify(expenses));
-		}
-	}, [expenses, isBrowser]);
-
-	useEffect(() => {
-		if (isBrowser) {
 			localStorage.setItem(
 				"btcPurchasePrice",
 				JSON.stringify(btcPurchasePrice),
 			);
-		}
-	}, [btcPurchasePrice, isBrowser]);
-
-	useEffect(() => {
-		if (isBrowser) {
 			localStorage.setItem("btcSalePrice", JSON.stringify(btcSalePrice));
-		}
-	}, [btcSalePrice, isBrowser]);
-
-	useEffect(() => {
-		if (isBrowser) {
 			localStorage.setItem("yearlyIncome", JSON.stringify(yearlyIncome));
-		}
-	}, [yearlyIncome, isBrowser]);
-
-	useEffect(() => {
-		if (isBrowser) {
 			localStorage.setItem("totalExpenses", JSON.stringify(totalExpenses));
-		}
-	}, [totalExpenses, isBrowser]);
-
-	useEffect(() => {
-		if (isBrowser) {
 			localStorage.setItem("taxAmount", JSON.stringify(taxAmount));
-		}
-	}, [taxAmount, isBrowser]);
-
-	useEffect(() => {
-		if (isBrowser) {
 			localStorage.setItem("taxBreakdown", JSON.stringify(taxBreakdown));
-		}
-	}, [taxBreakdown, isBrowser]);
-
-	useEffect(() => {
-		if (isBrowser) {
 			localStorage.setItem("startingBracket", JSON.stringify(startingBracket));
-		}
-	}, [startingBracket, isBrowser]);
-
-	useEffect(() => {
-		if (isBrowser) {
 			localStorage.setItem("exchangeRate", JSON.stringify(exchangeRate));
-		}
-	}, [exchangeRate, isBrowser]);
-
-	useEffect(() => {
-		if (isBrowser) {
 			localStorage.setItem("foreignCurrency", JSON.stringify(foreignCurrency));
-		}
-	}, [foreignCurrency, isBrowser]);
-
-	useEffect(() => {
-		if (isBrowser) {
 			localStorage.setItem("loanAmountJPY", JSON.stringify(loanAmountJPY));
-		}
-	}, [loanAmountJPY, isBrowser]);
-
-	useEffect(() => {
-		if (isBrowser) {
 			localStorage.setItem(
 				"loanAmountForeign",
 				JSON.stringify(loanAmountForeign),
 			);
+			localStorage.setItem("language", JSON.stringify(language));
 		}
-	}, [loanAmountForeign, isBrowser]);
+	}, [
+		expenses,
+		btcPurchasePrice,
+		btcSalePrice,
+		yearlyIncome,
+		totalExpenses,
+		taxAmount,
+		taxBreakdown,
+		startingBracket,
+		exchangeRate,
+		foreignCurrency,
+		loanAmountJPY,
+		loanAmountForeign,
+		language,
+		isBrowser,
+	]);
 
 	useEffect(() => {
 		const monthlyTotal = Object.values(expenses).reduce<number>(
@@ -204,6 +174,10 @@ export default function BudgetCalculator({
 		setExchangeRate(value);
 	};
 
+	const handleLanguageChange = (value: Language) => {
+		setLanguage(value);
+	};
+
 	return (
 		<Box>
 			<Section size="3">
@@ -217,10 +191,10 @@ export default function BudgetCalculator({
 							}}
 						>
 							<Heading size="8" mb="2" style={{ color: "white" }}>
-								5-Year Budget Calculator for Japan
+								{t("title")}
 							</Heading>
 							<Text size="5" style={{ color: "var(--blue-1)" }}>
-								with Bitcoin Tax and {foreignCurrency} Conversion
+								{t("subtitle", { currency: foreignCurrency })}
 							</Text>
 						</Box>
 
@@ -232,22 +206,34 @@ export default function BudgetCalculator({
 							/>
 							<Flex gap="6">
 								<Box style={{ width: "300px", flexShrink: 0 }}>
-									<FinancialInputs
-										yearlyIncome={yearlyIncome}
-										setYearlyIncome={setYearlyIncome}
-										btcPurchasePrice={btcPurchasePrice}
-										setBtcPurchasePrice={setBtcPurchasePrice}
-										btcSalePrice={btcSalePrice}
-										setBtcSalePrice={setBtcSalePrice}
-										loanAmountJPY={loanAmountJPY}
-										setLoanAmountJPY={setLoanAmountJPY}
-										loanAmountForeign={loanAmountForeign}
-										setLoanAmountForeign={setLoanAmountForeign}
-										foreignCurrency={foreignCurrency}
-										setForeignCurrency={setForeignCurrency}
-										exchangeRate={exchangeRate}
-										setExchangeRate={setExchangeRate}
-									/>
+									<Flex
+										direction="column"
+										gap="4"
+										style={{ position: "sticky", top: "20px" }}
+									>
+										<FinancialInputs
+											yearlyIncome={yearlyIncome}
+											setYearlyIncome={setYearlyIncome}
+											btcPurchasePrice={btcPurchasePrice}
+											setBtcPurchasePrice={setBtcPurchasePrice}
+											btcSalePrice={btcSalePrice}
+											setBtcSalePrice={setBtcSalePrice}
+											loanAmountJPY={loanAmountJPY}
+											setLoanAmountJPY={setLoanAmountJPY}
+											loanAmountForeign={loanAmountForeign}
+											setLoanAmountForeign={setLoanAmountForeign}
+											foreignCurrency={foreignCurrency}
+											setForeignCurrency={setForeignCurrency}
+											exchangeRate={exchangeRate}
+											setExchangeRate={setExchangeRate}
+											t={t}
+										/>
+										<LanguageSettings
+											language={language}
+											setLanguage={setLanguage}
+											t={t}
+										/>
+									</Flex>
 								</Box>
 								<Box style={{ flexGrow: 1 }}>
 									<ExpenseInput
@@ -256,11 +242,12 @@ export default function BudgetCalculator({
 										handleExpenseChange={handleExpenseChange}
 										exchangeRate={exchangeRate}
 										foreignCurrency={foreignCurrency}
+										t={t}
 									/>
 
 									<Separator size="4" my="6" />
 
-									<ExpenseDistribution expenses={expenses} />
+									<ExpenseDistribution expenses={expenses} t={t} />
 
 									<Separator size="4" my="6" />
 
@@ -271,6 +258,7 @@ export default function BudgetCalculator({
 										exchangeRate={exchangeRate}
 										foreignCurrency={foreignCurrency}
 										taxAmount={taxAmount}
+										t={t}
 									/>
 
 									<BitcoinInfoBox
@@ -281,6 +269,7 @@ export default function BudgetCalculator({
 										exchangeRate={exchangeRate}
 										foreignCurrency={foreignCurrency}
 										loanAmountJPY={loanAmountJPY}
+										t={t}
 									/>
 
 									<Separator size="4" my="6" />
@@ -291,6 +280,7 @@ export default function BudgetCalculator({
 										startingBracket={startingBracket}
 										exchangeRate={exchangeRate}
 										foreignCurrency={foreignCurrency}
+										t={t}
 									/>
 								</Box>
 							</Flex>

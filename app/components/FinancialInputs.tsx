@@ -24,6 +24,7 @@ type FinancialInputsProps = {
 	setForeignCurrency: (currency: string) => void;
 	exchangeRate: number;
 	setExchangeRate: (rate: number) => void;
+	t: (key: string, placeholders?: Record<string, string>) => string;
 };
 
 const formatNumberWithCommas = (value: string) => {
@@ -46,6 +47,7 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 	setForeignCurrency,
 	exchangeRate,
 	setExchangeRate,
+	t,
 }) => {
 	const handleLoanJPYChange = (value: string) => {
 		const amount = Number(value.replace(/,/g, ""));
@@ -69,12 +71,12 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 			<Flex direction="column" gap="4">
 				<Box>
 					<Heading size="3" mb="3">
-						Financial Inputs
+						{t("financialInputs.title")}
 					</Heading>
 					<Flex direction="column" gap="2">
 						<Box>
 							<Text as="label" size="1" weight="bold">
-								Yearly Income (JPY)
+								{t("financialInputs.yearlyIncome")}
 							</Text>
 							<TextField.Root
 								size="1"
@@ -86,7 +88,9 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 						</Box>
 						<Box>
 							<Text as="label" size="1" weight="bold">
-								BTC Purchase Price ({foreignCurrency})
+								{t("financialInputs.btcPurchasePrice", {
+									currency: foreignCurrency,
+								})}
 							</Text>
 							<TextField.Root
 								size="1"
@@ -98,7 +102,9 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 						</Box>
 						<Box>
 							<Text as="label" size="1" weight="bold">
-								BTC Sale Price ({foreignCurrency})
+								{t("financialInputs.btcSalePrice", {
+									currency: foreignCurrency,
+								})}
 							</Text>
 							<TextField.Root
 								size="1"
@@ -110,7 +116,7 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 						</Box>
 						<Box>
 							<Text as="label" size="1" weight="bold">
-								Loan Amount (JPY)
+								{t("financialInputs.loanAmountJPY")}
 							</Text>
 							<TextField.Root
 								size="1"
@@ -120,7 +126,9 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 						</Box>
 						<Box>
 							<Text as="label" size="1" weight="bold">
-								Loan Amount ({foreignCurrency})
+								{t("financialInputs.loanAmountForeign", {
+									currency: foreignCurrency,
+								})}
 							</Text>
 							<TextField.Root
 								size="1"
@@ -133,7 +141,7 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 
 				<Box>
 					<Heading size="3" mb="3">
-						Currency Settings
+						{t("currencySettings.title")}
 					</Heading>
 					<Flex direction="column" gap="2">
 						<RadioGroup.Root
@@ -154,7 +162,11 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 							</Flex>
 						</RadioGroup.Root>
 						<Flex align="center" gap="2">
-							<Text size="2">1 {foreignCurrency} =</Text>
+							<Text size="2">
+								{t("currencySettings.exchangeRate", {
+									currency: foreignCurrency,
+								})}
+							</Text>
 							<TextField.Root
 								type="number"
 								value={exchangeRate}
