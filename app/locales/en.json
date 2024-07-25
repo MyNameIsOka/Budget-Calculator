@@ -6,7 +6,6 @@
 		"label": "Number of Years"
 	},
 	"financialInputs": {
-		"title": "Financial Inputs",
 		"timeFrame": "Time Frame (years)",
 		"yearlyIncome": "Yearly Income",
 		"btcPurchasePrice": "BTC Purchase Price ({{currency}})",

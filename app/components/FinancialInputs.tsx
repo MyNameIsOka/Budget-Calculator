@@ -147,9 +147,6 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 		<Card className="w-full">
 			<Flex direction="column" gap="4">
 				<Box>
-					<Heading size="3" mb="3">
-						{t("financialInputs.title")}
-					</Heading>
 					<Flex direction="column" gap="2">
 						<Box>
 							<Text as="label" size="2" weight="bold" mb="1">
