@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
 	Box,
 	Flex,
@@ -50,13 +50,33 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 }) => {
 	const { t } = useTranslation();
 	const [loading, setLoading] = React.useState(false);
+	const [yearlyIncomeForeign, setYearlyIncomeForeign] = React.useState(
+		Math.round(yearlyIncome / exchangeRate),
+	);
+	const prevCurrency = useRef(foreignCurrency);
+	const prevExchangeRate = useRef(exchangeRate);
 
 	useEffect(() => {
 		const fetchExchangeRates = async () => {
 			setLoading(true);
 			try {
 				const rates = await getExchangeRates();
-				setExchangeRate(rates[foreignCurrency as keyof typeof rates]);
+				const newRate = rates[foreignCurrency as keyof typeof rates];
+				setExchangeRate(newRate);
+
+				// Update foreign currency amounts
+				setYearlyIncomeForeign(Math.round(yearlyIncome / newRate));
+				setLoanAmountForeign(Math.round(loanAmountJPY / newRate));
+
+				// Convert BTC prices if currency changed
+				if (prevCurrency.current !== foreignCurrency) {
+					const conversionFactor = prevExchangeRate.current / newRate;
+					setBtcPurchasePrice(Math.round(btcPurchasePrice * conversionFactor));
+					setBtcSalePrice(Math.round(btcSalePrice * conversionFactor));
+				}
+
+				prevCurrency.current = foreignCurrency;
+				prevExchangeRate.current = newRate;
 			} catch (error) {
 				console.error("Failed to fetch exchange rates:", error);
 			} finally {
@@ -65,7 +85,17 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 		};
 
 		fetchExchangeRates();
-	}, [foreignCurrency, setExchangeRate]);
+	}, [
+		foreignCurrency,
+		setExchangeRate,
+		yearlyIncome,
+		setLoanAmountForeign,
+		loanAmountJPY,
+		btcPurchasePrice,
+		setBtcPurchasePrice,
+		btcSalePrice,
+		setBtcSalePrice,
+	]);
 
 	const handleInputChange = (
 		value: string,
@@ -74,6 +104,22 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 		const numericValue = Number.parseInt(value.replace(/[^\d]/g, ""), 10);
 		if (!Number.isNaN(numericValue)) {
 			setter(numericValue);
+		}
+	};
+
+	const handleYearlyIncomeJPYChange = (value: string) => {
+		const amount = Number.parseInt(value.replace(/[^\d]/g, ""), 10);
+		if (!Number.isNaN(amount)) {
+			setYearlyIncome(amount);
+			setYearlyIncomeForeign(Math.round(amount / exchangeRate));
+		}
+	};
+
+	const handleYearlyIncomeForeignChange = (value: string) => {
+		const amount = Number.parseInt(value.replace(/[^\d]/g, ""), 10);
+		if (!Number.isNaN(amount)) {
+			setYearlyIncomeForeign(amount);
+			setYearlyIncome(Math.round(amount * exchangeRate));
 		}
 	};
 
@@ -93,6 +139,10 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 		}
 	};
 
+	const getCurrencySymbol = (currency: string) => {
+		return currency === "USD" ? "$" : "€";
+	};
+
 	return (
 		<Card className="w-full">
 			<Flex direction="column" gap="4">
@@ -102,16 +152,41 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 					</Heading>
 					<Flex direction="column" gap="2">
 						<Box>
-							<Text as="label" size="2" weight="bold">
+							<Text as="label" size="2" weight="bold" mb="1">
 								{t("financialInputs.yearlyIncome")}
 							</Text>
-							<TextField.Root
-								size="2"
-								value={formatAmount(yearlyIncome)}
-								onChange={(e) =>
-									handleInputChange(e.target.value, setYearlyIncome)
-								}
-							/>
+							<Flex gap="2">
+								<Flex direction="column" style={{ flex: 1 }}>
+									<Text size="1" mb="1">
+										JPY
+									</Text>
+									<TextField.Root
+										size="2"
+										value={formatAmount(yearlyIncome)}
+										onChange={(e) =>
+											handleYearlyIncomeJPYChange(e.target.value)
+										}
+									>
+										<TextField.Slot>¥</TextField.Slot>
+									</TextField.Root>
+								</Flex>
+								<Flex direction="column" style={{ flex: 1 }}>
+									<Text size="1" mb="1">
+										{foreignCurrency}
+									</Text>
+									<TextField.Root
+										size="2"
+										value={formatAmount(yearlyIncomeForeign)}
+										onChange={(e) =>
+											handleYearlyIncomeForeignChange(e.target.value)
+										}
+									>
+										<TextField.Slot>
+											{getCurrencySymbol(foreignCurrency)}
+										</TextField.Slot>
+									</TextField.Root>
+								</Flex>
+							</Flex>
 						</Box>
 						<Box>
 							<Text as="label" size="2" weight="bold">
@@ -125,7 +200,11 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 								onChange={(e) =>
 									handleInputChange(e.target.value, setBtcPurchasePrice)
 								}
-							/>
+							>
+								<TextField.Slot>
+									{getCurrencySymbol(foreignCurrency)}
+								</TextField.Slot>
+							</TextField.Root>
 						</Box>
 						<Box>
 							<Text as="label" size="2" weight="bold">
@@ -139,29 +218,44 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 								onChange={(e) =>
 									handleInputChange(e.target.value, setBtcSalePrice)
 								}
-							/>
+							>
+								<TextField.Slot>
+									{getCurrencySymbol(foreignCurrency)}
+								</TextField.Slot>
+							</TextField.Root>
 						</Box>
 						<Box>
-							<Text as="label" size="2" weight="bold">
-								{t("financialInputs.loanAmountJPY")}
+							<Text as="label" size="2" weight="bold" mb="1">
+								{t("financialInputs.loanAmount")}
 							</Text>
-							<TextField.Root
-								size="2"
-								value={formatAmount(loanAmountJPY)}
-								onChange={(e) => handleLoanJPYChange(e.target.value)}
-							/>
-						</Box>
-						<Box>
-							<Text as="label" size="2" weight="bold">
-								{t("financialInputs.loanAmountForeign", {
-									currency: foreignCurrency,
-								})}
-							</Text>
-							<TextField.Root
-								size="2"
-								value={formatAmount(loanAmountForeign)}
-								onChange={(e) => handleLoanForeignChange(e.target.value)}
-							/>
+							<Flex gap="2">
+								<Flex direction="column" style={{ flex: 1 }}>
+									<Text size="1" mb="1">
+										JPY
+									</Text>
+									<TextField.Root
+										size="2"
+										value={formatAmount(loanAmountJPY)}
+										onChange={(e) => handleLoanJPYChange(e.target.value)}
+									>
+										<TextField.Slot>¥</TextField.Slot>
+									</TextField.Root>
+								</Flex>
+								<Flex direction="column" style={{ flex: 1 }}>
+									<Text size="1" mb="1">
+										{foreignCurrency}
+									</Text>
+									<TextField.Root
+										size="2"
+										value={formatAmount(loanAmountForeign)}
+										onChange={(e) => handleLoanForeignChange(e.target.value)}
+									>
+										<TextField.Slot>
+											{getCurrencySymbol(foreignCurrency)}
+										</TextField.Slot>
+									</TextField.Root>
+								</Flex>
+							</Flex>
 						</Box>
 					</Flex>
 				</Box>

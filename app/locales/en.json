@@ -8,11 +8,10 @@
 	"financialInputs": {
 		"title": "Financial Inputs",
 		"timeFrame": "Time Frame (years)",
-		"yearlyIncome": "Yearly Income (JPY)",
+		"yearlyIncome": "Yearly Income",
 		"btcPurchasePrice": "BTC Purchase Price ({{currency}})",
 		"btcSalePrice": "BTC Sale Price ({{currency}})",
-		"loanAmountJPY": "Loan Amount (JPY)",
-		"loanAmountForeign": "Loan Amount ({{currency}})"
+		"loanAmount": "Loan Amount"
 	},
 	"currencySettings": {
 		"title": "Currency Settings",

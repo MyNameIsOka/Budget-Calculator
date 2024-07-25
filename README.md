@@ -1,5 +1,5 @@
 ### Todo
 
-- Add USD Yearly Income
-- fix bug where 1 USD = 110 JPY after clicking Reset button
+- calculate the interest needed to pay for the loan over the specified time frame
+  - compare that to the tax savings
 - dark mode

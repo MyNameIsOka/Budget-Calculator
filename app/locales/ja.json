@@ -11,8 +11,7 @@
 		"yearlyIncome": "年収（円）",
 		"btcPurchasePrice": "ビットコイン購入価格（{{currency}}）",
 		"btcSalePrice": "ビットコイン売却価格（{{currency}}）",
-		"loanAmountJPY": "ローン金額（円）",
-		"loanAmountForeign": "ローン金額（{{currency}}）"
+		"loanAmount": "ローン金額"
 	},
 	"currencySettings": {
 		"title": "通貨設定",

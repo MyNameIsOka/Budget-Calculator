@@ -28,6 +28,12 @@ export default function App() {
 	useEffect(() => {
 		// Initialize exchange rates
 		getExchangeRates().catch(console.error);
+
+		// Set default language if not already set
+		if (!localStorage.getItem("i18nextLng")) {
+			localStorage.setItem("i18nextLng", "en-GB");
+			i18n.changeLanguage("en-GB");
+		}
 	}, []);
 
 	return (
