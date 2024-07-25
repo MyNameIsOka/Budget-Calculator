@@ -29,6 +29,7 @@ import ResetButton from "./ResetButton";
 import { calculateTax } from "~/utils/calculations";
 import { useTranslation } from "react-i18next";
 import { getExchangeRates } from "~/utils/exchangeRate";
+import ContactNote from "./ContactNote";
 
 // Custom hook for media query
 function useMediaQuery(query: string) {
@@ -50,6 +51,7 @@ function useMediaQuery(query: string) {
 type BudgetCalculatorProps = {
 	data: CombinedData;
 	expenseItems: ExpenseItems;
+	donationLink: string;
 };
 
 const EXCHANGE_RATE_CACHE_KEY = "exchangeRateCache";
@@ -57,6 +59,7 @@ const EXCHANGE_RATE_CACHE_KEY = "exchangeRateCache";
 export default function BudgetCalculator({
 	data,
 	expenseItems: initialExpenseItems,
+	donationLink,
 }: BudgetCalculatorProps) {
 	const isBrowser = typeof window !== "undefined";
 	const { t } = useTranslation();
@@ -416,6 +419,12 @@ export default function BudgetCalculator({
 						startingBracket={startingBracket}
 						exchangeRate={exchangeRate}
 						foreignCurrency={foreignCurrency}
+					/>
+
+					<ContactNote
+						socialMediaLink="https://primal.net/p/npub1hatdj5gp9y9373pczfnzf8pr8gz24we24yw0566fpm3y7mx333gqvksxe9"
+						socialMediaPlatform="primal.net"
+						donationLink={donationLink}
 					/>
 				</Box>
 			</Flex>

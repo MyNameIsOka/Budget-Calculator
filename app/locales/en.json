@@ -93,5 +93,11 @@
 	},
 	"reset": {
 		"button": "Reset to Initial State"
+	},
+	"contactNote": {
+		"text": "Thank you for using the Budget Calculator for Japan! If you have any questions or feedback, feel free to reach out on nostr. If you feel like it, you can also zap me :)",
+		"contactMe": "Contact me on",
+		"donation": "If you find this tool helpful, you can",
+		"zapMe": "zap me"
 	}
 }
