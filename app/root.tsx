@@ -11,7 +11,7 @@ import { Theme } from "@radix-ui/themes";
 import styles from "@radix-ui/themes/styles.css?url";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getExchangeRates } from "~/utils/exchangeRate";
 import customStyles from "~/styles/custom.css?url";
 
@@ -26,6 +26,8 @@ export const links: LinksFunction = () => [
 ];
 
 export default function App() {
+	const [theme, setTheme] = useState<"light" | "dark">("light");
+
 	useEffect(() => {
 		// Initialize exchange rates
 		getExchangeRates().catch(console.error);
@@ -35,10 +37,22 @@ export default function App() {
 			localStorage.setItem("i18nextLng", "en-GB");
 			i18n.changeLanguage("en-GB");
 		}
+
+		// Set theme based on user preference
+		const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
+		if (savedTheme) {
+			setTheme(savedTheme);
+		} else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+			setTheme("dark");
+		}
 	}, []);
 
+	useEffect(() => {
+		localStorage.setItem("theme", theme);
+	}, [theme]);
+
 	return (
-		<html lang="en" className="h-full">
+		<html lang="en" className={`h-full ${theme}`}>
 			<head>
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -52,8 +66,9 @@ export default function App() {
 						grayColor="sand"
 						radius="medium"
 						scaling="95%"
+						appearance={theme}
 					>
-						<Outlet />
+						<Outlet context={{ theme, setTheme }} />
 					</Theme>
 				</I18nextProvider>
 				<ScrollRestoration />

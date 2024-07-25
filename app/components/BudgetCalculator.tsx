@@ -5,15 +5,7 @@ import type {
 	TaxBreakdownItem,
 	CustomExpenseTitles,
 } from "~/types";
-import {
-	Box,
-	Container,
-	Flex,
-	Text,
-	Separator,
-	Button,
-	Heading,
-} from "@radix-ui/themes";
+import { Box, Flex, Text, Separator, Button, Heading } from "@radix-ui/themes";
 import { useState, useEffect } from "react";
 import { GearIcon } from "@radix-ui/react-icons";
 import ExpenseInput from "./ExpenseInput";
@@ -30,6 +22,8 @@ import { calculateTax } from "~/utils/calculations";
 import { useTranslation } from "react-i18next";
 import { getExchangeRates } from "~/utils/exchangeRate";
 import ContactNote from "./ContactNote";
+import { useOutletContext } from "@remix-run/react";
+import ThemeToggle from "./ThemeToggle";
 
 // Custom hook for media query
 function useMediaQuery(query: string) {
@@ -290,6 +284,11 @@ export default function BudgetCalculator({
 
 	const isSmallScreen = useMediaQuery("(max-width: 768px)");
 
+	const { theme, setTheme } = useOutletContext<{
+		theme: "light" | "dark";
+		setTheme: (theme: "light" | "dark") => void;
+	}>();
+
 	return (
 		<Box className="relative">
 			<Box className="text-center mb-6">
@@ -332,6 +331,7 @@ export default function BudgetCalculator({
 				>
 					<LanguageSettings />
 					<ResetButton onReset={resetToInitialState} />
+					<ThemeToggle theme={theme} setTheme={setTheme} />
 				</SettingsDrawer>
 				{!isSmallScreen && (
 					<Box style={{ width: "300px", flexShrink: 0 }}>
@@ -361,6 +361,7 @@ export default function BudgetCalculator({
 								setExchangeRate={setExchangeRate}
 							/>
 							<LanguageSettings />
+							<ThemeToggle theme={theme} setTheme={setTheme} />
 							<ResetButton onReset={resetToInitialState} />
 						</Flex>
 					</Box>

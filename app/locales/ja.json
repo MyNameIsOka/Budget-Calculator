@@ -42,7 +42,10 @@
 		"equivalentInForeignCurrency": "{{currency}}相当額（売却価格で）："
 	},
 	"settings": {
-		"title": "設定"
+		"title": "設定",
+		"theme": "テーマ",
+		"lightMode": "ライトモード",
+		"darkMode": "ダークモード"
 	},
 	"taxBreakdown": {
 		"title": "税金内訳",

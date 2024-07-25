@@ -42,7 +42,10 @@
 		"equivalentInForeignCurrency": "Equivalent in {{currency}} (at sale price):"
 	},
 	"settings": {
-		"title": "Settings"
+		"title": "Settings",
+		"theme": "Theme",
+		"lightMode": "Light Mode",
+		"darkMode": "Dark Mode"
 	},
 	"taxBreakdown": {
 		"title": "Tax Breakdown",

@@ -97,11 +97,7 @@ const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
 							onChange={(e) => setTimeFrame(Number(e.target.value))}
 						/>
 					</Box>
-					<FinancialInputs
-						{...props}
-						timeFrame={timeFrame}
-						setTimeFrame={setTimeFrame}
-					/>
+					<FinancialInputs {...props} />
 					{children}
 				</Flex>
 			</Box>
