@@ -29,7 +29,7 @@ type FinancialInputsProps = {
 };
 
 const formatAmount = (amount: number): string => {
-	return Math.round(amount).toLocaleString();
+	return amount.toLocaleString();
 };
 
 const FinancialInputs: React.FC<FinancialInputsProps> = ({
@@ -101,42 +101,32 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 		value: string,
 		setter: (value: number) => void,
 	) => {
-		const numericValue = Number.parseInt(value.replace(/[^\d]/g, ""), 10);
-		if (!Number.isNaN(numericValue)) {
-			setter(numericValue);
-		}
+		const numericValue = value === "" ? 0 : Number(value.replace(/[^\d]/g, ""));
+		setter(numericValue);
 	};
 
 	const handleYearlyIncomeJPYChange = (value: string) => {
-		const amount = Number.parseInt(value.replace(/[^\d]/g, ""), 10);
-		if (!Number.isNaN(amount)) {
-			setYearlyIncome(amount);
-			setYearlyIncomeForeign(Math.round(amount / exchangeRate));
-		}
+		const amount = value === "" ? 0 : Number(value.replace(/[^\d]/g, ""));
+		setYearlyIncome(amount);
+		setYearlyIncomeForeign(Math.round(amount / exchangeRate));
 	};
 
 	const handleYearlyIncomeForeignChange = (value: string) => {
-		const amount = Number.parseInt(value.replace(/[^\d]/g, ""), 10);
-		if (!Number.isNaN(amount)) {
-			setYearlyIncomeForeign(amount);
-			setYearlyIncome(Math.round(amount * exchangeRate));
-		}
+		const amount = value === "" ? 0 : Number(value.replace(/[^\d]/g, ""));
+		setYearlyIncomeForeign(amount);
+		setYearlyIncome(Math.round(amount * exchangeRate));
 	};
 
 	const handleLoanJPYChange = (value: string) => {
-		const amount = Number.parseInt(value.replace(/[^\d]/g, ""), 10);
-		if (!Number.isNaN(amount)) {
-			setLoanAmountJPY(amount);
-			setLoanAmountForeign(Math.round(amount / exchangeRate));
-		}
+		const amount = value === "" ? 0 : Number(value.replace(/[^\d]/g, ""));
+		setLoanAmountJPY(amount);
+		setLoanAmountForeign(Math.round(amount / exchangeRate));
 	};
 
 	const handleLoanForeignChange = (value: string) => {
-		const amount = Number.parseInt(value.replace(/[^\d]/g, ""), 10);
-		if (!Number.isNaN(amount)) {
-			setLoanAmountForeign(amount);
-			setLoanAmountJPY(Math.round(amount * exchangeRate));
-		}
+		const amount = value === "" ? 0 : Number(value.replace(/[^\d]/g, ""));
+		setLoanAmountForeign(amount);
+		setLoanAmountJPY(Math.round(amount * exchangeRate));
 	};
 
 	const getCurrencySymbol = (currency: string) => {
@@ -159,7 +149,7 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 									</Text>
 									<TextField.Root
 										size="2"
-										value={formatAmount(yearlyIncome)}
+										value={yearlyIncome === 0 ? "" : formatAmount(yearlyIncome)}
 										onChange={(e) =>
 											handleYearlyIncomeJPYChange(e.target.value)
 										}
@@ -173,7 +163,11 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 									</Text>
 									<TextField.Root
 										size="2"
-										value={formatAmount(yearlyIncomeForeign)}
+										value={
+											yearlyIncomeForeign === 0
+												? ""
+												: formatAmount(yearlyIncomeForeign)
+										}
 										onChange={(e) =>
 											handleYearlyIncomeForeignChange(e.target.value)
 										}
@@ -193,7 +187,9 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 							</Text>
 							<TextField.Root
 								size="2"
-								value={formatAmount(btcPurchasePrice)}
+								value={
+									btcPurchasePrice === 0 ? "" : formatAmount(btcPurchasePrice)
+								}
 								onChange={(e) =>
 									handleInputChange(e.target.value, setBtcPurchasePrice)
 								}
@@ -211,7 +207,7 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 							</Text>
 							<TextField.Root
 								size="2"
-								value={formatAmount(btcSalePrice)}
+								value={btcSalePrice === 0 ? "" : formatAmount(btcSalePrice)}
 								onChange={(e) =>
 									handleInputChange(e.target.value, setBtcSalePrice)
 								}
@@ -232,7 +228,9 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 									</Text>
 									<TextField.Root
 										size="2"
-										value={formatAmount(loanAmountJPY)}
+										value={
+											loanAmountJPY === 0 ? "" : formatAmount(loanAmountJPY)
+										}
 										onChange={(e) => handleLoanJPYChange(e.target.value)}
 									>
 										<TextField.Slot>¥</TextField.Slot>
@@ -244,7 +242,11 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 									</Text>
 									<TextField.Root
 										size="2"
-										value={formatAmount(loanAmountForeign)}
+										value={
+											loanAmountForeign === 0
+												? ""
+												: formatAmount(loanAmountForeign)
+										}
 										onChange={(e) => handleLoanForeignChange(e.target.value)}
 									>
 										<TextField.Slot>
