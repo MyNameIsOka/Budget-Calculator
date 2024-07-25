@@ -12,12 +12,24 @@ import { initialExpenses, expenseItems } from "~/data/expenseData";
 
 export const meta: MetaFunction = () => {
 	return [
-		{ title: "5-Year Budget Calculator for Japan" },
+		{ title: "Bitcoin Drawdown Calculator for Japan" },
 		{
 			name: "description",
 			content:
-				"Calculate your 5-year budget in Japan with Bitcoin tax considerations",
+				"Plan your long-term Bitcoin liquidation strategy for living in Japan. Calculate optimal BTC sell-off, estimate living expenses, and forecast tax implications based on Japan's tax system.",
 		},
+		{
+			name: "keywords",
+			content:
+				"Bitcoin, Japan, tax calculator, crypto liquidation, living expenses, long-term planning, BTC to JPY, Japanese tax system",
+		},
+		{ property: "og:title", content: "Bitcoin Drawdown Calculator for Japan" },
+		{
+			property: "og:description",
+			content:
+				"Optimize your Bitcoin exit strategy for long-term living in Japan. Calculate sell-off amounts, estimate expenses, and forecast taxes.",
+		},
+		{ property: "og:type", content: "website" },
 	];
 };
 
