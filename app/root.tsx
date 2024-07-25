@@ -19,11 +19,7 @@ import customStyles from "~/styles/custom.css?url";
 import tailwindStyles from "./tailwind.css?url";
 
 export const links: LinksFunction = () => [
-	{
-		rel: "icon",
-		href: "/favicon.ico",
-		type: "image/x-icon",
-	},
+	{ rel: "icon", href: "/favicon.ico" },
 	{ rel: "stylesheet", href: tailwindStyles },
 	{ rel: "stylesheet", href: styles },
 	{ rel: "stylesheet", href: customStyles },
