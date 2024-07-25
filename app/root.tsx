@@ -8,15 +8,15 @@ import {
 	ScrollRestoration,
 } from "@remix-run/react";
 import { Theme } from "@radix-ui/themes";
-import styles from "@radix-ui/themes/styles.css";
+import styles from "@radix-ui/themes/styles.css?url";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import { useEffect } from "react";
 import { getExchangeRates } from "~/utils/exchangeRate";
-import customStyles from "~/styles/custom.css";
+import customStyles from "~/styles/custom.css?url";
 
 // Import Tailwind CSS
-import tailwindStyles from "./tailwind.css";
+import tailwindStyles from "./tailwind.css?url";
 
 export const links: LinksFunction = () => [
 	{ rel: "stylesheet", href: tailwindStyles },
