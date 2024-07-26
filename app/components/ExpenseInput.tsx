@@ -158,7 +158,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 		setNewItemText(expenseItems[key][index]);
 	};
 
-	const handleSaveExpenseItem = () => {
+	const handleSaveExpenseItem = useCallback(() => {
 		if (editingExpenseItem) {
 			const { key, index } = editingExpenseItem;
 			const newItems = [...expenseItems[key]];
@@ -167,8 +167,9 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 			setEditingExpenseItem(null);
 			setNewItemText({ en: "", ja: "" });
 		}
-	};
+	}, [editingExpenseItem, newItemText, onUpdateExpenseItems, expenseItems]);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const getExpenseTitle = useCallback(
 		(key: string) => {
 			if (customExpenseTitles[key]) {
@@ -176,7 +177,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 			}
 			return t(`expenseCards.${key}`);
 		},
-		[customExpenseTitles, t, getLocalizedText],
+		[customExpenseTitles, t],
 	);
 
 	const handleEditTitle = (key: string) => {
