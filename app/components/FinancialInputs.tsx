@@ -144,7 +144,7 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 								{t("financialInputs.yearlyIncome")}
 							</Text>
 							<ExplanationTooltip
-								explanation={t("financialInputs.yearlyIncome")}
+								explanation={t("financialInputs.explanationYearlyIncome")}
 							/>
 							<Flex gap="2">
 								<Flex direction="column" style={{ flex: 1 }}>
