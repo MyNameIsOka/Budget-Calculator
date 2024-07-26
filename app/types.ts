@@ -49,14 +49,7 @@ export type LoaderData = {
 	loanAmountForeign: number;
 };
 
-export type ActionData = {
-	totalExpenses: number;
-	taxAmount: number;
-	taxBreakdown: TaxBreakdownItem[];
-	startingBracket: string;
-};
-
-export type CombinedData = LoaderData & Partial<ActionData>;
+export type CombinedData = LoaderData;
 
 export type Language = "en" | "ja";
 

@@ -2,6 +2,7 @@ import type React from "react";
 import { Box, Heading, Table } from "@radix-ui/themes";
 import { formatCurrency } from "~/utils/calculations";
 import { useTranslation } from "react-i18next";
+import { ExplanationTooltip } from "./ExplanationTooltip";
 
 type SummaryProps = {
 	totalExpenses: number;
@@ -11,6 +12,7 @@ type SummaryProps = {
 	foreignCurrency: string;
 	taxAmount: number;
 	timeFrame: number;
+	gains: number;
 };
 
 const Summary: React.FC<SummaryProps> = ({
@@ -21,6 +23,7 @@ const Summary: React.FC<SummaryProps> = ({
 	foreignCurrency,
 	taxAmount,
 	timeFrame,
+	gains,
 }) => {
 	const { t } = useTranslation();
 
@@ -79,7 +82,8 @@ const Summary: React.FC<SummaryProps> = ({
 					</Table.Row>
 					<Table.Row>
 						<Table.Cell className="whitespace-nowrap">
-							{t("summary.amountToSell")}
+							{t("summary.amountToSell1")}
+							<ExplanationTooltip explanation={t("summary.amountToSell2")} />
 						</Table.Cell>
 						<Table.Cell>{formatCurrency(amountToSell)}</Table.Cell>
 						<Table.Cell>
@@ -89,7 +93,23 @@ const Summary: React.FC<SummaryProps> = ({
 					</Table.Row>
 					<Table.Row>
 						<Table.Cell className="whitespace-nowrap">
+							{t("summary.gains")}
+							<ExplanationTooltip explanation={t("summary.explanationGains")} />
+						</Table.Cell>
+						<Table.Cell>{formatCurrency(gains)}</Table.Cell>
+						<Table.Cell>
+							{formatCurrency(gains / exchangeRate, foreignCurrency)}
+						</Table.Cell>
+						<Table.Cell>
+							{(gains / (btcSalePrice * exchangeRate)).toFixed(4)}
+						</Table.Cell>
+					</Table.Row>
+					<Table.Row>
+						<Table.Cell className="whitespace-nowrap">
 							{t("summary.taxesFromSelling")}
+							<ExplanationTooltip
+								explanation={t("summary.explanationTaxesFromSelling")}
+							/>
 						</Table.Cell>
 						<Table.Cell>{formatCurrency(taxAmount)}</Table.Cell>
 						<Table.Cell>
@@ -112,6 +132,9 @@ const Summary: React.FC<SummaryProps> = ({
 					<Table.Row>
 						<Table.Cell className="whitespace-nowrap">
 							{t("summary.effectiveTaxRate")}
+							<ExplanationTooltip
+								explanation={t("summary.explanationEffectiveTaxRate")}
+							/>
 						</Table.Cell>
 						<Table.Cell colSpan={3}>{effectiveTaxRate.toFixed(2)}%</Table.Cell>
 					</Table.Row>

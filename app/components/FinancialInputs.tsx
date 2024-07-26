@@ -10,6 +10,7 @@ import {
 } from "@radix-ui/themes";
 import { useTranslation } from "react-i18next";
 import { getExchangeRates } from "~/utils/exchangeRate";
+import { ExplanationTooltip } from "./ExplanationTooltip";
 
 type FinancialInputsProps = {
 	yearlyIncome: number;
@@ -142,6 +143,9 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 							<Text as="label" size="2" weight="bold" mb="1">
 								{t("financialInputs.yearlyIncome")}
 							</Text>
+							<ExplanationTooltip
+								explanation={t("financialInputs.yearlyIncome")}
+							/>
 							<Flex gap="2">
 								<Flex direction="column" style={{ flex: 1 }}>
 									<Text size="1" mb="1">
@@ -185,6 +189,10 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 									currency: foreignCurrency,
 								})}
 							</Text>
+							<ExplanationTooltip
+								explanation={t("financialInputs.explanationBtcPurchasePrice")}
+							/>
+
 							<TextField.Root
 								size="2"
 								value={
@@ -205,6 +213,10 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 									currency: foreignCurrency,
 								})}
 							</Text>
+							<ExplanationTooltip
+								explanation={t("financialInputs.explanationBtcSalePrice")}
+							/>
+
 							<TextField.Root
 								size="2"
 								value={btcSalePrice === 0 ? "" : formatAmount(btcSalePrice)}
@@ -221,6 +233,9 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 							<Text as="label" size="2" weight="bold" mb="1">
 								{t("financialInputs.loanAmount")}
 							</Text>
+							<ExplanationTooltip
+								explanation={t("financialInputs.explanationLoanAmount")}
+							/>
 							<Flex gap="2">
 								<Flex direction="column" style={{ flex: 1 }}>
 									<Text size="1" mb="1">

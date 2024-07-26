@@ -1,6 +1,6 @@
 ### Todo
 
-- make explanations about what everything means and does
+- make light/dark mode persistent over reloads
 - minimize/collapse deactivated Expense cards
 - make entries of Expense cards editable
   - write "examples" above each

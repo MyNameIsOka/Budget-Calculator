@@ -65,17 +65,17 @@ export default function BudgetCalculator({
 		setBtcPurchasePrice(data.btcPurchasePrice);
 		setBtcSalePrice(data.btcSalePrice);
 		setYearlyIncome(data.yearlyIncome);
-		setTotalExpenses(data.totalExpenses || 0);
-		setTaxAmount(data.taxAmount || 0);
-		setTaxBreakdown(data.taxBreakdown || []);
-		setStartingBracket(data.startingBracket || "");
+		setTotalExpenses(0);
+		setTaxAmount(0);
+		setTaxBreakdown([]);
+		setStartingBracket("");
 		setExchangeRate(data.exchangeRate);
 		setForeignCurrency(data.foreignCurrency);
 		setLoanAmountJPY(data.loanAmountJPY);
 		setLoanAmountForeign(data.loanAmountForeign);
 		setRemovedExpenses([]);
 		setDeactivatedExpenses([]);
-		setTimeFrame(5); // Reset to default 5 years
+		setTimeFrame(5);
 
 		// Selectively clear localStorage
 		if (isBrowser) {
@@ -113,16 +113,16 @@ export default function BudgetCalculator({
 		getInitialState("yearlyIncome", data.yearlyIncome),
 	);
 	const [totalExpenses, setTotalExpenses] = useState<number>(
-		getInitialState("totalExpenses", data.totalExpenses || 0),
+		getInitialState("totalExpenses", 0),
 	);
 	const [taxAmount, setTaxAmount] = useState<number>(
-		getInitialState("taxAmount", data.taxAmount || 0),
+		getInitialState("taxAmount", 0),
 	);
 	const [taxBreakdown, setTaxBreakdown] = useState<TaxBreakdownItem[]>(
-		getInitialState("taxBreakdown", data.taxBreakdown || []),
+		getInitialState("taxBreakdown", []),
 	);
 	const [startingBracket, setStartingBracket] = useState<string>(
-		getInitialState("startingBracket", data.startingBracket || ""),
+		getInitialState("startingBracket", ""),
 	);
 	const [exchangeRate, setExchangeRate] = useState<number>(
 		getInitialState("exchangeRate", data.exchangeRate),
@@ -145,6 +145,8 @@ export default function BudgetCalculator({
 	const [timeFrame, setTimeFrame] = useState<number>(
 		getInitialState("timeFrame", 5),
 	);
+
+	const [gains, setGains] = useState<number>(0);
 
 	useEffect(() => {
 		const fetchInitialExchangeRate = async () => {
@@ -238,6 +240,8 @@ export default function BudgetCalculator({
 		);
 		const municipalTax = gain * 0.1;
 		const totalTaxAmount = totalTax + municipalTax;
+
+		setGains(gain);
 
 		setTaxAmount(totalTaxAmount);
 		setTaxBreakdown(breakdown);
@@ -401,6 +405,7 @@ export default function BudgetCalculator({
 						foreignCurrency={foreignCurrency}
 						taxAmount={taxAmount}
 						timeFrame={timeFrame}
+						gains={gains}
 					/>
 					<Separator size="4" my="6" />
 					<BitcoinInfoBox
