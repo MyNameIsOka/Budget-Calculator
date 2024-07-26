@@ -6,7 +6,7 @@ import type {
 	CustomExpenseTitles,
 } from "~/types";
 import { Box, Flex, Text, Separator, Button, Heading } from "@radix-ui/themes";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { GearIcon } from "@radix-ui/react-icons";
 import ExpenseInput from "./ExpenseInput";
 import ExpenseDistribution from "./ExpenseDistribution";
@@ -284,6 +284,37 @@ export default function BudgetCalculator({
 		);
 	};
 
+	const handleUpdateExpenseTitle = useCallback(
+		(key: string, title: { en: string; ja: string }) => {
+			setCustomExpenseTitles((prev) => ({
+				...prev,
+				[key]: title,
+			}));
+		},
+		[],
+	);
+
+	useEffect(() => {
+		console.log(
+			"customExpenseTitles in BudgetCalculator:",
+			customExpenseTitles,
+		);
+		localStorage.setItem(
+			"customExpenseTitles",
+			JSON.stringify(customExpenseTitles),
+		);
+	}, [customExpenseTitles]);
+
+	const handleUpdateExpenseItems = useCallback(
+		(key: string, items: Array<{ en: string; ja: string }>) => {
+			setExpenseItems((prev) => ({
+				...prev,
+				[key]: items,
+			}));
+		},
+		[],
+	);
+
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
 	const isSmallScreen = useMediaQuery("(max-width: 768px)");
@@ -384,6 +415,8 @@ export default function BudgetCalculator({
 						deactivatedExpenses={deactivatedExpenses}
 						onToggleExpense={handleToggleExpense}
 						timeFrame={timeFrame}
+						onUpdateExpenseItems={handleUpdateExpenseItems}
+						onUpdateExpenseTitle={handleUpdateExpenseTitle}
 					/>
 					<Separator size="4" my="6" />
 					<ExpenseDistribution

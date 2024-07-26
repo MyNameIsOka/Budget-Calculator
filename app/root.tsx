@@ -51,6 +51,11 @@ export default function App() {
 		localStorage.setItem("theme", theme);
 	}, [theme]);
 
+	const handleThemeChange = (newTheme: "light" | "dark") => {
+		setTheme(newTheme);
+		localStorage.setItem("theme", newTheme);
+	};
+
 	return (
 		<html lang="en" className={`h-full ${theme}`}>
 			<head>
@@ -68,7 +73,7 @@ export default function App() {
 						scaling="95%"
 						appearance={theme}
 					>
-						<Outlet context={{ theme, setTheme }} />
+						<Outlet context={{ theme, setTheme: handleThemeChange }} />
 					</Theme>
 				</I18nextProvider>
 				<ScrollRestoration />

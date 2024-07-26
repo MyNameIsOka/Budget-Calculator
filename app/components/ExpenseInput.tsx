@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
 	Box,
 	Card,
@@ -13,7 +13,13 @@ import {
 	Flex,
 	Dialog,
 } from "@radix-ui/themes";
-import { Cross2Icon, PlusIcon, MinusIcon } from "@radix-ui/react-icons";
+import {
+	Cross2Icon,
+	PlusIcon,
+	MinusIcon,
+	Pencil1Icon,
+	CheckIcon,
+} from "@radix-ui/react-icons";
 import type { Expense, ExpenseItems, CustomExpenseTitles } from "~/types";
 import { useTranslation } from "react-i18next";
 import AddExpenseModal from "./AddExpenseModal";
@@ -34,6 +40,14 @@ type ExpenseInputProps = {
 	deactivatedExpenses: string[];
 	onToggleExpense: (key: string) => void;
 	timeFrame: number;
+	onUpdateExpenseItems: (
+		key: string,
+		items: Array<{ en: string; ja: string }>,
+	) => void;
+	onUpdateExpenseTitle: (
+		key: string,
+		title: { en: string; ja: string },
+	) => void;
 };
 
 const ExpenseInput: React.FC<ExpenseInputProps> = ({
@@ -49,11 +63,22 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 	deactivatedExpenses,
 	onToggleExpense,
 	timeFrame,
+	onUpdateExpenseItems,
+	onUpdateExpenseTitle,
 }) => {
 	const { t, i18n } = useTranslation();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [visibleExpenses, setVisibleExpenses] = useState<string[]>([]);
 	const [expenseToDelete, setExpenseToDelete] = useState<string | null>(null);
+	const [editingExpenseItem, setEditingExpenseItem] = useState<{
+		key: string;
+		index: number;
+	} | null>(null);
+	const [newItemText, setNewItemText] = useState({ en: "", ja: "" });
+	const [editingTitle, setEditingTitle] = useState<string | null>(null);
+	const [newTitle, setNewTitle] = useState({ en: "", ja: "" });
+	const editInputRef = useRef<HTMLInputElement>(null);
+	const editTitleRef = useRef<HTMLInputElement>(null);
 
 	useEffect(() => {
 		const expenseKeys = Object.keys(expenses);
@@ -67,13 +92,6 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 		const currentLanguage = i18n.language as "en" | "ja";
 		const fallbackLanguage = currentLanguage === "en" ? "ja" : "en";
 		return text[currentLanguage] || text[fallbackLanguage] || "";
-	};
-
-	const getExpenseTitle = (key: string) => {
-		if (customExpenseTitles[key]) {
-			return getLocalizedText(customExpenseTitles[key]);
-		}
-		return t(`expenseCards.${key}`);
 	};
 
 	const formatAmount = (amount: number, isForeign = false) => {
@@ -135,6 +153,91 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 		setIsModalOpen(false);
 	};
 
+	const handleEditExpenseItem = (key: string, index: number) => {
+		setEditingExpenseItem({ key, index });
+		setNewItemText(expenseItems[key][index]);
+	};
+
+	const handleSaveExpenseItem = () => {
+		if (editingExpenseItem) {
+			const { key, index } = editingExpenseItem;
+			const newItems = [...expenseItems[key]];
+			newItems[index] = newItemText;
+			onUpdateExpenseItems(key, newItems);
+			setEditingExpenseItem(null);
+			setNewItemText({ en: "", ja: "" });
+		}
+	};
+
+	const getExpenseTitle = useCallback(
+		(key: string) => {
+			if (customExpenseTitles[key]) {
+				return getLocalizedText(customExpenseTitles[key]);
+			}
+			return t(`expenseCards.${key}`);
+		},
+		[customExpenseTitles, t, getLocalizedText],
+	);
+
+	const handleEditTitle = (key: string) => {
+		setEditingTitle(key);
+		setNewTitle(
+			customExpenseTitles[key] || {
+				en: t(`expenseCards.${key}`),
+				ja: t(`expenseCards.${key}`),
+			},
+		);
+	};
+
+	const handleSaveTitle = useCallback(() => {
+		if (editingTitle) {
+			onUpdateExpenseTitle(editingTitle, newTitle);
+			setEditingTitle(null);
+		}
+	}, [editingTitle, newTitle, onUpdateExpenseTitle]);
+
+	const handleClickOutside = useCallback(
+		(event: MouseEvent) => {
+			if (
+				editTitleRef.current &&
+				!editTitleRef.current.contains(event.target as Node)
+			) {
+				handleSaveTitle();
+			}
+			if (
+				editInputRef.current &&
+				!editInputRef.current.contains(event.target as Node)
+			) {
+				handleSaveExpenseItem();
+			}
+		},
+		[handleSaveTitle, handleSaveExpenseItem],
+	);
+
+	useEffect(() => {
+		if (editingTitle || editingExpenseItem) {
+			document.addEventListener("mousedown", handleClickOutside);
+		} else {
+			document.removeEventListener("mousedown", handleClickOutside);
+		}
+
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [editingTitle, editingExpenseItem, handleClickOutside]);
+
+	const handleAddExpenseItem = (key: string) => {
+		if (expenseItems[key].length < 5) {
+			const newItems = [...expenseItems[key], { en: "", ja: "" }];
+			onUpdateExpenseItems(key, newItems);
+		}
+	};
+
+	const handleRemoveExpenseItem = (key: string, index: number) => {
+		const newItems = expenseItems[key].filter((_, i) => i !== index);
+		onUpdateExpenseItems(key, newItems);
+	};
+
 	return (
 		<>
 			<Grid columns={{ initial: "1", sm: "2" }} gap="4">
@@ -146,7 +249,43 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 						}`}
 					>
 						<Flex justify="between" align="center" mb="2">
-							<Heading size="3">{getExpenseTitle(key)}</Heading>
+							{editingTitle === key ? (
+								<Flex align="center" style={{ flexGrow: 1 }}>
+									<IconButton
+										size="1"
+										onClick={handleSaveTitle}
+										variant="ghost"
+										className="mr-1"
+									>
+										<CheckIcon />
+									</IconButton>
+									<TextField.Root
+										size="2"
+										value={newTitle[i18n.language as "en" | "ja"]}
+										onChange={(e) =>
+											setNewTitle({
+												...newTitle,
+												[i18n.language]: e.target.value,
+											})
+										}
+										style={{ flexGrow: 1 }}
+										ref={editTitleRef}
+									/>
+								</Flex>
+							) : (
+								<Flex align="center">
+									<IconButton
+										size="1"
+										onClick={() => handleEditTitle(key)}
+										variant="ghost"
+										className="mr-1"
+										disabled={deactivatedExpenses.includes(key)}
+									>
+										<Pencil1Icon />
+									</IconButton>
+									<Heading size="3">{getExpenseTitle(key)}</Heading>
+								</Flex>
+							)}
 							<Flex gap="2">
 								<IconButton
 									size="1"
@@ -280,11 +419,76 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 							</Table.Body>
 						</Table.Root>
 						<Box mt="3">
-							<Text size="2" as="ul" className="list-disc pl-4">
-								{expenseItems[key]?.map((item, index) => (
-									<li key={index}>{getLocalizedText(item)}</li>
-								)) ?? []}
+							<Text size="2" as="div" className="mb-2">
+								{i18n.language === "en" ? "e.g.:" : "例:"}
 							</Text>
+							{expenseItems[key]?.map((item, index) => (
+								<Flex key={index} align="center" mb="1">
+									{editingExpenseItem?.key === key &&
+									editingExpenseItem?.index === index ? (
+										<>
+											<IconButton
+												size="1"
+												onClick={handleSaveExpenseItem}
+												variant="ghost"
+												className="mr-1"
+											>
+												<CheckIcon />
+											</IconButton>
+											<TextField.Root
+												size="1"
+												value={newItemText[i18n.language as "en" | "ja"]}
+												onChange={(e) =>
+													setNewItemText({
+														...newItemText,
+														[i18n.language]: e.target.value,
+													})
+												}
+												style={{ flexGrow: 1 }}
+												ref={editInputRef}
+											/>
+										</>
+									) : (
+										<>
+											<IconButton
+												size="1"
+												onClick={() => handleEditExpenseItem(key, index)}
+												variant="ghost"
+												className="mr-1"
+												disabled={deactivatedExpenses.includes(key)}
+											>
+												<Pencil1Icon />
+											</IconButton>
+											<Text size="2" style={{ flexGrow: 1 }}>
+												{getLocalizedText(item)}
+											</Text>
+											{index > 0 && (
+												<IconButton
+													size="1"
+													onClick={() => handleRemoveExpenseItem(key, index)}
+													variant="ghost"
+													disabled={deactivatedExpenses.includes(key)}
+												>
+													<Cross2Icon />
+												</IconButton>
+											)}
+										</>
+									)}
+								</Flex>
+							))}
+							{expenseItems[key].length < 5 && (
+								<Flex justify="center" mt="2">
+									<IconButton
+										size="1"
+										variant="ghost"
+										color="gray"
+										onClick={() => handleAddExpenseItem(key)}
+										disabled={deactivatedExpenses.includes(key)}
+									>
+										<PlusIcon />
+									</IconButton>
+								</Flex>
+							)}
 						</Box>
 					</Card>
 				))}

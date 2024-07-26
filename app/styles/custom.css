@@ -76,3 +76,19 @@
 .dark .border-gray-200 {
   border-color: #444444;
 }
+
+.rt-IconButton[data-variant='ghost'] {
+  color: var(--gray-11);
+}
+
+.rt-IconButton[data-variant='ghost']:hover {
+  background-color: var(--gray-4);
+}
+
+.dark .rt-IconButton[data-variant='ghost'] {
+  color: var(--gray-11);
+}
+
+.dark .rt-IconButton[data-variant='ghost']:hover {
+  background-color: var(--gray-4);
+}
