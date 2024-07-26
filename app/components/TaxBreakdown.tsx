@@ -3,6 +3,7 @@ import { Box, Heading, Table, Text, Flex } from "@radix-ui/themes";
 import type { TaxBreakdownItem } from "~/types";
 import { formatCurrency } from "~/utils/calculations";
 import { useTranslation } from "react-i18next";
+import { ExplanationTooltip } from "./ExplanationTooltip";
 
 type TaxBreakdownProps = {
 	taxBreakdown: TaxBreakdownItem[];
@@ -55,6 +56,9 @@ const TaxBreakdown: React.FC<TaxBreakdownProps> = ({
 					bracket: startingBracket || t("taxBreakdown.notCalculated"),
 				})}
 			</Text>
+			<ExplanationTooltip
+				explanation={t("taxBreakdown.explanationStartingBracket")}
+			/>
 			<Box className="overflow-x-auto">
 				<Table.Root>
 					<Table.Header>
@@ -88,6 +92,9 @@ const TaxBreakdown: React.FC<TaxBreakdownProps> = ({
 							<Table.Row>
 								<Table.Cell colSpan={3} className="font-bold">
 									{t("taxBreakdown.municipalTax")}
+									<ExplanationTooltip
+										explanation={t("taxBreakdown.explanationMunicipalTax")}
+									/>
 								</Table.Cell>
 								<Table.Cell className="font-bold">
 									{formatAmounts(

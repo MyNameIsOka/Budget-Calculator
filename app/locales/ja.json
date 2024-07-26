@@ -3,14 +3,19 @@
 	"subtitle": "ビットコイン税金と{{currency}}換算付き",
 	"timeFrame": {
 		"title": "期間設定",
-		"label": "年数"
+		"label": "年数",
+		"explanation": "予算を計算したい年数"
 	},
 	"financialInputs": {
 		"timeFrame": "期間（年）",
 		"yearlyIncome": "年収（円）",
 		"btcPurchasePrice": "ビットコイン購入価格（{{currency}}）",
 		"btcSalePrice": "ビットコイン売却価格（{{currency}}）",
-		"loanAmount": "ローン金額"
+		"loanAmount": "ローン金額",
+		"explanationYearlyIncome": "税金と控除前の総年収。開始時の税率区分を計算するために使用されます",
+		"explanationBtcPurchasePrice": "ビットコインを購入した価格。キャピタルゲイン税を計算するために使用されます",
+		"explanationBtcSalePrice": "ビットコインを売却する予定の価格。キャピタルゲイン税を計算するために使用されます",
+		"explanationLoanAmount": "ローンや、ビットコイン以外の方法で調達する予定の金額。この金額は、ビットコインで売却する必要がある総額から差し引かれます"
 	},
 	"currencySettings": {
 		"title": "通貨設定",
@@ -29,10 +34,14 @@
 		"description": "項目",
 		"totalExpenses": "総経費（{{timeFrame}}年間）",
 		"loanAmount": "ローン金額",
+		"amountToSell1": "売却金額",
+		"amountToSell2": "（ローン金額を差し引いた後）",
 		"amountToSell": "売却金額（ローン後）",
+		"explanationTaxesFromSelling": "「税金内訳」の「税額」列のすべての項目を合計して計算されます",
 		"taxesFromSelling": "ビットコイン売却による税金",
 		"totalBTCNeeded": "必要な総ビットコイン量",
-		"effectiveTaxRate": "実効税率"
+		"effectiveTaxRate": "実効税率",
+		"explanationEffectiveTaxRate": "「ビットコイン売却による税金」÷「売却金額」"
 	},
 	"bitcoinInfo": {
 		"title": "ビットコイン計算",
@@ -50,12 +59,14 @@
 	"taxBreakdown": {
 		"title": "税金内訳",
 		"startingBracket": "開始税率区分：{{bracket}}",
+		"explanationStartingBracket": "年収に基づいています。年収に対する税金は給与から自動的に控除されると仮定し、この計算には含まれていません。",
 		"notCalculated": "まだ計算されていません",
 		"bracket": "税率区分",
 		"rate": "税率",
 		"taxableAmount": "課税対象額",
 		"taxAmount": "税額",
 		"municipalTax": "住民税（10%固定税率）",
+		"explanationMunicipalTax": "利益 × 0.1 の計算式で算出されます",
 		"noData": "税金内訳を計算するのに十分なデータがありません。必要な情報をすべて入力してください。"
 	},
 	"expenseCards": {

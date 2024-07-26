@@ -2,6 +2,7 @@ import type React from "react";
 import { Box, Heading, Table } from "@radix-ui/themes";
 import { formatCurrency } from "~/utils/calculations";
 import { useTranslation } from "react-i18next";
+import { ExplanationTooltip } from "./ExplanationTooltip";
 
 type SummaryProps = {
 	totalExpenses: number;
@@ -79,7 +80,8 @@ const Summary: React.FC<SummaryProps> = ({
 					</Table.Row>
 					<Table.Row>
 						<Table.Cell className="whitespace-nowrap">
-							{t("summary.amountToSell")}
+							{t("summary.amountToSell1")}
+							<ExplanationTooltip explanation={t("summary.amountToSell2")} />
 						</Table.Cell>
 						<Table.Cell>{formatCurrency(amountToSell)}</Table.Cell>
 						<Table.Cell>
@@ -90,6 +92,9 @@ const Summary: React.FC<SummaryProps> = ({
 					<Table.Row>
 						<Table.Cell className="whitespace-nowrap">
 							{t("summary.taxesFromSelling")}
+							<ExplanationTooltip
+								explanation={t("summary.explanationTaxesFromSelling")}
+							/>
 						</Table.Cell>
 						<Table.Cell>{formatCurrency(taxAmount)}</Table.Cell>
 						<Table.Cell>
@@ -112,6 +117,9 @@ const Summary: React.FC<SummaryProps> = ({
 					<Table.Row>
 						<Table.Cell className="whitespace-nowrap">
 							{t("summary.effectiveTaxRate")}
+							<ExplanationTooltip
+								explanation={t("summary.explanationEffectiveTaxRate")}
+							/>
 						</Table.Cell>
 						<Table.Cell colSpan={3}>{effectiveTaxRate.toFixed(2)}%</Table.Cell>
 					</Table.Row>

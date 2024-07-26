@@ -3,14 +3,19 @@
 	"subtitle": "with Bitcoin Tax and {{currency}} Conversion",
 	"timeFrame": {
 		"title": "Time Frame",
-		"label": "Number of Years"
+		"label": "Number of Years",
+		"explanation": "How many years you want to calculate your budget for"
 	},
 	"financialInputs": {
 		"timeFrame": "Time Frame (years)",
 		"yearlyIncome": "Yearly Income",
 		"btcPurchasePrice": "BTC Purchase Price ({{currency}})",
 		"btcSalePrice": "BTC Sale Price ({{currency}})",
-		"loanAmount": "Loan Amount"
+		"loanAmount": "Loan Amount",
+		"explanationYearlyIncome": "Your total annual income before taxes and deductions. Used to calculate your starting tax bracket",
+		"explanationBtcPurchasePrice": "The price you bought your BTC at. Used to calculate your capital gains tax",
+		"explanationBtcSalePrice": "The price you plan to sell your BTC at. Used to calculate your capital gains tax",
+		"explanationLoanAmount": "The amount of money you plan to loan or get by other means than selling BTC. This amount will be subtracted from the total amount you need to sell in BTC"
 	},
 	"currencySettings": {
 		"title": "Currency Settings",
@@ -29,10 +34,13 @@
 		"description": "Description",
 		"totalExpenses": "Total Expenses ({{timeFrame}} years)",
 		"loanAmount": "Loan amount",
-		"amountToSell": "Amount to sell (after loan)",
+		"amountToSell1": "Amount to sell",
+		"amountToSell2": "after subtracting the Loan Amount",
 		"taxesFromSelling": "Taxes from selling BTC",
+		"explanationTaxesFromSelling": "Calculated by adding up all entires in \"Tax Amount\" column of \"Tax Breakdown\"",
 		"totalBTCNeeded": "Total BTC needed",
-		"effectiveTaxRate": "Effective Tax Rate"
+		"effectiveTaxRate": "Effective Tax Rate",
+		"explanationEffectiveTaxRate": "\"Taxes from selling BTC\" /  \"Amount to sell\""
 	},
 	"bitcoinInfo": {
 		"title": "Bitcoin Calculations",
@@ -50,12 +58,14 @@
 	"taxBreakdown": {
 		"title": "Tax Breakdown",
 		"startingBracket": "Starting tax bracket: {{bracket}}",
+		"explanationStartingBracket": "Based on yearly income. Taxes paid for yearly income are assumed to be automatically deducted from your salary and are not included in this calculation.",
 		"notCalculated": "Not calculated yet",
 		"bracket": "Bracket",
 		"rate": "Rate",
 		"taxableAmount": "Taxable Amount",
 		"taxAmount": "Tax Amount",
 		"municipalTax": "Municipal Tax (10% flat rate)",
+		"explanationMunicipalTax": "Calculated using formula: Gains * 0.1",
 		"noData": "Not enough data to calculate tax breakdown. Please enter all required information."
 	},
 	"expenseCards": {
