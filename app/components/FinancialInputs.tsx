@@ -10,6 +10,7 @@ import {
 } from "@radix-ui/themes";
 import { useTranslation } from "react-i18next";
 import { getExchangeRates } from "~/utils/exchangeRate";
+import { ExplanationTooltip } from "./ExplanationTooltip";
 
 type FinancialInputsProps = {
 	yearlyIncome: number;
@@ -142,6 +143,7 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 							<Text as="label" size="2" weight="bold" mb="1">
 								{t("financialInputs.yearlyIncome")}
 							</Text>
+							<ExplanationTooltip explanation="Your total annual income before taxes and deductions." />
 							<Flex gap="2">
 								<Flex direction="column" style={{ flex: 1 }}>
 									<Text size="1" mb="1">
