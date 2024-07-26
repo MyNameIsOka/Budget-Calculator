@@ -41,7 +41,9 @@
 		"taxesFromSelling": "ビットコイン売却による税金",
 		"totalBTCNeeded": "必要な総ビットコイン量",
 		"effectiveTaxRate": "実効税率",
-		"explanationEffectiveTaxRate": "「ビットコイン売却による税金」÷「売却金額」"
+		"explanationEffectiveTaxRate": "「ビットコイン売却による税金」÷「売却金額」",
+		"gains": "利益",
+		"explanationGains": "ビットコインの売却による総利益。売却価格と購入価格の差に売却したビットコインの量を掛けて計算されます。"
 	},
 	"bitcoinInfo": {
 		"title": "ビットコイン計算",

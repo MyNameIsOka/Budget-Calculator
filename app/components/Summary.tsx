@@ -12,6 +12,7 @@ type SummaryProps = {
 	foreignCurrency: string;
 	taxAmount: number;
 	timeFrame: number;
+	gains: number;
 };
 
 const Summary: React.FC<SummaryProps> = ({
@@ -22,6 +23,7 @@ const Summary: React.FC<SummaryProps> = ({
 	foreignCurrency,
 	taxAmount,
 	timeFrame,
+	gains,
 }) => {
 	const { t } = useTranslation();
 
@@ -88,6 +90,19 @@ const Summary: React.FC<SummaryProps> = ({
 							{formatCurrency(amountToSell / exchangeRate, foreignCurrency)}
 						</Table.Cell>
 						<Table.Cell>{btcToSell.toFixed(4)}</Table.Cell>
+					</Table.Row>
+					<Table.Row>
+						<Table.Cell className="whitespace-nowrap">
+							{t("summary.gains")}
+							<ExplanationTooltip explanation={t("summary.explanationGains")} />
+						</Table.Cell>
+						<Table.Cell>{formatCurrency(gains)}</Table.Cell>
+						<Table.Cell>
+							{formatCurrency(gains / exchangeRate, foreignCurrency)}
+						</Table.Cell>
+						<Table.Cell>
+							{(gains / (btcSalePrice * exchangeRate)).toFixed(4)}
+						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
 						<Table.Cell className="whitespace-nowrap">

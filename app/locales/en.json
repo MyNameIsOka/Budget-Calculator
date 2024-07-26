@@ -40,7 +40,9 @@
 		"explanationTaxesFromSelling": "Calculated by adding up all entires in \"Tax Amount\" column of \"Tax Breakdown\"",
 		"totalBTCNeeded": "Total BTC needed",
 		"effectiveTaxRate": "Effective Tax Rate",
-		"explanationEffectiveTaxRate": "\"Taxes from selling BTC\" /  \"Amount to sell\""
+		"explanationEffectiveTaxRate": "\"Taxes from selling BTC\" /  \"Amount to sell\"",
+		"gains": "Gains",
+		"explanationGains": "The total profit from selling Bitcoin, calculated as the difference between the sale price and purchase price multiplied by the amount of Bitcoin sold."
 	},
 	"bitcoinInfo": {
 		"title": "Bitcoin Calculations",
