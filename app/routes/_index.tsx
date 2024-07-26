@@ -4,10 +4,9 @@ import type {
 	ActionFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useLoaderData, useActionData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import BudgetCalculator from "~/components/BudgetCalculator";
-import { calculateTax } from "~/utils/calculations";
-import type { ActionData, CombinedData, Expense, ExpenseItems } from "~/types";
+import type { CombinedData, ExpenseItems } from "~/types";
 import { initialExpenses, expenseItems } from "~/data/expenseData";
 import invariant from "tiny-invariant";
 export const meta: MetaFunction = () => {
@@ -85,52 +84,14 @@ export const loader: LoaderFunction = async () => {
 	});
 };
 
-export const action: ActionFunction = async ({ request }) => {
-	const formData = await request.formData();
-	const expenses = JSON.parse(formData.get("expenses") as string) as Expense;
-	const btcPurchasePrice = Number(formData.get("btcPurchasePrice"));
-	const btcSalePrice = Number(formData.get("btcSalePrice"));
-	const yearlyIncome = Number(formData.get("yearlyIncome"));
-	const exchangeRate = Number(formData.get("exchangeRate"));
-	const foreignCurrency = formData.get("foreignCurrency") as string;
-	const loanAmountJPY = Number(formData.get("loanAmountJPY"));
-	const loanAmountForeign = Number(formData.get("loanAmountForeign"));
-
-	const monthlyTotal = Object.values(expenses).reduce<number>(
-		(sum, value) => sum + value,
-		0,
-	);
-	const yearlyTotal = monthlyTotal * 12;
-	const fiveYearTotal = yearlyTotal * 5;
-
-	const amountToSell = fiveYearTotal - loanAmountJPY;
-	const btcToSell = amountToSell / (btcSalePrice * exchangeRate);
-	const gain = (btcSalePrice - btcPurchasePrice) * btcToSell * exchangeRate;
-
-	const { totalTax, breakdown, startingBracket } = calculateTax(
-		gain,
-		yearlyIncome,
-	);
-	const municipalTax = gain * 0.1;
-	const totalTaxAmount = totalTax + municipalTax;
-
-	return json({
-		totalExpenses: fiveYearTotal,
-		taxAmount: totalTaxAmount,
-		taxBreakdown: breakdown,
-		startingBracket,
-	});
-};
-
 export default function Index() {
 	const { initialState, expenseItems, donationLink } = useLoaderData<{
 		initialState: CombinedData;
 		expenseItems: ExpenseItems;
 		donationLink: string;
 	}>();
-	const actionData = useActionData<ActionData>();
 
-	const data = { ...initialState, ...actionData };
+	const data = { ...initialState };
 
 	return (
 		<div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
