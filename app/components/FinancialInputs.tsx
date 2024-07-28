@@ -11,6 +11,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { getExchangeRates } from "~/utils/exchangeRate";
 import { ExplanationTooltip } from "./ExplanationTooltip";
+import ExchangeRateDisplay from "./ExchangeRateDisplay";
 
 type FinancialInputsProps = {
 	yearlyIncome: number;
@@ -296,13 +297,7 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 								</Text>
 							</Flex>
 						</RadioGroup.Root>
-						<Flex align="center" gap="2">
-							<Text size="2">
-								{loading
-									? "Loading..."
-									: `1 ${foreignCurrency} = ${exchangeRate.toFixed(2)} JPY`}
-							</Text>
-						</Flex>
+						<ExchangeRateDisplay foreignCurrency={foreignCurrency} />
 					</Flex>
 				</Box>
 			</Flex>

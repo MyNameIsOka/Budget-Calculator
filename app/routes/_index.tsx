@@ -48,10 +48,6 @@ export const loader: LoaderFunction = async () => {
 		"INITIAL_YEARLY_INCOME must be set",
 	);
 	invariant(
-		process.env.INITIAL_EXCHANGE_RATE,
-		"INITIAL_EXCHANGE_RATE must be set",
-	);
-	invariant(
 		process.env.INITIAL_FOREIGN_CURRENCY,
 		"INITIAL_FOREIGN_CURRENCY must be set",
 	);
@@ -71,7 +67,6 @@ export const loader: LoaderFunction = async () => {
 		btcPurchasePrice: Number(process.env.INITIAL_BTC_PURCHASE_PRICE),
 		btcSalePrice: Number(process.env.INITIAL_BTC_SALE_PRICE),
 		yearlyIncome: Number(process.env.INITIAL_YEARLY_INCOME),
-		exchangeRate: Number(process.env.INITIAL_EXCHANGE_RATE),
 		foreignCurrency: process.env.INITIAL_FOREIGN_CURRENCY,
 		loanAmountJPY: Number(process.env.INITIAL_LOAN_AMOUNT_JPY),
 		loanAmountForeign: Number(process.env.INITIAL_LOAN_AMOUNT_FOREIGN),

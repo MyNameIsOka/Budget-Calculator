@@ -295,10 +295,6 @@ export default function BudgetCalculator({
 	);
 
 	useEffect(() => {
-		console.log(
-			"customExpenseTitles in BudgetCalculator:",
-			customExpenseTitles,
-		);
 		localStorage.setItem(
 			"customExpenseTitles",
 			JSON.stringify(customExpenseTitles),
