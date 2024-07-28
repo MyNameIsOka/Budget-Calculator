@@ -1,4 +1,5 @@
 import type React from "react";
+import { useState, useEffect } from "react";
 import { Box, Flex, Text, TextField, Heading, Card } from "@radix-ui/themes";
 import { useTranslation } from "react-i18next";
 import { ExplanationTooltip } from "./ExplanationTooltip";
@@ -13,6 +14,28 @@ const TimeFrameInput: React.FC<TimeFrameInputProps> = ({
 	setTimeFrame,
 }) => {
 	const { t } = useTranslation();
+	const [inputValue, setInputValue] = useState(timeFrame.toString());
+
+	useEffect(() => {
+		setInputValue(timeFrame.toString());
+	}, [timeFrame]);
+
+	const handleInputChange = (value: string) => {
+		setInputValue(value);
+		const numValue = Number.parseInt(value, 10);
+		if (!Number.isNaN(numValue) && numValue > 0) {
+			setTimeFrame(numValue);
+		} else if (value === "") {
+			setTimeFrame(1);
+		}
+	};
+
+	const handleBlur = () => {
+		if (inputValue === "" || Number.parseInt(inputValue, 10) < 1) {
+			setInputValue("1");
+			setTimeFrame(1);
+		}
+	};
 
 	return (
 		<Card className="w-full">
@@ -27,13 +50,9 @@ const TimeFrameInput: React.FC<TimeFrameInputProps> = ({
 					<ExplanationTooltip explanation={t("timeFrame.explanation")} />
 					<TextField.Root
 						size="2"
-						value={timeFrame.toString()}
-						onChange={(e) => {
-							const value = Number.parseInt(e.target.value, 10);
-							if (!Number.isNaN(value) && value > 0) {
-								setTimeFrame(value);
-							}
-						}}
+						value={inputValue}
+						onChange={(e) => handleInputChange(e.target.value)}
+						onBlur={handleBlur}
 					/>
 				</Box>
 			</Flex>

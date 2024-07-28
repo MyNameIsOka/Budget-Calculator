@@ -4,6 +4,7 @@ import { Flex, Button, Box, Heading, Text, TextField } from "@radix-ui/themes";
 import { Cross2Icon, GearIcon } from "@radix-ui/react-icons";
 import FinancialInputs from "./FinancialInputs";
 import { useTranslation } from "react-i18next";
+import { ExplanationTooltip } from "./ExplanationTooltip";
 
 type SettingsDrawerProps = {
 	isOpen: boolean;
@@ -89,8 +90,9 @@ const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
 					</Flex>
 					<Box>
 						<Text as="label" size="2" weight="bold">
-							{t("financialInputs.timeFrame")}
-						</Text>
+							{t("timeFrame.label")}
+						</Text>{" "}
+						<ExplanationTooltip explanation={t("timeFrame.explanation")} />
 						<TextField.Root
 							size="2"
 							value={timeFrame.toString()}
