@@ -43,10 +43,11 @@ export type LoaderData = {
 	btcPurchasePrice: number;
 	btcSalePrice: number;
 	yearlyIncome: number;
-	exchangeRate?: number;
+	exchangeRate: number;
 	foreignCurrency: string;
 	loanAmountJPY: number;
 	loanAmountForeign: number;
+	timeFrame: number;
 };
 
 export type CombinedData = LoaderData;

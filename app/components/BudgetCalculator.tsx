@@ -46,6 +46,7 @@ type BudgetCalculatorProps = {
 	data: CombinedData;
 	expenseItems: ExpenseItems;
 	donationLink: string;
+	isInitialLoad: boolean;
 };
 
 const EXCHANGE_RATE_CACHE_KEY = "exchangeRateCache";
@@ -54,6 +55,7 @@ export default function BudgetCalculator({
 	data,
 	expenseItems: initialExpenseItems,
 	donationLink,
+	isInitialLoad,
 }: BudgetCalculatorProps) {
 	const isBrowser = typeof window !== "undefined";
 	const { t } = useTranslation();
@@ -87,8 +89,8 @@ export default function BudgetCalculator({
 		}
 	};
 
-	const getInitialState = (key: string, fallback: any) => {
-		if (isBrowser) {
+	const getInitialState = <T,>(key: string, fallback: T): T => {
+		if (isBrowser && !isInitialLoad) {
 			const storedValue = localStorage.getItem(key);
 			return storedValue !== null ? JSON.parse(storedValue) : fallback;
 		}
@@ -143,7 +145,7 @@ export default function BudgetCalculator({
 		getInitialState("deactivatedExpenses", []),
 	);
 	const [timeFrame, setTimeFrame] = useState<number>(
-		getInitialState("timeFrame", 5),
+		getInitialState("timeFrame", data.timeFrame),
 	);
 
 	const [gains, setGains] = useState<number>(0);

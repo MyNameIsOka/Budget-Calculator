@@ -48,6 +48,10 @@ export const loader: LoaderFunction = async () => {
 		"INITIAL_YEARLY_INCOME must be set",
 	);
 	invariant(
+		process.env.INITIAL_EXCHANGE_RATE,
+		"INITIAL_EXCHANGE_RATE must be set",
+	);
+	invariant(
 		process.env.INITIAL_FOREIGN_CURRENCY,
 		"INITIAL_FOREIGN_CURRENCY must be set",
 	);
@@ -60,6 +64,7 @@ export const loader: LoaderFunction = async () => {
 		"INITIAL_LOAN_AMOUNT_FOREIGN must be set",
 	);
 	invariant(process.env.DONATION_LINK, "DONATION_LINK must be set");
+	invariant(process.env.INITIAL_TIME_FRAME, "INITIAL_TIME_FRAME must be set");
 
 	// In a real application, you might fetch these values from an API or environment variables
 	const initialState: CombinedData = {
@@ -67,24 +72,29 @@ export const loader: LoaderFunction = async () => {
 		btcPurchasePrice: Number(process.env.INITIAL_BTC_PURCHASE_PRICE),
 		btcSalePrice: Number(process.env.INITIAL_BTC_SALE_PRICE),
 		yearlyIncome: Number(process.env.INITIAL_YEARLY_INCOME),
+		exchangeRate: Number(process.env.INITIAL_EXCHANGE_RATE),
 		foreignCurrency: process.env.INITIAL_FOREIGN_CURRENCY,
 		loanAmountJPY: Number(process.env.INITIAL_LOAN_AMOUNT_JPY),
 		loanAmountForeign: Number(process.env.INITIAL_LOAN_AMOUNT_FOREIGN),
+		timeFrame: Number(process.env.INITIAL_TIME_FRAME),
 	};
 
 	return json({
 		initialState,
 		expenseItems,
 		donationLink: process.env.DONATION_LINK,
+		isInitialLoad: true,
 	});
 };
 
 export default function Index() {
-	const { initialState, expenseItems, donationLink } = useLoaderData<{
-		initialState: CombinedData;
-		expenseItems: ExpenseItems;
-		donationLink: string;
-	}>();
+	const { initialState, expenseItems, donationLink, isInitialLoad } =
+		useLoaderData<{
+			initialState: CombinedData;
+			expenseItems: ExpenseItems;
+			donationLink: string;
+			isInitialLoad: boolean;
+		}>();
 
 	const data = { ...initialState };
 
@@ -96,6 +106,7 @@ export default function Index() {
 						data={data}
 						expenseItems={expenseItems}
 						donationLink={donationLink}
+						isInitialLoad={isInitialLoad}
 					/>
 				</div>
 			</div>
