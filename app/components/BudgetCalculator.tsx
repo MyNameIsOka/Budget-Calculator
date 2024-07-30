@@ -149,6 +149,7 @@ export default function BudgetCalculator({
 	);
 
 	const [gains, setGains] = useState<number>(0);
+	const [yearlyIncomeTax, setYearlyIncomeTax] = useState<number>(0);
 
 	useEffect(() => {
 		const fetchInitialExchangeRate = async () => {
@@ -234,6 +235,8 @@ export default function BudgetCalculator({
 		const btcToSell = amountToSell / (btcSalePrice * exchangeRate);
 		const gain = (btcSalePrice - btcPurchasePrice) * btcToSell * exchangeRate;
 
+		setGains(gain);
+
 		const { totalTax, breakdown, startingBracket } = calculateTax(
 			gain,
 			yearlyIncome,
@@ -241,11 +244,13 @@ export default function BudgetCalculator({
 		const municipalTax = gain * 0.1;
 		const totalTaxAmount = totalTax + municipalTax;
 
-		setGains(gain);
-
 		setTaxAmount(totalTaxAmount);
 		setTaxBreakdown(breakdown);
 		setStartingBracket(startingBracket);
+
+		// Calculate yearly income tax (for informational purposes)
+		const { totalTax: yearlyTax } = calculateTax(0, yearlyIncome);
+		setYearlyIncomeTax(yearlyTax);
 	}, [
 		expenses,
 		removedExpenses,
@@ -455,6 +460,7 @@ export default function BudgetCalculator({
 						startingBracket={startingBracket}
 						exchangeRate={exchangeRate}
 						foreignCurrency={foreignCurrency}
+						yearlyIncomeTax={yearlyIncomeTax}
 					/>
 
 					<ContactNote

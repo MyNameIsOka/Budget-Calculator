@@ -69,7 +69,11 @@
 		"taxAmount": "税額",
 		"municipalTax": "住民税（10%固定税率）",
 		"explanationMunicipalTax": "利益 × 0.1 の計算式で算出されます",
-		"noData": "税金内訳を計算するのに十分なデータがありません。必要な情報をすべて入力してください。"
+		"noData": "税金内訳を計算するのに十分なデータがありません。必要な情報をすべて入力してください。",
+		"estimatedYearlyIncomeTax": "推定年間所得税：",
+		"explanationYearlyIncomeTax": "これは年収に対する税金の見積もりです。この金額は給与から既に控除されている可能性が高いです。上記で計算された追加の税金は、ビットコインの利益に特化したものであり、確定申告時に再評価されます。",
+		"deduction": "控除",
+		"explanationDeduction": "これは所得税率に基づいて税金計算から差し引かれる固定金額です。全体的な税負担を軽減するのに役立ちます。"
 	},
 	"expenseCards": {
 		"monthly": "月次",

@@ -68,7 +68,11 @@
 		"taxAmount": "Tax Amount",
 		"municipalTax": "Municipal Tax (10% flat rate)",
 		"explanationMunicipalTax": "Calculated using formula: Gains * 0.1",
-		"noData": "Not enough data to calculate tax breakdown. Please enter all required information."
+		"noData": "Not enough data to calculate tax breakdown. Please enter all required information.",
+		"estimatedYearlyIncomeTax": "Estimated Yearly Income Tax:",
+		"explanationYearlyIncomeTax": "This is an estimate of the tax on your yearly income. It's likely that this amount is already being deducted from your salary. The additional taxes calculated above are specifically for your Bitcoin gains and will be reassessed during your tax return.",
+		"deduction": "Deduction",
+		"explanationDeduction": "This is a fixed amount subtracted from the tax calculation based on your income bracket. It helps to reduce the overall tax burden."
 	},
 	"expenseCards": {
 		"monthly": "Monthly",

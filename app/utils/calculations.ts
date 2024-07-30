@@ -17,17 +17,16 @@ export const calculateTax = (
 	startingBracket: string;
 } => {
 	const brackets: TaxBracket[] = [
-		{ limit: 1950000, rate: 0.05 },
-		{ limit: 3300000, rate: 0.1 },
-		{ limit: 6950000, rate: 0.2 },
-		{ limit: 9000000, rate: 0.23 },
-		{ limit: 18000000, rate: 0.33 },
-		{ limit: 40000000, rate: 0.4 },
-		{ limit: Number.POSITIVE_INFINITY, rate: 0.45 },
+		{ limit: 1950000, rate: 0.05, deduction: 0 },
+		{ limit: 3300000, rate: 0.1, deduction: 97500 },
+		{ limit: 6950000, rate: 0.2, deduction: 427500 },
+		{ limit: 9000000, rate: 0.23, deduction: 636000 },
+		{ limit: 18000000, rate: 0.33, deduction: 1536000 },
+		{ limit: 40000000, rate: 0.4, deduction: 2796000 },
+		{ limit: Number.POSITIVE_INFINITY, rate: 0.45, deduction: 4796000 },
 	];
 
 	let tax = 0;
-	let remainingIncome = income;
 	const taxBreakdown: TaxBreakdownItem[] = [];
 	let startingBracket = "";
 
@@ -36,34 +35,43 @@ export const calculateTax = (
 	for (let i = 0; i < brackets.length; i++) {
 		if (yearlyIncome <= brackets[i].limit) {
 			startingBracketIndex = i;
-			startingBracket = `¥${brackets[i].limit.toLocaleString()} (${brackets[i].rate * 100}%)`;
+			startingBracket = `¥${brackets[i].limit.toLocaleString()} (${
+				brackets[i].rate * 100
+			}%)`;
 			break;
 		}
 	}
 
+	// Calculate tax on total income (yearly income + capital gains)
+	const totalIncome = yearlyIncome + income;
+	let applicableBracket = brackets[startingBracketIndex];
+
 	for (let i = startingBracketIndex; i < brackets.length; i++) {
-		const bracket = brackets[i];
-		const prevLimit = i > 0 ? brackets[i - 1].limit : 0;
-		const taxableInThisBracket = Math.min(
-			remainingIncome,
-			bracket.limit - prevLimit,
-		);
-
-		if (taxableInThisBracket <= 0) break;
-
-		const taxInThisBracket = taxableInThisBracket * bracket.rate;
-		tax += taxInThisBracket;
-		taxBreakdown.push({
-			bracket: `¥${prevLimit.toLocaleString()} - ¥${bracket.limit.toLocaleString()}`,
-			rate: `${(bracket.rate * 100).toFixed(0)}%`,
-			taxableAmount: `¥${Math.round(taxableInThisBracket).toLocaleString()}`,
-			taxAmount: `¥${Math.round(taxInThisBracket).toLocaleString()}`,
-		});
-		remainingIncome -= taxableInThisBracket;
+		if (totalIncome <= brackets[i].limit) {
+			applicableBracket = brackets[i];
+			break;
+		}
 	}
 
+	tax = totalIncome * applicableBracket.rate - applicableBracket.deduction;
+
+	// Calculate tax on yearly income (for informational purposes)
+	const yearlyIncomeTax =
+		yearlyIncome * applicableBracket.rate - applicableBracket.deduction;
+
+	// The additional tax due to capital gains
+	const capitalGainsTax = tax - yearlyIncomeTax;
+
+	taxBreakdown.push({
+		bracket: `¥${applicableBracket.limit.toLocaleString()}`,
+		rate: `${(applicableBracket.rate * 100).toFixed(0)}%`,
+		taxableAmount: `¥${Math.round(income).toLocaleString()}`,
+		deduction: `¥${applicableBracket.deduction.toLocaleString()}`,
+		taxAmount: `¥${Math.round(capitalGainsTax).toLocaleString()}`,
+	});
+
 	return {
-		totalTax: Math.round(tax),
+		totalTax: Math.round(capitalGainsTax),
 		breakdown: taxBreakdown,
 		startingBracket,
 	};

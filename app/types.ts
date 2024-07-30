@@ -25,6 +25,7 @@ export type ExpenseItems = {
 export type TaxBracket = {
 	limit: number;
 	rate: number;
+	deduction: number;
 };
 
 export type Expense = {
@@ -35,6 +36,7 @@ export type TaxBreakdownItem = {
 	bracket: string;
 	rate: string;
 	taxableAmount: string;
+	deduction: string;
 	taxAmount: string;
 };
 

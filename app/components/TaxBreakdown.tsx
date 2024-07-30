@@ -11,15 +11,17 @@ type TaxBreakdownProps = {
 	startingBracket: string;
 	exchangeRate: number;
 	foreignCurrency: string;
+	yearlyIncomeTax: number;
 };
 
-const TaxBreakdown: React.FC<TaxBreakdownProps> = ({
+export default function TaxBreakdown({
 	taxBreakdown,
 	taxAmount,
 	startingBracket,
 	exchangeRate,
 	foreignCurrency,
-}) => {
+	yearlyIncomeTax,
+}: TaxBreakdownProps) {
 	const { t } = useTranslation();
 
 	const formatAmounts = (jpyAmount: string): string => {
@@ -73,6 +75,12 @@ const TaxBreakdown: React.FC<TaxBreakdownProps> = ({
 								{t("taxBreakdown.taxableAmount")}
 							</Table.ColumnHeaderCell>
 							<Table.ColumnHeaderCell className="whitespace-nowrap">
+								{t("taxBreakdown.deduction")}
+								<ExplanationTooltip
+									explanation={t("taxBreakdown.explanationDeduction")}
+								/>
+							</Table.ColumnHeaderCell>
+							<Table.ColumnHeaderCell className="whitespace-nowrap">
 								{t("taxBreakdown.taxAmount")}
 							</Table.ColumnHeaderCell>
 						</Table.Row>
@@ -85,12 +93,13 @@ const TaxBreakdown: React.FC<TaxBreakdownProps> = ({
 								</Table.Cell>
 								<Table.Cell>{item.rate}</Table.Cell>
 								<Table.Cell>{formatAmounts(item.taxableAmount)}</Table.Cell>
+								<Table.Cell>{formatAmounts(item.deduction)}</Table.Cell>
 								<Table.Cell>{formatAmounts(item.taxAmount)}</Table.Cell>
 							</Table.Row>
 						))}
 						{taxAmount > 0 && (
 							<Table.Row>
-								<Table.Cell colSpan={3} className="font-bold">
+								<Table.Cell colSpan={4} className="font-bold">
 									{t("taxBreakdown.municipalTax")}
 									<ExplanationTooltip
 										explanation={t("taxBreakdown.explanationMunicipalTax")}
@@ -117,8 +126,17 @@ const TaxBreakdown: React.FC<TaxBreakdownProps> = ({
 					</Table.Body>
 				</Table.Root>
 			</Box>
+			<Box mt="4">
+				<Text size="2" weight="bold">
+					{t("taxBreakdown.estimatedYearlyIncomeTax")}
+				</Text>
+				<Text size="2">
+					{formatAmounts(formatCurrency(yearlyIncomeTax, "JPY"))}
+					<ExplanationTooltip
+						explanation={t("taxBreakdown.explanationYearlyIncomeTax")}
+					/>
+				</Text>
+			</Box>
 		</Box>
 	);
-};
-
-export default TaxBreakdown;
+}
