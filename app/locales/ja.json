@@ -4,7 +4,7 @@
 	"timeFrame": {
 		"title": "期間設定",
 		"label": "年数",
-		"explanation": "予算を計算したい年数"
+		"explanation": "予算を計算したい年数。この値を変更したら、各カードの[X]年間の支出は同じままですのでご注意ください。"
 	},
 	"financialInputs": {
 		"timeFrame": "期間（年）",

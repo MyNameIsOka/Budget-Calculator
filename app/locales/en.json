@@ -4,7 +4,7 @@
 	"timeFrame": {
 		"title": "Time Frame",
 		"label": "Number of Years",
-		"explanation": "How many years you want to calculate your budget for"
+		"explanation": "How many years you want to calculate your budget for. Keep in mind that the [X] years of expenses in each card stay the same if this value is changed."
 	},
 	"financialInputs": {
 		"timeFrame": "Time Frame (years)",
