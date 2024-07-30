@@ -48,6 +48,7 @@ type ExpenseInputProps = {
 		key: string,
 		title: { en: string; ja: string },
 	) => void;
+	isSmallScreen: boolean;
 };
 
 export default function ExpenseInput({
@@ -65,6 +66,7 @@ export default function ExpenseInput({
 	timeFrame,
 	onUpdateExpenseItems,
 	onUpdateExpenseTitle,
+	isSmallScreen,
 }: ExpenseInputProps) {
 	const { t, i18n } = useTranslation();
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -242,159 +244,106 @@ export default function ExpenseInput({
 
 	return (
 		<>
-			<Grid columns={{ initial: "1", sm: "2" }} gap="4">
+			<Grid
+				columns={{ initial: "1", sm: "2" }}
+				gap="4"
+				className={isSmallScreen ? "items-center" : ""}
+			>
 				{visibleExpenses.map((key) => (
-					<Card
-						key={key}
-						className={`${
-							deactivatedExpenses.includes(key) ? "opacity-50" : ""
-						}`}
-					>
-						<Flex justify="between" align="center" mb="2">
-							{editingTitle === key ? (
-								<Flex align="center" style={{ flexGrow: 1 }}>
+					<Flex key={key} justify={isSmallScreen ? "center" : "start"}>
+						<Card
+							className={`${
+								deactivatedExpenses.includes(key) ? "opacity-50" : ""
+							}`}
+							style={{ width: "300px", height: "300px" }}
+						>
+							<Flex justify="between" align="center" mb="2">
+								{editingTitle === key ? (
+									<Flex align="center" style={{ flexGrow: 1 }}>
+										<IconButton
+											size="1"
+											onClick={handleSaveTitle}
+											variant="ghost"
+											className="mr-1"
+										>
+											<CheckIcon />
+										</IconButton>
+										<TextField.Root
+											size="2"
+											value={newTitle[i18n.language as "en" | "ja"]}
+											onChange={(e) =>
+												setNewTitle({
+													...newTitle,
+													[i18n.language]: e.target.value,
+												})
+											}
+											style={{ flexGrow: 1 }}
+											ref={editTitleRef}
+										/>
+									</Flex>
+								) : (
+									<Flex align="center">
+										<IconButton
+											size="1"
+											onClick={() => handleEditTitle(key)}
+											variant="ghost"
+											className="mr-1"
+											disabled={deactivatedExpenses.includes(key)}
+										>
+											<Pencil1Icon />
+										</IconButton>
+										<Heading size="3">{getExpenseTitle(key)}</Heading>
+									</Flex>
+								)}
+								<Flex gap="2">
 									<IconButton
 										size="1"
-										onClick={handleSaveTitle}
 										variant="ghost"
-										className="mr-1"
+										color="gray"
+										onClick={() => handleToggleExpense(key)}
 									>
-										<CheckIcon />
+										{deactivatedExpenses.includes(key) ? (
+											<PlusIcon />
+										) : (
+											<MinusIcon />
+										)}
 									</IconButton>
-									<TextField.Root
-										size="2"
-										value={newTitle[i18n.language as "en" | "ja"]}
-										onChange={(e) =>
-											setNewTitle({
-												...newTitle,
-												[i18n.language]: e.target.value,
-											})
-										}
-										style={{ flexGrow: 1 }}
-										ref={editTitleRef}
-									/>
-								</Flex>
-							) : (
-								<Flex align="center">
 									<IconButton
 										size="1"
-										onClick={() => handleEditTitle(key)}
 										variant="ghost"
-										className="mr-1"
-										disabled={deactivatedExpenses.includes(key)}
+										color="gray"
+										onClick={() => handleRemoveExpense(key)}
 									>
-										<Pencil1Icon />
+										<Cross2Icon />
 									</IconButton>
-									<Heading size="3">{getExpenseTitle(key)}</Heading>
 								</Flex>
-							)}
-							<Flex gap="2">
-								<IconButton
-									size="1"
-									variant="ghost"
-									color="gray"
-									onClick={() => handleToggleExpense(key)}
-								>
-									{deactivatedExpenses.includes(key) ? (
-										<PlusIcon />
-									) : (
-										<MinusIcon />
-									)}
-								</IconButton>
-								<IconButton
-									size="1"
-									variant="ghost"
-									color="gray"
-									onClick={() => handleRemoveExpense(key)}
-								>
-									<Cross2Icon />
-								</IconButton>
 							</Flex>
-						</Flex>
-						<Table.Root>
-							<Table.Header>
-								<Table.Row>
-									<Table.ColumnHeaderCell />
-									<Table.ColumnHeaderCell>JPY</Table.ColumnHeaderCell>
-									<Table.ColumnHeaderCell>
-										{foreignCurrency}
-									</Table.ColumnHeaderCell>
-								</Table.Row>
-							</Table.Header>
-							<Table.Body>
-								<Table.Row>
-									<Table.Cell>{t("expenseCards.monthly")}</Table.Cell>
-									<Table.Cell>
-										<TextField.Root
-											size="1"
-											value={formatAmount(expenses[key] / (12 * timeFrame))}
-											onChange={(e) =>
-												handleInputChange(key, e.target.value, "monthly", "JPY")
-											}
-											disabled={deactivatedExpenses.includes(key)}
-										/>
-									</Table.Cell>
-									<Table.Cell>
-										<TextField.Root
-											size="1"
-											value={formatAmount(
-												expenses[key] / (12 * timeFrame),
-												true,
-											)}
-											onChange={(e) =>
-												handleInputChange(
-													key,
-													e.target.value,
-													"monthly",
-													"foreign",
-												)
-											}
-											disabled={deactivatedExpenses.includes(key)}
-										/>
-									</Table.Cell>
-								</Table.Row>
-								<Table.Row>
-									<Table.Cell>{t("expenseCards.yearly")}</Table.Cell>
-									<Table.Cell>
-										<TextField.Root
-											size="1"
-											value={formatAmount(expenses[key] / timeFrame)}
-											onChange={(e) =>
-												handleInputChange(key, e.target.value, "yearly", "JPY")
-											}
-											disabled={deactivatedExpenses.includes(key)}
-										/>
-									</Table.Cell>
-									<Table.Cell>
-										<TextField.Root
-											size="1"
-											value={formatAmount(expenses[key] / timeFrame, true)}
-											onChange={(e) =>
-												handleInputChange(
-													key,
-													e.target.value,
-													"yearly",
-													"foreign",
-												)
-											}
-											disabled={deactivatedExpenses.includes(key)}
-										/>
-									</Table.Cell>
-								</Table.Row>
-								{timeFrame > 1 && (
+							<Table.Root>
+								<Table.Header>
+									<Table.Row>
+										<Table.ColumnHeaderCell />
+										<Table.ColumnHeaderCell>JPY</Table.ColumnHeaderCell>
+										<Table.ColumnHeaderCell>
+											{foreignCurrency}
+										</Table.ColumnHeaderCell>
+									</Table.Row>
+								</Table.Header>
+								<Table.Body>
 									<Table.Row>
 										<Table.Cell>
-											{t("expenseCards.timeFrame", { timeFrame })}
+											<Text style={{ whiteSpace: "nowrap" }}>
+												{t("expenseCards.monthly")}
+											</Text>
 										</Table.Cell>
 										<Table.Cell>
 											<TextField.Root
 												size="1"
-												value={formatAmount(expenses[key])}
+												value={formatAmount(expenses[key] / (12 * timeFrame))}
 												onChange={(e) =>
 													handleInputChange(
 														key,
 														e.target.value,
-														"timeFrame",
+														"monthly",
 														"JPY",
 													)
 												}
@@ -404,12 +353,15 @@ export default function ExpenseInput({
 										<Table.Cell>
 											<TextField.Root
 												size="1"
-												value={formatAmount(expenses[key], true)}
+												value={formatAmount(
+													expenses[key] / (12 * timeFrame),
+													true,
+												)}
 												onChange={(e) =>
 													handleInputChange(
 														key,
 														e.target.value,
-														"timeFrame",
+														"monthly",
 														"foreign",
 													)
 												}
@@ -417,82 +369,158 @@ export default function ExpenseInput({
 											/>
 										</Table.Cell>
 									</Table.Row>
-								)}
-							</Table.Body>
-						</Table.Root>
-						<Box mt="3">
-							<Text size="2" as="div" className="mb-2">
-								{i18n.language === "en" ? "e.g.:" : "例:"}
-							</Text>
-							{expenseItems[key]?.map((item, index) => (
-								<Flex key={index} align="center" mb="1">
-									{editingExpenseItem?.key === key &&
-									editingExpenseItem?.index === index ? (
-										<>
-											<IconButton
-												size="1"
-												onClick={handleSaveExpenseItem}
-												variant="ghost"
-												className="mr-1"
-											>
-												<CheckIcon />
-											</IconButton>
+									<Table.Row>
+										<Table.Cell>
+											<Text style={{ whiteSpace: "nowrap" }}>
+												{t("expenseCards.yearly")}
+											</Text>
+										</Table.Cell>
+										<Table.Cell>
 											<TextField.Root
 												size="1"
-												value={newItemText[i18n.language as "en" | "ja"]}
+												value={formatAmount(expenses[key] / timeFrame)}
 												onChange={(e) =>
-													setNewItemText({
-														...newItemText,
-														[i.language]: e.target.value,
-													})
+													handleInputChange(
+														key,
+														e.target.value,
+														"yearly",
+														"JPY",
+													)
 												}
-												style={{ flexGrow: 1 }}
-												ref={editInputRef}
-											/>
-										</>
-									) : (
-										<>
-											<IconButton
-												size="1"
-												onClick={() => handleEditExpenseItem(key, index)}
-												variant="ghost"
-												className="mr-1"
 												disabled={deactivatedExpenses.includes(key)}
-											>
-												<Pencil1Icon />
-											</IconButton>
-											<Text size="2" style={{ flexGrow: 1 }}>
-												{getLocalizedText(item)}
-											</Text>
-											{index > 0 && (
+											/>
+										</Table.Cell>
+										<Table.Cell>
+											<TextField.Root
+												size="1"
+												value={formatAmount(expenses[key] / timeFrame, true)}
+												onChange={(e) =>
+													handleInputChange(
+														key,
+														e.target.value,
+														"yearly",
+														"foreign",
+													)
+												}
+												disabled={deactivatedExpenses.includes(key)}
+											/>
+										</Table.Cell>
+									</Table.Row>
+									{timeFrame > 1 && (
+										<Table.Row>
+											<Table.Cell>
+												<Text style={{ whiteSpace: "nowrap" }}>
+													{t("expenseCards.timeFrame", { timeFrame })}
+												</Text>
+											</Table.Cell>
+											<Table.Cell>
+												<TextField.Root
+													size="1"
+													value={formatAmount(expenses[key])}
+													onChange={(e) =>
+														handleInputChange(
+															key,
+															e.target.value,
+															"timeFrame",
+															"JPY",
+														)
+													}
+													disabled={deactivatedExpenses.includes(key)}
+												/>
+											</Table.Cell>
+											<Table.Cell>
+												<TextField.Root
+													size="1"
+													value={formatAmount(expenses[key], true)}
+													onChange={(e) =>
+														handleInputChange(
+															key,
+															e.target.value,
+															"timeFrame",
+															"foreign",
+														)
+													}
+													disabled={deactivatedExpenses.includes(key)}
+												/>
+											</Table.Cell>
+										</Table.Row>
+									)}
+								</Table.Body>
+							</Table.Root>
+							<Box mt="3">
+								<Text size="2" as="div" mb="2">
+									{i18n.language === "en" ? "e.g.:" : "例:"}
+								</Text>
+								{expenseItems[key]?.map((item, index) => (
+									<Flex key={index} align="center" mb="1">
+										{editingExpenseItem?.key === key &&
+										editingExpenseItem?.index === index ? (
+											<>
 												<IconButton
 													size="1"
-													onClick={() => handleRemoveExpenseItem(key, index)}
+													onClick={handleSaveExpenseItem}
 													variant="ghost"
+													className="mr-1"
+												>
+													<CheckIcon />
+												</IconButton>
+												<TextField.Root
+													size="1"
+													value={newItemText[i18n.language as "en" | "ja"]}
+													onChange={(e) =>
+														setNewItemText({
+															...newItemText,
+															[i.language]: e.target.value,
+														})
+													}
+													style={{ flexGrow: 1 }}
+													ref={editInputRef}
+												/>
+											</>
+										) : (
+											<>
+												<IconButton
+													size="1"
+													onClick={() => handleEditExpenseItem(key, index)}
+													variant="ghost"
+													className="mr-1"
 													disabled={deactivatedExpenses.includes(key)}
 												>
-													<Cross2Icon />
+													<Pencil1Icon />
 												</IconButton>
-											)}
-										</>
-									)}
-								</Flex>
-							))}
-							{expenseItems[key].length < 5 && (
-								<Flex justify="center" mt="2">
-									<IconButton
-										size="1"
-										variant="ghost"
-										color="gray"
-										onClick={() => handleAddExpenseItem(key)}
-										disabled={deactivatedExpenses.includes(key)}
-									>
-										<PlusIcon />
-									</IconButton>
-								</Flex>
-							)}
-						</Box>
-					</Card>
+												<Text size="2" style={{ flexGrow: 1 }}>
+													{getLocalizedText(item)}
+												</Text>
+												{index > 0 && (
+													<IconButton
+														size="1"
+														onClick={() => handleRemoveExpenseItem(key, index)}
+														variant="ghost"
+														disabled={deactivatedExpenses.includes(key)}
+													>
+														<Cross2Icon />
+													</IconButton>
+												)}
+											</>
+										)}
+									</Flex>
+								))}
+								{expenseItems[key].length < 5 && (
+									<Flex justify="center" mt="2">
+										<IconButton
+											size="1"
+											variant="ghost"
+											color="gray"
+											onClick={() => handleAddExpenseItem(key)}
+											disabled={deactivatedExpenses.includes(key)}
+										>
+											<PlusIcon />
+										</IconButton>
+									</Flex>
+								)}
+							</Box>
+						</Card>
+					</Flex>
 				))}
 			</Grid>
 			<Box mt="6">

@@ -312,7 +312,8 @@ export default function BudgetCalculator({
 
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-	const isSmallScreen = useMediaQuery("(max-width: 768px)");
+	const moveSettingsDrawer = useMediaQuery("(max-width: 1300px)");
+	const isSmallScreen = useMediaQuery("(max-width: 1050px)");
 
 	const { theme, setTheme } = useOutletContext<{
 		theme: "light" | "dark";
@@ -327,7 +328,7 @@ export default function BudgetCalculator({
 				</Heading>
 				<Text size="3">{t("subtitle", { currency: foreignCurrency })}</Text>
 			</Box>
-			{isSmallScreen && (
+			{moveSettingsDrawer && (
 				<Button
 					size="3"
 					variant="soft"
@@ -337,7 +338,7 @@ export default function BudgetCalculator({
 					<GearIcon />
 				</Button>
 			)}
-			<Flex gap="6" direction={isSmallScreen ? "column" : "row"}>
+			<Flex gap="6" direction={moveSettingsDrawer ? "column" : "row"}>
 				<SettingsDrawer
 					isOpen={isDrawerOpen}
 					onClose={() => setIsDrawerOpen(false)}
@@ -363,7 +364,7 @@ export default function BudgetCalculator({
 					<ResetButton onReset={resetToInitialState} />
 					<ThemeToggle theme={theme} setTheme={setTheme} />
 				</SettingsDrawer>
-				{!isSmallScreen && (
+				{!moveSettingsDrawer && (
 					<Box style={{ width: "300px", flexShrink: 0 }}>
 						<Flex
 							direction="column"
@@ -412,6 +413,7 @@ export default function BudgetCalculator({
 						timeFrame={timeFrame}
 						onUpdateExpenseItems={handleUpdateExpenseItems}
 						onUpdateExpenseTitle={handleUpdateExpenseTitle}
+						isSmallScreen={isSmallScreen}
 					/>
 					<Separator size="4" my="6" />
 					<ExpenseDistribution
