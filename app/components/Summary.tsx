@@ -1,4 +1,3 @@
-import type React from "react";
 import { Box, Heading, Table } from "@radix-ui/themes";
 import { formatCurrency } from "~/utils/calculations";
 import { useTranslation } from "react-i18next";
@@ -14,8 +13,7 @@ type SummaryProps = {
 	timeFrame: number;
 	gains: number;
 };
-
-const Summary: React.FC<SummaryProps> = ({
+export default function Summary({
 	totalExpenses,
 	loanAmountJPY,
 	btcSalePrice,
@@ -24,7 +22,7 @@ const Summary: React.FC<SummaryProps> = ({
 	taxAmount,
 	timeFrame,
 	gains,
-}) => {
+}: SummaryProps) {
 	const { t } = useTranslation();
 
 	const amountToSell = totalExpenses - loanAmountJPY;
@@ -142,6 +140,4 @@ const Summary: React.FC<SummaryProps> = ({
 			</Table.Root>
 		</Box>
 	);
-};
-
-export default Summary;
+}

@@ -50,8 +50,6 @@ export type LoaderData = {
 	timeFrame: number;
 };
 
-export type CombinedData = LoaderData;
-
 export type Language = "en" | "ja";
 
 export type TranslationKeys = {

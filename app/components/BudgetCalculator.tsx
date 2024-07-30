@@ -1,9 +1,9 @@
 import type {
-	CombinedData,
 	Expense,
 	ExpenseItems,
 	TaxBreakdownItem,
 	CustomExpenseTitles,
+	LoaderData,
 } from "~/types";
 import { Box, Flex, Text, Separator, Button, Heading } from "@radix-ui/themes";
 import { useState, useEffect, useCallback } from "react";
@@ -43,7 +43,7 @@ function useMediaQuery(query: string) {
 }
 
 type BudgetCalculatorProps = {
-	data: CombinedData;
+	data: LoaderData;
 	expenseItems: ExpenseItems;
 	donationLink: string;
 	isInitialLoad: boolean;
@@ -77,7 +77,7 @@ export default function BudgetCalculator({
 		setLoanAmountForeign(data.loanAmountForeign);
 		setRemovedExpenses([]);
 		setDeactivatedExpenses([]);
-		setTimeFrame(5);
+		setTimeFrame(data.timeFrame);
 
 		// Selectively clear localStorage
 		if (isBrowser) {
@@ -223,12 +223,10 @@ export default function BudgetCalculator({
 					!removedExpenses.includes(key) && !deactivatedExpenses.includes(key),
 			),
 		);
-		const monthlyTotal = Object.values(activeExpenses).reduce<number>(
+		const totalForTimeFrame = Object.values(activeExpenses).reduce<number>(
 			(sum, value) => sum + value,
 			0,
 		);
-		const yearlyTotal = monthlyTotal * 12;
-		const totalForTimeFrame = yearlyTotal * timeFrame;
 
 		setTotalExpenses(totalForTimeFrame);
 
@@ -257,7 +255,6 @@ export default function BudgetCalculator({
 		yearlyIncome,
 		exchangeRate,
 		loanAmountJPY,
-		timeFrame,
 	]);
 
 	const handleExpenseChange = (key: string, value: number) => {

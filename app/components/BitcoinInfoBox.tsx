@@ -1,4 +1,3 @@
-import type React from "react";
 import { Box, Heading, Table } from "@radix-ui/themes";
 import { formatCurrency } from "~/utils/calculations";
 import { useTranslation } from "react-i18next";
@@ -13,8 +12,7 @@ type BitcoinInfoBoxProps = {
 	loanAmountJPY: number;
 	timeFrame: number;
 };
-
-const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
+export default function BitcoinInfoBox({
 	totalExpenses,
 	taxAmount,
 	btcSalePrice,
@@ -23,7 +21,7 @@ const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
 	foreignCurrency,
 	loanAmountJPY,
 	timeFrame,
-}) => {
+}: BitcoinInfoBoxProps) {
 	const { t } = useTranslation();
 
 	const totalNeeded = totalExpenses + taxAmount - loanAmountJPY;
@@ -77,6 +75,4 @@ const BitcoinInfoBox: React.FC<BitcoinInfoBoxProps> = ({
 			</Table.Root>
 		</Box>
 	);
-};
-
-export default BitcoinInfoBox;
+}

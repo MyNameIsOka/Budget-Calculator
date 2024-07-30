@@ -68,7 +68,7 @@ export const loader: LoaderFunction = async () => {
 
 	// In a real application, you might fetch these values from an API or environment variables
 	const initialState: CombinedData = {
-		expenses: initialExpenses,
+		expenses: initialExpenses(Number(process.env.INITIAL_TIME_FRAME)),
 		btcPurchasePrice: Number(process.env.INITIAL_BTC_PURCHASE_PRICE),
 		btcSalePrice: Number(process.env.INITIAL_BTC_SALE_PRICE),
 		yearlyIncome: Number(process.env.INITIAL_YEARLY_INCOME),

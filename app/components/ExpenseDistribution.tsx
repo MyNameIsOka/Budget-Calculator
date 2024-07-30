@@ -1,4 +1,3 @@
-import type React from "react";
 import { Box, Heading } from "@radix-ui/themes";
 import {
 	PieChart,
@@ -34,19 +33,18 @@ type ExpenseDistributionProps = {
 	expenses: Expense;
 	customExpenseTitles: CustomExpenseTitles;
 };
-
-const ExpenseDistribution: React.FC<ExpenseDistributionProps> = ({
+export default function ExpenseDistribution({
 	expenses,
 	customExpenseTitles,
-}) => {
+}: ExpenseDistributionProps) {
 	const { t, i18n } = useTranslation();
 
 	const getExpenseTitle = (key: string) => {
 		if (customExpenseTitles[key]) {
 			return (
 				customExpenseTitles[key][i18n.language as "en" | "ja"] ||
-				customExpenseTitles[key]["en"] ||
-				customExpenseTitles[key]["ja"]
+				customExpenseTitles[key].en ||
+				customExpenseTitles[key].ja
 			);
 		}
 		return t(`expenseCards.${key}`);
@@ -54,7 +52,7 @@ const ExpenseDistribution: React.FC<ExpenseDistributionProps> = ({
 
 	const pieChartData = Object.entries(expenses).map(([key, value]) => ({
 		name: getExpenseTitle(key),
-		value: value * 12 * 5,
+		value,
 	}));
 
 	const CustomLabel = ({
@@ -117,6 +115,4 @@ const ExpenseDistribution: React.FC<ExpenseDistributionProps> = ({
 			</Box>
 		</Box>
 	);
-};
-
-export default ExpenseDistribution;
+}

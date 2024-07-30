@@ -50,7 +50,7 @@ type ExpenseInputProps = {
 	) => void;
 };
 
-const ExpenseInput: React.FC<ExpenseInputProps> = ({
+export default function ExpenseInput({
 	expenses,
 	expenseItems,
 	customExpenseTitles,
@@ -65,7 +65,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 	timeFrame,
 	onUpdateExpenseItems,
 	onUpdateExpenseTitle,
-}) => {
+}: ExpenseInputProps) {
 	const { t, i18n } = useTranslation();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [visibleExpenses, setVisibleExpenses] = useState<string[]>([]);
@@ -108,26 +108,27 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 		currency: "JPY" | "foreign",
 	) => {
 		const numericValue = Number(value.replace(/[^\d]/g, ""));
-		let monthlyValue: number;
-
-		if (currency === "foreign") {
-			monthlyValue = numericValue * exchangeRate;
-		} else {
-			monthlyValue = numericValue;
-		}
+		let timeFrameValue: number;
 
 		switch (period) {
 			case "monthly":
+				timeFrameValue = numericValue * 12 * timeFrame;
 				break;
 			case "yearly":
-				monthlyValue /= 12;
+				timeFrameValue = numericValue * timeFrame;
 				break;
 			case "timeFrame":
-				monthlyValue /= 12 * timeFrame;
+				timeFrameValue = numericValue;
 				break;
+			default:
+				timeFrameValue = 0;
 		}
 
-		handleExpenseChange(key, Math.round(monthlyValue));
+		if (currency === "foreign") {
+			timeFrameValue *= exchangeRate;
+		}
+
+		handleExpenseChange(key, Math.round(timeFrameValue));
 	};
 
 	const handleRemoveExpense = (key: string) => {
@@ -326,7 +327,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 									<Table.Cell>
 										<TextField.Root
 											size="1"
-											value={formatAmount(expenses[key])}
+											value={formatAmount(expenses[key] / (12 * timeFrame))}
 											onChange={(e) =>
 												handleInputChange(key, e.target.value, "monthly", "JPY")
 											}
@@ -336,7 +337,10 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 									<Table.Cell>
 										<TextField.Root
 											size="1"
-											value={formatAmount(expenses[key], true)}
+											value={formatAmount(
+												expenses[key] / (12 * timeFrame),
+												true,
+											)}
 											onChange={(e) =>
 												handleInputChange(
 													key,
@@ -354,7 +358,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 									<Table.Cell>
 										<TextField.Root
 											size="1"
-											value={formatAmount(expenses[key] * 12)}
+											value={formatAmount(expenses[key] / timeFrame)}
 											onChange={(e) =>
 												handleInputChange(key, e.target.value, "yearly", "JPY")
 											}
@@ -364,7 +368,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 									<Table.Cell>
 										<TextField.Root
 											size="1"
-											value={formatAmount(expenses[key] * 12, true)}
+											value={formatAmount(expenses[key] / timeFrame, true)}
 											onChange={(e) =>
 												handleInputChange(
 													key,
@@ -385,7 +389,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 										<Table.Cell>
 											<TextField.Root
 												size="1"
-												value={formatAmount(expenses[key] * 12 * timeFrame)}
+												value={formatAmount(expenses[key])}
 												onChange={(e) =>
 													handleInputChange(
 														key,
@@ -400,10 +404,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 										<Table.Cell>
 											<TextField.Root
 												size="1"
-												value={formatAmount(
-													expenses[key] * 12 * timeFrame,
-													true,
-												)}
+												value={formatAmount(expenses[key], true)}
 												onChange={(e) =>
 													handleInputChange(
 														key,
@@ -442,7 +443,7 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 												onChange={(e) =>
 													setNewItemText({
 														...newItemText,
-														[i18n.language]: e.target.value,
+														[i.language]: e.target.value,
 													})
 												}
 												style={{ flexGrow: 1 }}
@@ -527,6 +528,4 @@ const ExpenseInput: React.FC<ExpenseInputProps> = ({
 			</Dialog.Root>
 		</>
 	);
-};
-
-export default ExpenseInput;
+}

@@ -1,20 +1,22 @@
 import type { Expense, ExpenseItems } from "../types";
 
-export const initialExpenses: Expense = {
-	rent: 250000,
-	utilities: 30000,
-	food: 100000,
-	carLease: 50000,
-	carExpenses: 30000,
-	publicTransport: 20000,
-	healthcare: 30000,
-	childcare: 50000,
-	petCare: 10000,
-	travel: 41667,
-	personalCare: 30000,
-	entertainment: 30000,
-	communication: 15000,
-	miscellaneous: 30000,
+export const initialExpenses = (timeFrame: number): Expense => {
+	return {
+		rent: 250000 * 12 * timeFrame,
+		utilities: 30000 * 12 * timeFrame,
+		food: 100000 * 12 * timeFrame,
+		carLease: 50000 * 12 * timeFrame,
+		carExpenses: 30000 * 12 * timeFrame,
+		publicTransport: 20000 * 12 * timeFrame,
+		healthcare: 30000 * 12 * timeFrame,
+		childcare: 50000 * 12 * timeFrame,
+		petCare: 10000 * 12 * timeFrame,
+		travel: 41667 * 12 * timeFrame,
+		personalCare: 30000 * 12 * timeFrame,
+		entertainment: 30000 * 12 * timeFrame,
+		communication: 15000 * 12 * timeFrame,
+		miscellaneous: 30000 * 12 * timeFrame,
+	};
 };
 
 export const expenseItems: ExpenseItems = {
