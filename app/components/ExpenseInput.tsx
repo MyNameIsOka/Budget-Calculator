@@ -255,7 +255,7 @@ export default function ExpenseInput({
 							className={`${
 								deactivatedExpenses.includes(key) ? "opacity-50" : ""
 							}`}
-							style={{ width: "300px", height: "300px" }}
+							style={{ width: "300px", height: "375px" }}
 						>
 							<Flex justify="between" align="center" mb="2">
 								{editingTitle === key ? (
@@ -470,7 +470,7 @@ export default function ExpenseInput({
 													onChange={(e) =>
 														setNewItemText({
 															...newItemText,
-															[i.language]: e.target.value,
+															[i18n.language]: e.target.value,
 														})
 													}
 													style={{ flexGrow: 1 }}
