@@ -15,7 +15,20 @@
 		"explanationYearlyIncome": "Your total annual income before taxes and deductions. Used to calculate your starting tax bracket",
 		"explanationBtcPurchasePrice": "The price you bought your BTC at. Used to calculate your capital gains tax",
 		"explanationBtcSalePrice": "The price you plan to sell your BTC at. Used to calculate your capital gains tax",
-		"explanationLoanAmount": "The amount of money you plan to loan or get by other means than selling BTC. This amount will be subtracted from the total amount you need to sell in BTC"
+		"explanationLoanAmount": "The amount of money you plan to loan or get by other means than selling BTC. This amount will be subtracted from the total amount you need to sell in BTC",
+		"calculateBestLoan": "Calculate Best Loan Amount"
+	},
+	"bestLoanCalculator": {
+		"title": "Calculate Best Loan Amount",
+		"interestRate": "Interest Rate (%)",
+		"expenses": "Expenses ($)",
+		"loanAmount": "Loan Amount ($)",
+		"taxesToPay": "Taxes to pay ($)",
+		"btcSaleTaxes": "BTC Sale Taxes",
+		"btcSaleAmount": "BTC Sale Amount",
+		"interestTaxes": "Interest 'Taxes'",
+		"totalTaxes": "Total Taxes",
+		"close": "Close"
 	},
 	"currencySettings": {
 		"title": "Currency Settings",

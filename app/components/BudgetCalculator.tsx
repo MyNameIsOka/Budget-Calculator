@@ -373,6 +373,8 @@ export default function BudgetCalculator({
 								setTimeFrame={setTimeFrame}
 							/>
 							<FinancialInputs
+								totalExpenses={totalExpenses}
+								timeFrame={timeFrame}
 								yearlyIncome={yearlyIncome}
 								setYearlyIncome={setYearlyIncome}
 								btcPurchasePrice={btcPurchasePrice}

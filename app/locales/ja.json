@@ -15,7 +15,20 @@
 		"explanationYearlyIncome": "税金と控除前の総年収。開始時の税率区分を計算するために使用されます",
 		"explanationBtcPurchasePrice": "ビットコインを購入した価格。キャピタルゲイン税を計算するために使用されます",
 		"explanationBtcSalePrice": "ビットコインを売却する予定の価格。キャピタルゲイン税を計算するために使用されます",
-		"explanationLoanAmount": "ローンや、ビットコイン以外の方法で調達する予定の金額。この金額は、ビットコインで売却する必要がある総額から差し引かれます"
+		"explanationLoanAmount": "ローンや、ビットコイン以外の方法で調達する予定の金額。この金額は、ビットコインで売却する必要がある総額から差し引かれます",
+		"calculateBestLoan": "最適なローン金額を計算"
+	},
+	"bestLoanCalculator": {
+		"title": "最適なローン金額の計算",
+		"interestRate": "金利 (%)",
+		"expenses": "経費 ($)",
+		"loanAmount": "ローン金額 ($)",
+		"taxesToPay": "支払う税金 ($)",
+		"btcSaleTaxes": "ビットコイン売却税",
+		"btcSaleAmount": "ビットコイン売却金額",
+		"interestTaxes": "利子 '税'",
+		"totalTaxes": "合計税金",
+		"close": "閉じる"
 	},
 	"currencySettings": {
 		"title": "通貨設定",

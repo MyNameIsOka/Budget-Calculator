@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
 	Box,
 	Flex,
@@ -7,11 +7,13 @@ import {
 	Heading,
 	Card,
 	RadioGroup,
+	Button,
 } from "@radix-ui/themes";
 import { useTranslation } from "react-i18next";
 import { getExchangeRates } from "~/utils/exchangeRate";
 import { ExplanationTooltip } from "./ExplanationTooltip";
 import ExchangeRateDisplay from "./ExchangeRateDisplay";
+import BestLoanCalculatorModal from "./BestLoanCalculatorModal";
 
 type FinancialInputsProps = {
 	yearlyIncome: number;
@@ -28,13 +30,15 @@ type FinancialInputsProps = {
 	setForeignCurrency: (currency: string) => void;
 	exchangeRate: number;
 	setExchangeRate: (rate: number) => void;
+	totalExpenses: number;
+	timeFrame: number;
 };
 
 const formatAmount = (amount: number): string => {
 	return amount.toLocaleString();
 };
 
-const FinancialInputs: React.FC<FinancialInputsProps> = ({
+export default function FinancialInputs({
 	yearlyIncome,
 	setYearlyIncome,
 	btcPurchasePrice,
@@ -49,10 +53,14 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 	setForeignCurrency,
 	exchangeRate,
 	setExchangeRate,
-}) => {
+	totalExpenses,
+	timeFrame,
+}: FinancialInputsProps) {
 	const { t } = useTranslation();
-	const [loading, setLoading] = React.useState(false);
-	const [yearlyIncomeForeign, setYearlyIncomeForeign] = React.useState(
+	const [isLoanCalculatorOpen, setIsLoanCalculatorOpen] = useState(false);
+
+	const [loading, setLoading] = useState(false);
+	const [yearlyIncomeForeign, setYearlyIncomeForeign] = useState(
 		Math.round(yearlyIncome / exchangeRate),
 	);
 	const prevCurrency = useRef(foreignCurrency);
@@ -271,10 +279,20 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 									</TextField.Root>
 								</Flex>
 							</Flex>
+							<Button
+								onClick={() => setIsLoanCalculatorOpen(true)}
+								size="2"
+								variant="soft"
+								mt="2"
+								className="w-full"
+							>
+								{t("financialInputs.calculateBestLoan")}
+							</Button>
 						</Box>
 					</Flex>
 				</Box>
 
+				{/* Currency Settings */}
 				<Box>
 					<Heading size="3" mb="3">
 						{t("currencySettings.title")}
@@ -301,8 +319,17 @@ const FinancialInputs: React.FC<FinancialInputsProps> = ({
 					</Flex>
 				</Box>
 			</Flex>
+
+			<BestLoanCalculatorModal
+				open={isLoanCalculatorOpen}
+				onOpenChange={setIsLoanCalculatorOpen}
+				totalExpenses={totalExpenses}
+				btcSalePrice={btcSalePrice}
+				btcPurchasePrice={btcPurchasePrice}
+				exchangeRate={exchangeRate}
+				yearlyIncome={yearlyIncome}
+				timeFrame={timeFrame}
+			/>
 		</Card>
 	);
-};
-
-export default FinancialInputs;
+}
