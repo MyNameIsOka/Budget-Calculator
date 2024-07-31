@@ -28,7 +28,13 @@
 		"btcSaleAmount": "ビットコイン売却金額",
 		"interestTaxes": "利子 '税'",
 		"totalTaxes": "合計税金",
-		"close": "閉じる"
+		"close": "閉じる",
+		"loanToValue": "ローン対価値比率 (%)",
+		"optimalLoanSummary": "最適なローン金額の要約",
+		"optimalLoanAmount": "最適なローン金額",
+		"btcToSell": "売却するビットコイン",
+		"btcNeededForLoan": "ローンに必要なビットコイン",
+		"totalBtcNeeded": "必要な総ビットコイン量"
 	},
 	"currencySettings": {
 		"title": "通貨設定",

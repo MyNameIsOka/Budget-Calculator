@@ -28,7 +28,13 @@
 		"btcSaleAmount": "BTC Sale Amount",
 		"interestTaxes": "Interest 'Taxes'",
 		"totalTaxes": "Total Taxes",
-		"close": "Close"
+		"close": "Close",
+		"loanToValue": "Loan-To-Value (%)",
+		"optimalLoanSummary": "Optimal Loan Summary",
+		"optimalLoanAmount": "Optimal Loan Amount",
+		"btcToSell": "BTC to Sell",
+		"btcNeededForLoan": "BTC Needed for Loan",
+		"totalBtcNeeded": "Total BTC Needed",
 	},
 	"currencySettings": {
 		"title": "Currency Settings",
