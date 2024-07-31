@@ -7,7 +7,7 @@ import { ExplanationTooltip } from "./ExplanationTooltip";
 
 type TaxBreakdownProps = {
 	taxBreakdown: TaxBreakdownItem[];
-	taxAmount: number;
+	totalMunicipalTax: number;
 	startingBracket: string;
 	exchangeRate: number;
 	foreignCurrency: string;
@@ -16,7 +16,7 @@ type TaxBreakdownProps = {
 
 export default function TaxBreakdown({
 	taxBreakdown,
-	taxAmount,
+	totalMunicipalTax,
 	startingBracket,
 	exchangeRate,
 	foreignCurrency,
@@ -82,6 +82,9 @@ export default function TaxBreakdown({
 							</Table.ColumnHeaderCell>
 							<Table.ColumnHeaderCell className="whitespace-nowrap">
 								{t("taxBreakdown.taxAmount")}
+								<ExplanationTooltip
+									explanation={t("taxBreakdown.explanationTaxAmount")}
+								/>
 							</Table.ColumnHeaderCell>
 						</Table.Row>
 					</Table.Header>
@@ -94,10 +97,12 @@ export default function TaxBreakdown({
 								<Table.Cell>{item.rate}</Table.Cell>
 								<Table.Cell>{formatAmounts(item.taxableAmount)}</Table.Cell>
 								<Table.Cell>{formatAmounts(item.deduction)}</Table.Cell>
-								<Table.Cell>{formatAmounts(item.taxAmount)}</Table.Cell>
+								<Table.Cell>
+									{formatAmounts(item.totalTaxWithoutMunicipalTax)}
+								</Table.Cell>
 							</Table.Row>
 						))}
-						{taxAmount > 0 && (
+						{totalMunicipalTax > 0 && (
 							<Table.Row>
 								<Table.Cell colSpan={4} className="font-bold">
 									{t("taxBreakdown.municipalTax")}
@@ -106,20 +111,7 @@ export default function TaxBreakdown({
 									/>
 								</Table.Cell>
 								<Table.Cell className="font-bold">
-									{formatAmounts(
-										formatCurrency(
-											taxAmount -
-												taxBreakdown.reduce(
-													(sum, item) =>
-														sum +
-														Number.parseFloat(
-															item.taxAmount.replace(/[^0-9.-]+/g, ""),
-														),
-													0,
-												),
-											"JPY",
-										),
-									)}
+									{formatAmounts(formatCurrency(totalMunicipalTax, "JPY"))}
 								</Table.Cell>
 							</Table.Row>
 						)}

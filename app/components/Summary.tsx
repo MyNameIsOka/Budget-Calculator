@@ -9,7 +9,8 @@ type SummaryProps = {
 	btcSalePrice: number;
 	exchangeRate: number;
 	foreignCurrency: string;
-	taxAmount: number;
+	capitalGainsTax: number;
+	municipalTaxFromCapitalGains: number;
 	timeFrame: number;
 	gains: number;
 };
@@ -19,7 +20,8 @@ export default function Summary({
 	btcSalePrice,
 	exchangeRate,
 	foreignCurrency,
-	taxAmount,
+	capitalGainsTax,
+	municipalTaxFromCapitalGains,
 	timeFrame,
 	gains,
 }: SummaryProps) {
@@ -27,9 +29,12 @@ export default function Summary({
 
 	const amountToSell = totalExpenses - loanAmountJPY;
 	const btcToSell = amountToSell / (btcSalePrice * exchangeRate);
-	const btcForTaxes = taxAmount / (btcSalePrice * exchangeRate);
+	const btcForTaxes =
+		(capitalGainsTax + municipalTaxFromCapitalGains) /
+		(btcSalePrice * exchangeRate);
 	const totalBtcNeeded = btcToSell + btcForTaxes;
-	const effectiveTaxRate = (taxAmount / amountToSell) * 100;
+	const effectiveTaxRate =
+		((capitalGainsTax + municipalTaxFromCapitalGains) / amountToSell) * 100;
 
 	return (
 		<Box className="w-full overflow-x-auto">
@@ -109,9 +114,14 @@ export default function Summary({
 								explanation={t("summary.explanationTaxesFromSelling")}
 							/>
 						</Table.Cell>
-						<Table.Cell>{formatCurrency(taxAmount)}</Table.Cell>
 						<Table.Cell>
-							{formatCurrency(taxAmount / exchangeRate, foreignCurrency)}
+							{formatCurrency(capitalGainsTax + municipalTaxFromCapitalGains)}
+						</Table.Cell>
+						<Table.Cell>
+							{formatCurrency(
+								(capitalGainsTax + municipalTaxFromCapitalGains) / exchangeRate,
+								foreignCurrency,
+							)}
 						</Table.Cell>
 						<Table.Cell>{btcForTaxes.toFixed(4)}</Table.Cell>
 					</Table.Row>

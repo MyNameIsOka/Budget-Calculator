@@ -28,6 +28,17 @@ export type TaxBracket = {
 	deduction: number;
 };
 
+export type TaxResult = {
+	capitalGainsTax: number;
+	municipalTaxFromCapitalGains: number;
+	incomeTax: number;
+	municipalTaxFromIncome: number;
+	totalMunicipalTax: number;
+	totalTaxWithoutMunicipalTax: number;
+	breakdown: TaxBreakdownItem[];
+	startingBracket: string;
+};
+
 export type Expense = {
 	[key: string]: number;
 };
@@ -37,7 +48,7 @@ export type TaxBreakdownItem = {
 	rate: string;
 	taxableAmount: string;
 	deduction: string;
-	taxAmount: string;
+	totalTaxWithoutMunicipalTax: string;
 };
 
 export type LoaderData = {

@@ -4,9 +4,9 @@ import { useTranslation } from "react-i18next";
 
 type BitcoinInfoBoxProps = {
 	totalExpenses: number;
-	taxAmount: number;
+	capitalGainsTax: number;
+	municipalTaxFromCapitalGains: number;
 	btcSalePrice: number;
-	btcPurchasePrice: number;
 	exchangeRate: number;
 	foreignCurrency: string;
 	loanAmountJPY: number;
@@ -14,9 +14,9 @@ type BitcoinInfoBoxProps = {
 };
 export default function BitcoinInfoBox({
 	totalExpenses,
-	taxAmount,
+	capitalGainsTax,
+	municipalTaxFromCapitalGains,
 	btcSalePrice,
-	btcPurchasePrice,
 	exchangeRate,
 	foreignCurrency,
 	loanAmountJPY,
@@ -24,11 +24,17 @@ export default function BitcoinInfoBox({
 }: BitcoinInfoBoxProps) {
 	const { t } = useTranslation();
 
-	const totalNeeded = totalExpenses + taxAmount - loanAmountJPY;
+	const totalNeeded =
+		totalExpenses +
+		capitalGainsTax +
+		municipalTaxFromCapitalGains -
+		loanAmountJPY;
 	const btcNeeded = totalNeeded / (btcSalePrice * exchangeRate);
 	const btcForExpenses =
 		(totalExpenses - loanAmountJPY) / (btcSalePrice * exchangeRate);
-	const btcForTaxes = taxAmount / (btcSalePrice * exchangeRate);
+	const btcForTaxes =
+		(capitalGainsTax + municipalTaxFromCapitalGains) /
+		(btcSalePrice * exchangeRate);
 
 	return (
 		<Box className="w-full overflow-x-auto">

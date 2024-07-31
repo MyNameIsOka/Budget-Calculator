@@ -1,9 +1,9 @@
 import type {
 	Expense,
 	ExpenseItems,
-	TaxBreakdownItem,
 	CustomExpenseTitles,
 	LoaderData,
+	TaxResult,
 } from "~/types";
 import { Box, Flex, Text, Separator, Button, Heading } from "@radix-ui/themes";
 import { useState, useEffect, useCallback } from "react";
@@ -51,6 +51,17 @@ type BudgetCalculatorProps = {
 
 const EXCHANGE_RATE_CACHE_KEY = "exchangeRateCache";
 
+const initialTaxResult: TaxResult = {
+	capitalGainsTax: 0,
+	municipalTaxFromCapitalGains: 0,
+	incomeTax: 0,
+	municipalTaxFromIncome: 0,
+	totalMunicipalTax: 0,
+	totalTaxWithoutMunicipalTax: 0,
+	breakdown: [],
+	startingBracket: "",
+};
+
 export default function BudgetCalculator({
 	data,
 	expenseItems: initialExpenseItems,
@@ -68,9 +79,7 @@ export default function BudgetCalculator({
 		setBtcSalePrice(data.btcSalePrice);
 		setYearlyIncome(data.yearlyIncome);
 		setTotalExpenses(0);
-		setTaxAmount(0);
-		setTaxBreakdown([]);
-		setStartingBracket("");
+		setTaxResults(initialTaxResult);
 		setExchangeRate(data.exchangeRate);
 		setForeignCurrency(data.foreignCurrency);
 		setLoanAmountJPY(data.loanAmountJPY);
@@ -117,14 +126,9 @@ export default function BudgetCalculator({
 	const [totalExpenses, setTotalExpenses] = useState<number>(
 		getInitialState("totalExpenses", 0),
 	);
-	const [taxAmount, setTaxAmount] = useState<number>(
-		getInitialState("taxAmount", 0),
-	);
-	const [taxBreakdown, setTaxBreakdown] = useState<TaxBreakdownItem[]>(
-		getInitialState("taxBreakdown", []),
-	);
-	const [startingBracket, setStartingBracket] = useState<string>(
-		getInitialState("startingBracket", ""),
+
+	const [taxResults, setTaxResults] = useState<TaxResult>(
+		getInitialState("taxResult", initialTaxResult),
 	);
 	const [exchangeRate, setExchangeRate] = useState<number>(
 		getInitialState("exchangeRate", data.exchangeRate),
@@ -179,9 +183,7 @@ export default function BudgetCalculator({
 			localStorage.setItem("btcSalePrice", JSON.stringify(btcSalePrice));
 			localStorage.setItem("yearlyIncome", JSON.stringify(yearlyIncome));
 			localStorage.setItem("totalExpenses", JSON.stringify(totalExpenses));
-			localStorage.setItem("taxAmount", JSON.stringify(taxAmount));
-			localStorage.setItem("taxBreakdown", JSON.stringify(taxBreakdown));
-			localStorage.setItem("startingBracket", JSON.stringify(startingBracket));
+			localStorage.setItem("taxResults", JSON.stringify(taxResults));
 			localStorage.setItem("exchangeRate", JSON.stringify(exchangeRate));
 			localStorage.setItem("foreignCurrency", JSON.stringify(foreignCurrency));
 			localStorage.setItem("loanAmountJPY", JSON.stringify(loanAmountJPY));
@@ -204,9 +206,7 @@ export default function BudgetCalculator({
 		btcSalePrice,
 		yearlyIncome,
 		totalExpenses,
-		taxAmount,
-		taxBreakdown,
-		startingBracket,
+		taxResults,
 		exchangeRate,
 		foreignCurrency,
 		loanAmountJPY,
@@ -237,20 +237,12 @@ export default function BudgetCalculator({
 
 		setGains(gain);
 
-		const { totalTax, breakdown, startingBracket } = calculateTax(
-			gain,
-			yearlyIncome,
-		);
-		const municipalTax = gain * 0.1;
-		const totalTaxAmount = totalTax + municipalTax;
+		const taxResults = calculateTax(gain, yearlyIncome);
+		setTaxResults(taxResults);
 
-		setTaxAmount(totalTaxAmount);
-		setTaxBreakdown(breakdown);
-		setStartingBracket(startingBracket);
-
-		// Calculate yearly income tax (for informational purposes)
-		const { totalTax: yearlyTax } = calculateTax(0, yearlyIncome);
-		setYearlyIncomeTax(yearlyTax);
+		// Calculate yearly income tax (for informational purposes) where it would be without gains from BTC sales
+		const { incomeTax } = calculateTax(0, yearlyIncome);
+		setYearlyIncomeTax(incomeTax);
 	}, [
 		expenses,
 		removedExpenses,
@@ -438,16 +430,21 @@ export default function BudgetCalculator({
 						btcSalePrice={btcSalePrice}
 						exchangeRate={exchangeRate}
 						foreignCurrency={foreignCurrency}
-						taxAmount={taxAmount}
+						capitalGainsTax={taxResults.capitalGainsTax}
+						municipalTaxFromCapitalGains={
+							taxResults.municipalTaxFromCapitalGains
+						}
 						timeFrame={timeFrame}
 						gains={gains}
 					/>
 					<Separator size="4" my="6" />
 					<BitcoinInfoBox
 						totalExpenses={totalExpenses}
-						taxAmount={taxAmount}
+						capitalGainsTax={taxResults.capitalGainsTax}
+						municipalTaxFromCapitalGains={
+							taxResults.municipalTaxFromCapitalGains
+						}
 						btcSalePrice={btcSalePrice}
-						btcPurchasePrice={btcPurchasePrice}
 						exchangeRate={exchangeRate}
 						foreignCurrency={foreignCurrency}
 						loanAmountJPY={loanAmountJPY}
@@ -455,9 +452,9 @@ export default function BudgetCalculator({
 					/>
 					<Separator size="4" my="6" />
 					<TaxBreakdown
-						taxBreakdown={taxBreakdown}
-						taxAmount={taxAmount}
-						startingBracket={startingBracket}
+						taxBreakdown={taxResults.breakdown}
+						totalMunicipalTax={taxResults.totalMunicipalTax}
+						startingBracket={taxResults.startingBracket}
 						exchangeRate={exchangeRate}
 						foreignCurrency={foreignCurrency}
 						yearlyIncomeTax={yearlyIncomeTax}
