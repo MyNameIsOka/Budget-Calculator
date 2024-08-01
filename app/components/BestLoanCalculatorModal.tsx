@@ -49,9 +49,17 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 	foreignCurrency,
 }) => {
 	const { t } = useTranslation();
-	const [interestRate, setInterestRate] = useState<number>(5);
+	const [interestRate, setInterestRate] = useState<string>("5");
 	const [ltv, setLtv] = useState<number>(50);
 	const [selectedCurrency, setSelectedCurrency] = useState<string>("JPY");
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value;
+		if (/^\d*\.?\d*$/.test(value)) {
+			// Allow only numbers and a single decimal point
+			setInterestRate(value);
+		}
+	};
 
 	const getCurrencySymbol = (currency: string) => {
 		switch (currency) {
@@ -82,7 +90,8 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 				const taxResult = calculateTax(gains, yearlyIncome);
 				const btcTaxes =
 					taxResult.capitalGainsTax + taxResult.municipalTaxFromCapitalGains;
-				const interestTaxes = loanAmount * (interestRate / 100) * timeFrame;
+				const interestTaxes =
+					loanAmount * (Number(interestRate) / 100) * timeFrame;
 				const totalTaxes = btcTaxes + interestTaxes;
 				const btcForTaxes = btcTaxes / (btcSalePrice * exchangeRate);
 				const btcNeededForLoan =
@@ -126,9 +135,15 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 		const optimalLoan = chartData.reduce((prev, current) =>
 			prev.totalTaxes < current.totalTaxes ? prev : current,
 		);
+
+		const btcToSell =
+			optimalLoan.totalBtcNeeded -
+			optimalLoan.btcForTaxes -
+			optimalLoan.btcNeeded;
+
 		return {
 			optimalLoanAmount: optimalLoan.loanAmount,
-			btcToSell: optimalLoan.btcSaleAmount / btcSalePrice,
+			btcToSell: btcToSell,
 			btcNeededForLoan: optimalLoan.btcNeeded,
 			totalBtcNeeded: optimalLoan.totalBtcNeeded,
 			totalTaxes: optimalLoan.totalTaxes,
@@ -136,7 +151,7 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 			interestTaxes: optimalLoan.interestTaxes,
 			btcForTaxes: optimalLoan.btcForTaxes,
 		};
-	}, [chartData, btcSalePrice]);
+	}, [chartData]);
 
 	const formatAxisTick = (value: number) => `${(value / 1000).toFixed(0)}k`;
 
@@ -243,10 +258,17 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 					<Flex align="center" gap="2">
 						<Text>{t("bestLoanCalculator.interestRate")}</Text>
 						<TextField.Root
-							type="number"
-							value={interestRate.toString()}
-							onChange={(e) => setInterestRate(Number(e.target.value))}
+							type="text" // Use text to allow the user to type a decimal point
+							value={interestRate}
+							onChange={handleChange}
+							onBlur={() => {
+								// Convert to number on blur
+								setInterestRate(
+									Number.parseFloat(interestRate).toString() || "0",
+								);
+							}}
 						/>
+
 						<Text>{t("bestLoanCalculator.loanToValue")}</Text>
 						<TextField.Root
 							type="number"
