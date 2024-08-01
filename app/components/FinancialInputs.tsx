@@ -12,7 +12,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { getExchangeRates } from "~/utils/exchangeRate";
 import { ExplanationTooltip } from "./ExplanationTooltip";
-import ExchangeRateDisplay from "./ExchangeRateDisplay";
+import CurrencySettings from "./CurrencySettings";
 import BestLoanCalculatorModal from "./BestLoanCalculatorModal";
 
 type FinancialInputsProps = {
@@ -293,31 +293,11 @@ export default function FinancialInputs({
 				</Box>
 
 				{/* Currency Settings */}
-				<Box>
-					<Heading size="3" mb="3">
-						{t("currencySettings.title")}
-					</Heading>
-					<Flex direction="column" gap="2">
-						<RadioGroup.Root
-							value={foreignCurrency}
-							onValueChange={setForeignCurrency}
-						>
-							<Flex gap="2">
-								<Text as="label" size="2">
-									<Flex gap="2">
-										<RadioGroup.Item value="USD" /> USD
-									</Flex>
-								</Text>
-								<Text as="label" size="2">
-									<Flex gap="2">
-										<RadioGroup.Item value="EUR" /> EUR
-									</Flex>
-								</Text>
-							</Flex>
-						</RadioGroup.Root>
-						<ExchangeRateDisplay foreignCurrency={foreignCurrency} />
-					</Flex>
-				</Box>
+				<CurrencySettings
+					foreignCurrency={foreignCurrency}
+					exchangeRate={exchangeRate}
+					setForeignCurrency={setForeignCurrency}
+				/>
 			</Flex>
 
 			<BestLoanCalculatorModal
