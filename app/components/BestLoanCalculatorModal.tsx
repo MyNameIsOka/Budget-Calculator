@@ -90,8 +90,9 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 				const taxResult = calculateTax(gains, yearlyIncome);
 				const btcTaxes =
 					taxResult.capitalGainsTax + taxResult.municipalTaxFromCapitalGains;
-				const interestTaxes =
-					loanAmount * (Number(interestRate) / 100) * timeFrame;
+				const compoundedAmount =
+					loanAmount * (1 + Number(interestRate) / 100) ** timeFrame;
+				const interestTaxes = compoundedAmount - loanAmount;
 				const totalTaxes = btcTaxes + interestTaxes;
 				const btcForTaxes = btcTaxes / (btcSalePrice * exchangeRate);
 				const btcNeededForLoan =
