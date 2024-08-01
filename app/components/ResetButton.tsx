@@ -6,8 +6,7 @@ import { useTranslation } from "react-i18next";
 type ResetButtonProps = {
 	onReset: () => void;
 };
-
-const ResetButton: React.FC<ResetButtonProps> = ({ onReset }) => {
+export default function ResetButton({ onReset }: ResetButtonProps) {
 	const { t } = useTranslation();
 
 	return (
@@ -16,6 +15,4 @@ const ResetButton: React.FC<ResetButtonProps> = ({ onReset }) => {
 			{t("reset.button")}
 		</Button>
 	);
-};
-
-export default ResetButton;
+}

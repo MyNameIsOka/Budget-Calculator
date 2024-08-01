@@ -24,6 +24,7 @@ import { getExchangeRates } from "~/utils/exchangeRate";
 import ContactNote from "./ContactNote";
 import { useOutletContext } from "@remix-run/react";
 import ThemeToggle from "./ThemeToggle";
+import DonateButton from "./DonateButton";
 
 // Custom hook for media query
 function useMediaQuery(query: string) {
@@ -358,8 +359,9 @@ export default function BudgetCalculator({
 					onReset={resetToInitialState}
 				>
 					<LanguageSettings />
-					<ResetButton onReset={resetToInitialState} />
 					<ThemeToggle theme={theme} setTheme={setTheme} />
+					<ResetButton onReset={resetToInitialState} />
+					<DonateButton donationLink={donationLink} />
 				</SettingsDrawer>
 				{!moveSettingsDrawer && (
 					<Box style={{ width: "300px", flexShrink: 0 }}>
@@ -393,6 +395,7 @@ export default function BudgetCalculator({
 							<LanguageSettings />
 							<ThemeToggle theme={theme} setTheme={setTheme} />
 							<ResetButton onReset={resetToInitialState} />
+							<DonateButton donationLink={donationLink} />
 						</Flex>
 					</Box>
 				)}

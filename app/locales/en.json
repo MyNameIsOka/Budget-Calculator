@@ -144,5 +144,8 @@
 		"contactMe": "Contact me on",
 		"donation": "If you find this tool helpful, you can zap me on nostr or",
 		"zapMe": "donate some sats!"
+	},
+	"donate": {
+		"alt": "If you got value out of this tool, consider donating some sats!"
 	}
 }
