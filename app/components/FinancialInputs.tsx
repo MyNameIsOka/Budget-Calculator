@@ -329,6 +329,7 @@ export default function FinancialInputs({
 				exchangeRate={exchangeRate}
 				yearlyIncome={yearlyIncome}
 				timeFrame={timeFrame}
+				foreignCurrency={foreignCurrency}
 			/>
 		</Card>
 	);

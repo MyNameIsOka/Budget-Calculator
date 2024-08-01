@@ -24,7 +24,7 @@ export default function ExchangeRateDisplay({
 	return (
 		<Flex align="center" gap="2">
 			<Text size="2">1 {foreignCurrency} =</Text>
-			<Text size="2">{exchangeRate.toFixed(2)} USD</Text>
+			<Text size="2">{exchangeRate.toFixed(2)} JPY</Text>
 		</Flex>
 	);
 }

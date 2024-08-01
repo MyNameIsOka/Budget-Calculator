@@ -10,6 +10,7 @@ import {
 	Table,
 	Heading,
 	Box,
+	RadioGroup,
 } from "@radix-ui/themes";
 import {
 	ComposedChart,
@@ -33,6 +34,7 @@ type BestLoanCalculatorModalProps = {
 	exchangeRate: number;
 	yearlyIncome: number;
 	timeFrame: number;
+	foreignCurrency: string;
 };
 
 const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
@@ -44,10 +46,23 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 	exchangeRate,
 	yearlyIncome,
 	timeFrame,
+	foreignCurrency,
 }) => {
 	const { t } = useTranslation();
 	const [interestRate, setInterestRate] = useState<number>(5);
 	const [ltv, setLtv] = useState<number>(50);
+	const [selectedCurrency, setSelectedCurrency] = useState<string>("JPY");
+
+	const getCurrencySymbol = (currency: string) => {
+		switch (currency) {
+			case "USD":
+				return "$";
+			case "EUR":
+				return "€";
+			default:
+				return "¥";
+		}
+	};
 
 	const chartData = useMemo(() => {
 		if (!totalExpenses || !btcSalePrice || !exchangeRate || !btcPurchasePrice)
@@ -74,14 +89,17 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 					loanAmount / (btcSalePrice * exchangeRate * (ltv / 100));
 				const totalBtcNeeded = btcToSell + btcForTaxes + btcNeededForLoan;
 
+				const convertAmount = (amount: number) =>
+					selectedCurrency === "JPY"
+						? Math.round(amount)
+						: Math.round(amount / exchangeRate);
+
 				data.push({
-					loanAmount: Math.round(loanAmount / exchangeRate),
-					btcSaleAmount: Math.round(
-						(totalExpenses - loanAmount) / exchangeRate,
-					),
-					btcTaxes: Math.round(btcTaxes / exchangeRate),
-					interestTaxes: Math.round(interestTaxes / exchangeRate),
-					totalTaxes: Math.round(totalTaxes / exchangeRate),
+					loanAmount: convertAmount(loanAmount),
+					btcSaleAmount: convertAmount(totalExpenses - loanAmount),
+					btcTaxes: convertAmount(btcTaxes),
+					interestTaxes: convertAmount(interestTaxes),
+					totalTaxes: convertAmount(totalTaxes),
 					btcNeeded: btcNeededForLoan,
 					btcForTaxes: btcForTaxes,
 					totalBtcNeeded: totalBtcNeeded,
@@ -100,6 +118,7 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 		exchangeRate,
 		yearlyIncome,
 		timeFrame,
+		selectedCurrency,
 	]);
 
 	const optimalLoanData = useMemo(() => {
@@ -136,7 +155,7 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 								key={index}
 								style={{ color: pld.color, whiteSpace: "nowrap" }}
 							>
-								{`${pld.name} : $${Number(pld.value).toLocaleString()}`}
+								{`${pld.name} : ${getCurrencySymbol(selectedCurrency)}${Number(pld.value).toLocaleString()}`}
 							</Text>
 						))}
 					</Flex>
@@ -157,7 +176,7 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 						mr="2"
 						style={{ backgroundColor: "#8884d8" }}
 					/>
-					<Text>Loan Amount ($)</Text>
+					<Text>Loan Amount ({getCurrencySymbol(selectedCurrency)})</Text>
 				</Flex>
 				<Flex align="center">
 					<Box
@@ -235,6 +254,27 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 							onChange={(e) => setLtv(Number(e.target.value))}
 						/>
 						<Text>({(100 / ltv).toFixed(2)}x over-collateralized)</Text>
+					</Flex>
+					<Flex align="center" gap="2">
+						<Text>Currency:</Text>
+						<RadioGroup.Root
+							value={selectedCurrency}
+							onValueChange={setSelectedCurrency}
+						>
+							<Flex gap="2">
+								<Text as="label" size="2">
+									<Flex gap="2" align="center">
+										<RadioGroup.Item value="JPY" /> JPY
+									</Flex>
+								</Text>
+								<Text as="label" size="2">
+									<Flex gap="2" align="center">
+										<RadioGroup.Item value={foreignCurrency} />{" "}
+										{foreignCurrency}
+									</Flex>
+								</Text>
+							</Flex>
+						</RadioGroup.Root>
 					</Flex>
 					{chartData.length > 0 ? (
 						<Box>
@@ -334,7 +374,8 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 											{t("bestLoanCalculator.optimalLoanAmount")}
 										</Table.Cell>
 										<Table.Cell>
-											${optimalLoanData.optimalLoanAmount.toLocaleString()}
+											{getCurrencySymbol(selectedCurrency)}
+											{optimalLoanData.optimalLoanAmount.toLocaleString()}
 										</Table.Cell>
 									</Table.Row>
 									<Table.Row>
@@ -372,7 +413,8 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 											{t("bestLoanCalculator.totalTaxes")}
 										</Table.Cell>
 										<Table.Cell>
-											${optimalLoanData.totalTaxes.toLocaleString()}
+											{getCurrencySymbol(selectedCurrency)}
+											{optimalLoanData.totalTaxes.toLocaleString()}
 										</Table.Cell>
 									</Table.Row>
 									<Table.Row>
@@ -380,7 +422,8 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 											{t("bestLoanCalculator.btcSaleTaxes")}
 										</Table.Cell>
 										<Table.Cell>
-											${optimalLoanData.btcTaxes.toLocaleString()}
+											{getCurrencySymbol(selectedCurrency)}
+											{optimalLoanData.btcTaxes.toLocaleString()}
 										</Table.Cell>
 									</Table.Row>
 									<Table.Row>
@@ -388,7 +431,8 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 											{t("bestLoanCalculator.interestTaxes")}
 										</Table.Cell>
 										<Table.Cell>
-											${optimalLoanData.interestTaxes.toLocaleString()}
+											{getCurrencySymbol(selectedCurrency)}
+											{optimalLoanData.interestTaxes.toLocaleString()}
 										</Table.Cell>
 									</Table.Row>
 								</Table.Body>
