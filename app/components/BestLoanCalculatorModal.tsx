@@ -8,6 +8,8 @@ import {
 	Text,
 	Card,
 	Table,
+	Heading,
+	Box,
 } from "@radix-ui/themes";
 import {
 	ComposedChart,
@@ -16,7 +18,6 @@ import {
 	YAxis,
 	CartesianGrid,
 	Tooltip,
-	Legend,
 	ResponsiveContainer,
 	Area,
 } from "recharts";
@@ -68,6 +69,10 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 					taxResult.capitalGainsTax + taxResult.municipalTaxFromCapitalGains;
 				const interestTaxes = loanAmount * (interestRate / 100) * timeFrame;
 				const totalTaxes = btcTaxes + interestTaxes;
+				const btcForTaxes = btcTaxes / (btcSalePrice * exchangeRate);
+				const btcNeededForLoan =
+					loanAmount / (btcSalePrice * exchangeRate * (ltv / 100));
+				const totalBtcNeeded = btcToSell + btcForTaxes + btcNeededForLoan;
 
 				data.push({
 					loanAmount: Math.round(loanAmount / exchangeRate),
@@ -77,7 +82,9 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 					btcTaxes: Math.round(btcTaxes / exchangeRate),
 					interestTaxes: Math.round(interestTaxes / exchangeRate),
 					totalTaxes: Math.round(totalTaxes / exchangeRate),
-					btcNeeded: loanAmount / (btcSalePrice * exchangeRate * (ltv / 100)),
+					btcNeeded: btcNeededForLoan,
+					btcForTaxes: btcForTaxes,
+					totalBtcNeeded: totalBtcNeeded,
 				});
 			} catch (error) {
 				console.error("Error calculating chart data:", error);
@@ -104,20 +111,115 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 			optimalLoanAmount: optimalLoan.loanAmount,
 			btcToSell: optimalLoan.btcSaleAmount / btcSalePrice,
 			btcNeededForLoan: optimalLoan.btcNeeded,
-			totalBtcNeeded:
-				optimalLoan.btcSaleAmount / btcSalePrice + optimalLoan.btcNeeded,
+			totalBtcNeeded: optimalLoan.totalBtcNeeded,
 			totalTaxes: optimalLoan.totalTaxes,
 			btcTaxes: optimalLoan.btcTaxes,
 			interestTaxes: optimalLoan.interestTaxes,
+			btcForTaxes: optimalLoan.btcForTaxes,
 		};
 	}, [chartData, btcSalePrice]);
 
 	const formatAxisTick = (value: number) => `${(value / 1000).toFixed(0)}k`;
 
+	const CustomTooltip = ({ active, payload, label }: any) => {
+		if (active && payload && payload.length) {
+			return (
+				<Card
+					style={{
+						backgroundColor: "rgba(255, 255, 255, 0.8)",
+						padding: "8px",
+					}}
+				>
+					<Flex direction="column" gap="1">
+						{payload.map((pld: any, index: number) => (
+							<Text
+								key={index}
+								style={{ color: pld.color, whiteSpace: "nowrap" }}
+							>
+								{`${pld.name} : $${Number(pld.value).toLocaleString()}`}
+							</Text>
+						))}
+					</Flex>
+				</Card>
+			);
+		}
+		return null;
+	};
+
+	const CustomLegend = () => (
+		<Flex direction="row" justify="center" mt="4">
+			<Box mr="6">
+				<Text weight="bold">Areas (Right y-Axis)</Text>
+				<Flex align="center">
+					<Box
+						width="12px"
+						height="12px"
+						mr="2"
+						style={{ backgroundColor: "#8884d8" }}
+					/>
+					<Text>Loan Amount ($)</Text>
+				</Flex>
+				<Flex align="center">
+					<Box
+						width="12px"
+						height="12px"
+						mr="2"
+						style={{ backgroundColor: "#82ca9d" }}
+					/>
+					<Text>BTC Sale Amount</Text>
+				</Flex>
+			</Box>
+			<Box>
+				<Text weight="bold">Lines (Left y-Axis)</Text>
+				<Flex align="center">
+					<Box
+						width="12px"
+						height="2px"
+						mr="2"
+						style={{ backgroundColor: "#8884d8" }}
+					/>
+					<Text>BTC Sale Taxes</Text>
+				</Flex>
+				<Flex align="center">
+					<Box
+						width="12px"
+						height="2px"
+						mr="2"
+						style={{ backgroundColor: "#82ca9d" }}
+					/>
+					<Text>Interest over Time Frame period</Text>
+				</Flex>
+				<Flex align="center">
+					<Box
+						width="12px"
+						height="2px"
+						mr="2"
+						style={{ backgroundColor: "#ff7300" }}
+					/>
+					<Text>Total Taxes</Text>
+				</Flex>
+			</Box>
+		</Flex>
+	);
+
 	return (
 		<Dialog.Root open={open} onOpenChange={onOpenChange}>
 			<Dialog.Content style={{ maxWidth: 800 }}>
 				<Dialog.Title>{t("bestLoanCalculator.title")}</Dialog.Title>
+
+				<Card my="4">
+					<Heading size="3" mb="2">
+						{t("bestLoanCalculator.explanation.title")}
+					</Heading>
+					<Text as="p" mb="2">
+						{t("bestLoanCalculator.explanation.paragraph1")}
+					</Text>
+					<Text as="p" mb="2">
+						{t("bestLoanCalculator.explanation.paragraph2")}
+					</Text>
+					<Text as="p">{t("bestLoanCalculator.explanation.paragraph3")}</Text>
+				</Card>
+
 				<Flex direction="column" gap="3">
 					<Flex align="center" gap="2">
 						<Text>{t("bestLoanCalculator.interestRate")}</Text>
@@ -135,88 +237,88 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 						<Text>({(100 / ltv).toFixed(2)}x over-collateralized)</Text>
 					</Flex>
 					{chartData.length > 0 ? (
-						<ResponsiveContainer width="100%" height={400}>
-							<ComposedChart
-								data={chartData}
-								margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-							>
-								<CartesianGrid strokeDasharray="3 3" />
-								<XAxis
-									dataKey="loanAmount"
-									tickFormatter={formatAxisTick}
-									interval={4}
-									label={{
-										value: t("bestLoanCalculator.loanAmount"),
-										position: "insideBottom",
-										offset: -10,
-									}}
-								/>
-								<YAxis
-									yAxisId="left"
-									tickFormatter={formatAxisTick}
-									label={{
-										value: t("bestLoanCalculator.taxesToPay"),
-										angle: -90,
-										position: "insideLeft",
-										offset: -5,
-									}}
-								/>
-								<YAxis
-									yAxisId="right"
-									orientation="right"
-									tickFormatter={formatAxisTick}
-									label={{
-										value: t("bestLoanCalculator.expenses"),
-										angle: 90,
-										position: "insideRight",
-										offset: 5,
-									}}
-								/>
-								<Tooltip
-									formatter={(value) => `$${Number(value).toLocaleString()}`}
-								/>
-								<Legend verticalAlign="top" height={36} />
-								<Area
-									type="monotone"
-									dataKey="loanAmount"
-									stackId="1"
-									fill="#8884d8"
-									stroke="#8884d8"
-									name={t("bestLoanCalculator.loanAmount")}
-									yAxisId="right"
-								/>
-								<Area
-									type="monotone"
-									dataKey="btcSaleAmount"
-									stackId="1"
-									fill="#82ca9d"
-									stroke="#82ca9d"
-									name={t("bestLoanCalculator.btcSaleAmount")}
-									yAxisId="right"
-								/>
-								<Line
-									type="monotone"
-									dataKey="btcTaxes"
-									stroke="#8884d8"
-									name={t("bestLoanCalculator.btcSaleTaxes")}
-									yAxisId="left"
-								/>
-								<Line
-									type="monotone"
-									dataKey="interestTaxes"
-									stroke="#82ca9d"
-									name={t("bestLoanCalculator.interestTaxes")}
-									yAxisId="left"
-								/>
-								<Line
-									type="monotone"
-									dataKey="totalTaxes"
-									stroke="#ff7300"
-									name={t("bestLoanCalculator.totalTaxes")}
-									yAxisId="left"
-								/>
-							</ComposedChart>
-						</ResponsiveContainer>
+						<Box>
+							<ResponsiveContainer width="100%" height={400}>
+								<ComposedChart
+									data={chartData}
+									margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+								>
+									<CartesianGrid strokeDasharray="3 3" />
+									<XAxis
+										dataKey="loanAmount"
+										tickFormatter={formatAxisTick}
+										interval={4}
+										label={{
+											value: t("bestLoanCalculator.loanAmount"),
+											position: "insideBottom",
+											offset: -10,
+										}}
+									/>
+									<YAxis
+										yAxisId="left"
+										tickFormatter={formatAxisTick}
+										label={{
+											value: t("bestLoanCalculator.taxesToPay"),
+											angle: -90,
+											position: "insideLeft",
+											offset: -5,
+										}}
+									/>
+									<YAxis
+										yAxisId="right"
+										orientation="right"
+										tickFormatter={formatAxisTick}
+										label={{
+											value: t("bestLoanCalculator.expenses"),
+											angle: 90,
+											position: "insideRight",
+											offset: 5,
+										}}
+									/>
+									<Tooltip content={<CustomTooltip />} />
+									<Area
+										type="monotone"
+										dataKey="loanAmount"
+										stackId="1"
+										fill="#8884d8"
+										stroke="#8884d8"
+										yAxisId="right"
+										name="Loan Amount"
+									/>
+									<Area
+										type="monotone"
+										dataKey="btcSaleAmount"
+										stackId="1"
+										fill="#82ca9d"
+										stroke="#82ca9d"
+										yAxisId="right"
+										name="BTC Sale Amount"
+									/>
+									<Line
+										type="monotone"
+										dataKey="btcTaxes"
+										stroke="#8884d8"
+										yAxisId="left"
+										name="BTC Sale Taxes"
+									/>
+									<Line
+										type="monotone"
+										dataKey="interestTaxes"
+										stroke="#82ca9d"
+										yAxisId="left"
+										name="Interest over Time Frame period"
+									/>
+									<Line
+										type="monotone"
+										dataKey="totalTaxes"
+										stroke="#ff7300"
+										yAxisId="left"
+										name="Total Taxes"
+									/>
+								</ComposedChart>
+							</ResponsiveContainer>
+							<CustomLegend />
+						</Box>
 					) : (
 						<Text>No data available to display chart.</Text>
 					)}
@@ -239,6 +341,14 @@ const BestLoanCalculatorModal: React.FC<BestLoanCalculatorModalProps> = ({
 										<Table.Cell>{t("bestLoanCalculator.btcToSell")}</Table.Cell>
 										<Table.Cell>
 											{optimalLoanData.btcToSell.toFixed(4)} BTC
+										</Table.Cell>
+									</Table.Row>
+									<Table.Row>
+										<Table.Cell>
+											{t("bestLoanCalculator.btcForTaxes")}
+										</Table.Cell>
+										<Table.Cell>
+											{optimalLoanData.btcForTaxes.toFixed(4)} BTC
 										</Table.Cell>
 									</Table.Row>
 									<Table.Row>
